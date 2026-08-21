@@ -64,7 +64,17 @@ Längst ner i `index.html` finns:
 Uppdatera alltid till aktuellt datum/klockslag vid varje nytt bygge.
 
 Verifiera JS-syntax (`node --check`) och HTML-taggbalans innan du presenterar
-resultatet, samma princip som VO Turf List.
+resultatet, samma princip som VO Turf List. Detta gäller **alltid**, oavsett
+ändringens storlek — det tar sekunder och fångar trasig kod.
+
+**Full test i webbläsare (Playwright, med riktig eller mockad ATG-data)
+bara vid nya funktioner eller strukturella ändringar** — ny vy, ny
+beräkningslogik, ändrad DOM-uppbyggnad/event-koppling, nytt exportformat.
+Ren text-/ordningsjustering (t.ex. flytta ett fält, ändra en formulering,
+lägga till/ta bort ord i en uppläst mening) behöver bara syntaxkollen ovan
+plus en genomläsning av koden — inte en full klick-igenom-testkörning.
+Skulle du vara osäker på om en ändring är "bara text" eller faktiskt
+strukturell, fråga användaren istället för att anta.
 
 ---
 
