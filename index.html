@@ -80,6 +80,13 @@
     border-left:6px solid var(--danger);
   }
   .horse-row p{margin:.2rem 0;}
+  .horse-toggle{
+    display:block;
+    width:100%;
+    text-align:left;
+    white-space:normal;
+    line-height:1.4;
+  }
   .horse-detail{
     margin:.5rem 0;
     padding:.6rem .75rem;
@@ -202,7 +209,7 @@
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 01:49</span>
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 01:52</span>
 
 <script>
 (function(){
@@ -397,7 +404,7 @@
   function percentText(start, type){
     var pool = start.pools && start.pools[type];
     if(!pool || pool.betDistribution == null){ return null; }
-    return type + "-procent " + (pool.betDistribution / 100).toFixed(1) + " %.";
+    return (pool.betDistribution / 100).toFixed(1) + "%.";
   }
 
   function sulkyMainRowText(horse){
@@ -512,15 +519,19 @@
 
     race.starts.forEach(function(start){
       var horse = start.horse;
+      var driver = start.driver;
+      var trainer = horse.trainer;
 
       var li = document.createElement("li");
       li.className = "horse-row";
 
-      var p = document.createElement("p");
       var text = start.number + ". " + horse.name + ".";
 
       var pct = percentText(start, currentGame.type);
       if(pct){ text += " " + pct; }
+
+      text += " Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") + ".";
+      text += " Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") + ".";
 
       var sulkyMain = sulkyMainRowText(horse);
       if(sulkyMain){ text += " " + sulkyMain; }
@@ -529,15 +540,13 @@
       if(shoes.text){ text += " " + shoes.text; }
       if(shoes.isNew){ li.classList.add("new-barefoot"); }
 
-      p.textContent = text;
-      li.appendChild(p);
-
       var detailId = "detail-" + currentAvd + "-" + start.number;
       var detailToggle = document.createElement("button");
       detailToggle.type = "button";
+      detailToggle.className = "horse-toggle";
       detailToggle.setAttribute("aria-expanded", "false");
       detailToggle.setAttribute("aria-controls", detailId);
-      detailToggle.textContent = "Visa fler detaljer om " + horse.name;
+      detailToggle.textContent = text;
 
       var detailDiv = document.createElement("div");
       detailDiv.id = detailId;
@@ -550,7 +559,6 @@
       detailToggle.addEventListener("click", function(){
         var expanded = detailToggle.getAttribute("aria-expanded") === "true";
         detailToggle.setAttribute("aria-expanded", String(!expanded));
-        detailToggle.textContent = (!expanded ? "Dölj detaljer om " : "Visa fler detaljer om ") + horse.name;
         detailDiv.hidden = expanded;
       });
 
