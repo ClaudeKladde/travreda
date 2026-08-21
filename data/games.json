@@ -1,0 +1,32 @@
+{
+  "updated": "2026-08-21T23:03:33Z",
+  "games": [
+    {
+      "type": "V85",
+      "id": "V85_2026-08-22_23_5",
+      "date": "2026-08-22",
+      "startTime": "2026-08-22T16:10:00",
+      "status": "bettable",
+      "trackId": 23,
+      "trackName": "Romme"
+    },
+    {
+      "type": "V85",
+      "id": "V85_2026-08-25_7_5",
+      "date": "2026-08-25",
+      "startTime": "2026-08-25T19:10:00",
+      "status": "bettable",
+      "trackId": 7,
+      "trackName": "Jägersro"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-08-26_40_1",
+      "date": "2026-08-26",
+      "startTime": "2026-08-26T20:30:00",
+      "status": "bettable",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    }
+  ]
+}

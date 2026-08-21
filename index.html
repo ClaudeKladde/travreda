@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Travreda — SK ABC-reducering</title>
+<style>
+  :root{
+    --bg:#121212;
+    --fg:#f2f2f2;
+    --muted:#b7b7b7;
+    --card:#1e1e1e;
+    --card-border:#3a3a3a;
+    --accent:#ffd60a;
+    --accent-fg:#1a1500;
+    --link:#8ab4ff;
+    --danger:#ff8080;
+    --focus:#ffd60a;
+  }
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);color:var(--fg);}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:1rem;
+    line-height:1.5;
+    margin:0;
+    padding:0 1rem 4rem;
+  }
+  h1{font-size:1.5rem;margin:1rem 0 .25rem;}
+  h2{font-size:1.25rem;margin:1.5rem 0 .5rem;}
+  h3{font-size:1.05rem;margin:0 0 .35rem;}
+  p{margin:.35rem 0;}
+  a{color:var(--link);}
+  :focus-visible{outline:3px solid var(--focus);outline-offset:2px;}
+  .subtitle{color:var(--muted);margin-top:0;}
+  nav.main-nav{
+    display:flex;gap:.5rem;flex-wrap:wrap;
+    border-bottom:1px solid var(--card-border);
+    padding-bottom:1rem;margin-bottom:1rem;
+  }
+  button, select, input[type="number"], input[type="text"], input[type="date"]{
+    font-size:1rem;
+    padding:.5rem .7rem;
+    background:#242424;
+    color:var(--fg);
+    border:1px solid var(--card-border);
+    border-radius:8px;
+  }
+  button{cursor:pointer;}
+  button:hover{border-color:var(--accent);}
+  button.btn-primary{
+    background:var(--accent);
+    color:var(--accent-fg);
+    font-weight:700;
+    border-color:var(--accent);
+  }
+  button:disabled{opacity:.5;cursor:not-allowed;}
+  fieldset{border:1px solid var(--card-border);border-radius:10px;margin:0 0 1rem;padding:.75rem 1rem 1rem;}
+  legend{padding:0 .4rem;color:var(--muted);}
+  label{display:block;margin:.25rem 0 .15rem;}
+  .field-row{display:flex;gap:.5rem;flex-wrap:wrap;align-items:end;margin-bottom:.75rem;}
+  .field-row > div{display:flex;flex-direction:column;}
+  ul.game-list{list-style:none;margin:0;padding:0;}
+  ul.game-list li{margin-bottom:.5rem;}
+  ul.game-list button{width:100%;text-align:left;}
+  ul.horse-list{list-style:none;margin:0;padding:0;}
+  .horse-row{
+    border:1px solid var(--card-border);
+    border-radius:10px;
+    padding:.75rem;
+    margin-bottom:.75rem;
+    background:var(--card);
+  }
+  .horse-row.marked{
+    border-color:var(--accent);
+    background:#2a2410;
+    box-shadow:0 0 0 2px var(--accent) inset;
+  }
+  .horse-row p{margin:.2rem 0;}
+  .horse-letter{margin-top:.5rem;}
+  .avd-progress{color:var(--muted);margin-top:0;}
+  .nav-buttons{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;}
+  .villkor-row{display:flex;gap:.5rem;align-items:end;flex-wrap:wrap;margin-bottom:.6rem;}
+  .villkor-row div{display:flex;flex-direction:column;}
+  .summary-box{
+    border:1px solid var(--card-border);
+    border-radius:10px;
+    padding:1rem;
+    background:var(--card);
+    margin:1rem 0;
+  }
+  .summary-box .big{font-size:1.3rem;font-weight:700;}
+  .status-msg{margin:.5rem 0 1rem;min-height:1.4em;}
+  .status-msg.error{color:var(--danger);}
+  [hidden]{display:none !important;}
+  .visually-hidden{
+    position:absolute;width:1px;height:1px;
+    overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;
+  }
+  .update-line{display:block;color:var(--muted);font-size:.8rem;margin-top:3rem;}
+</style>
+</head>
+<body>
+
+<h1>Travreda</h1>
+<p class="subtitle">SK ABC-reducering för V85, V75 och V86</p>
+
+<nav class="main-nav">
+  <button id="nav-start" type="button">Välj omgång</button>
+  <button id="nav-avdelning" type="button" disabled>Hästar</button>
+  <button id="nav-villkor" type="button" disabled>Villkor och export</button>
+</nav>
+
+<p id="global-status" class="status-msg" role="status"></p>
+
+<!-- ===== VY: VÄLJ OMGÅNG ===== -->
+<div id="view-start">
+
+  <h2 id="heading-start" tabindex="-1">Kommande omgångar</h2>
+  <p id="games-list-status">Laddar…</p>
+  <ul class="game-list" id="games-list"></ul>
+
+  <h2>Ange omgång manuellt</h2>
+  <p>Om omgången du letar efter inte finns i listan ovan kan du ange datum,
+  bankod och speltyp direkt. Travreda provar då att hitta rätt omgång.</p>
+
+  <div class="field-row">
+    <div>
+      <label for="manual-date">Datum</label>
+      <input type="date" id="manual-date">
+    </div>
+    <div>
+      <label for="manual-track">Bankod</label>
+      <input type="number" id="manual-track" min="1" max="99" inputmode="numeric" style="width:6rem">
+    </div>
+    <div>
+      <label for="manual-type">Speltyp</label>
+      <select id="manual-type">
+        <option value="V85">V85</option>
+        <option value="V75">V75</option>
+        <option value="V86">V86</option>
+      </select>
+    </div>
+    <div>
+      <button type="button" id="btn-manual-load">Hämta omgång</button>
+    </div>
+  </div>
+  <p id="manual-status" class="status-msg" role="status"></p>
+
+</div>
+
+<!-- ===== VY: AVDELNING ===== -->
+<div id="view-avdelning" hidden>
+
+  <h2 id="avd-heading" tabindex="-1">Avdelning</h2>
+  <p class="avd-progress" id="avd-progress"></p>
+  <p class="avd-progress" id="avd-marked-count"></p>
+
+  <ul class="horse-list" id="horse-list"></ul>
+
+  <div class="nav-buttons">
+    <button type="button" id="btn-prev-avd">Föregående avdelning</button>
+    <button type="button" id="btn-next-avd">Nästa avdelning</button>
+  </div>
+
+</div>
+
+<!-- ===== VY: VILLKOR OCH EXPORT ===== -->
+<div id="view-villkor" hidden>
+
+  <h2 id="villkor-heading" tabindex="-1">Villkor och export</h2>
+  <p>Villkor är valfria. Utan villkor blir systemet hela korsprodukten av de
+  bokstavsmärkta hästarna. Ett villkor begränsar hur många hästar av en viss
+  bokstav som får/måste vara med i en godkänd rad, räknat över alla
+  avdelningar tillsammans.</p>
+
+  <div id="villkor-rows"></div>
+  <button type="button" id="btn-add-villkor">Lägg till villkor</button>
+
+  <div class="summary-box" id="summary-box">
+    <p id="summary-text">Beräkna för att se antal rader.</p>
+  </div>
+
+  <button type="button" id="btn-calculate" class="btn-primary">Beräkna rader</button>
+  <p id="calc-status" class="status-msg" role="status"></p>
+
+  <h3>Exportera till ATG</h3>
+  <p>Skapar en XML-fil som du laddar upp under
+  <a href="https://www.atg.se/spel/reducerat" target="_blank" rel="noopener">Filinlämning på atg.se</a>.
+  Radpris är antaget till 0,50 kr — dubbelkolla alltid det faktiska priset på
+  atg.se innan du lämnar in.</p>
+  <button type="button" id="btn-export" class="btn-primary" disabled>Ladda ner ATG-fil</button>
+
+</div>
+
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-21 23:10</span>
+
+<script>
+(function(){
+  "use strict";
+
+  var API_BASE = "https://www.atg.se/services/racinginfo/v1/api";
+  var LEG_COUNT = { V85: 8, V75: 7, V86: 8 };
+  var COUPON_TAG = { V85: "v85Coupon", V75: "v75Coupon", V86: "v86Coupon" };
+  var MAX_UNREDUCED_WARN = 3000000;
+
+  var currentGame = null;
+  var letters = {};
+  var villkor = [];
+  var currentAvd = 0;
+  var lastCalculatedRows = null;
+
+  var views = {
+    start: document.getElementById("view-start"),
+    avdelning: document.getElementById("view-avdelning"),
+    villkor: document.getElementById("view-villkor")
+  };
+  var navButtons = {
+    start: document.getElementById("nav-start"),
+    avdelning: document.getElementById("nav-avdelning"),
+    villkor: document.getElementById("nav-villkor")
+  };
+
+  function showView(name){
+    Object.keys(views).forEach(function(key){
+      views[key].hidden = key !== name;
+    });
+    if(name === "avdelning"){
+      renderAvdelning();
+    } else if(name === "villkor"){
+      renderVillkor();
+    }
+  }
+
+  navButtons.start.addEventListener("click", function(){ showView("start"); });
+  navButtons.avdelning.addEventListener("click", function(){ showView("avdelning"); });
+  navButtons.villkor.addEventListener("click", function(){ showView("villkor"); });
+
+  function setGlobalStatus(msg){
+    document.getElementById("global-status").textContent = msg || "";
+  }
+
+  function fetchJson(url){
+    return fetch(url).then(function(resp){
+      if(!resp.ok){ throw new Error("HTTP " + resp.status); }
+      return resp.json();
+    });
+  }
+
+  // ---------- Vy: välj omgång ----------
+
+  function loadGamesList(){
+    var statusEl = document.getElementById("games-list-status");
+    var listEl = document.getElementById("games-list");
+    fetchJson("data/games.json").then(function(data){
+      var games = (data && data.games) || [];
+      if(games.length === 0){
+        statusEl.textContent = "Inga kommande omgångar hittades. Använd manuell inmatning nedan.";
+        return;
+      }
+      statusEl.textContent = "";
+      listEl.innerHTML = "";
+      games.forEach(function(g){
+        var li = document.createElement("li");
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.textContent = g.type + " — " + (g.trackName || "okänd bana") + " — " + formatDateTime(g.date, g.startTime);
+        btn.addEventListener("click", function(){
+          loadGame(g.type, g.id, g.date, g.trackId, g.trackName);
+        });
+        li.appendChild(btn);
+        listEl.appendChild(li);
+      });
+    }).catch(function(){
+      statusEl.textContent = "Kunde inte hämta listan över kommande omgångar. Använd manuell inmatning nedan.";
+    });
+  }
+
+  function formatDateTime(dateStr, startTime){
+    if(!startTime){ return dateStr; }
+    var t = startTime.slice(11, 16);
+    return dateStr + " kl " + t;
+  }
+
+  document.getElementById("btn-manual-load").addEventListener("click", function(){
+    var date = document.getElementById("manual-date").value;
+    var track = document.getElementById("manual-track").value;
+    var type = document.getElementById("manual-type").value;
+    var statusEl = document.getElementById("manual-status");
+    statusEl.className = "status-msg";
+
+    if(!date || !track){
+      statusEl.className = "status-msg error";
+      statusEl.textContent = "Ange både datum och bankod.";
+      return;
+    }
+    statusEl.textContent = "Söker efter omgången …";
+    findGameByBruteForce(type, date, track).then(function(result){
+      statusEl.textContent = "";
+      loadGame(type, result.id, date, Number(track), null);
+    }).catch(function(){
+      statusEl.className = "status-msg error";
+      statusEl.textContent = "Kunde inte hitta omgången. Kontrollera datum och bankod.";
+    });
+  });
+
+  function findGameByBruteForce(type, date, track){
+    var legCount = LEG_COUNT[type];
+    var attempt = function(startNo){
+      if(startNo > 12){
+        return Promise.reject(new Error("not found"));
+      }
+      var id = type + "_" + date + "_" + track + "_" + startNo;
+      return fetchJson(API_BASE + "/games/" + id).then(function(data){
+        if(data && data.races && data.races.length === legCount){
+          return { id: id, data: data };
+        }
+        return attempt(startNo + 1);
+      }).catch(function(){
+        return attempt(startNo + 1);
+      });
+    };
+    return attempt(1);
+  }
+
+  function loadGame(type, id, date, trackId, trackName){
+    setGlobalStatus("Hämtar " + type + " …");
+    fetchJson(API_BASE + "/games/" + id).then(function(data){
+      currentGame = {
+        type: type,
+        id: id,
+        date: date,
+        trackId: trackId || (data.races[0].track ? data.races[0].track.id : null),
+        trackName: trackName || (data.races[0].track ? data.races[0].track.name : ""),
+        races: data.races
+      };
+      letters = {};
+      villkor = [];
+      lastCalculatedRows = null;
+      currentAvd = 0;
+      navButtons.avdelning.disabled = false;
+      navButtons.villkor.disabled = false;
+      document.getElementById("btn-export").disabled = true;
+      setGlobalStatus(type + " — " + currentGame.trackName + " laddad.");
+      showView("avdelning");
+    }).catch(function(){
+      setGlobalStatus("Kunde inte hämta omgången från ATG.");
+    });
+  }
+
+  // ---------- Vy: avdelning ----------
+
+  function winPercentText(entity){
+    if(!entity || !entity.statistics || !entity.statistics.years){ return null; }
+    var years = Object.keys(entity.statistics.years).sort().reverse();
+    if(years.length === 0){ return null; }
+    var stats = entity.statistics.years[years[0]];
+    if(stats.winPercentage == null){ return null; }
+    return (stats.winPercentage / 100).toFixed(1) + " % (" + (stats.starts || 0) + " starter " + years[0] + ")";
+  }
+
+  function shoesText(horse){
+    var s = horse.shoes;
+    if(!s || !s.reported){ return ""; }
+    var frontBare = s.front && s.front.hasShoe === false;
+    var backBare = s.back && s.back.hasShoe === false;
+    var changed = (s.front && s.front.changed) || (s.back && s.back.changed);
+    if(frontBare && backBare){ return "Barfota fram och bak" + (changed ? " (byte)" : "") + "."; }
+    if(frontBare){ return "Barfota fram" + (changed ? " (byte)" : "") + "."; }
+    if(backBare){ return "Barfota bak" + (changed ? " (byte)" : "") + "."; }
+    return "";
+  }
+
+  function percentText(start, type){
+    var pool = start.pools && start.pools[type];
+    if(!pool || pool.betDistribution == null){ return null; }
+    return (pool.betDistribution / 100).toFixed(1) + " %";
+  }
+
+  function renderAvdelning(){
+    if(!currentGame){ return; }
+    var race = currentGame.races[currentAvd];
+    var heading = document.getElementById("avd-heading");
+    heading.textContent = "Avdelning " + (currentAvd + 1) + " av " + currentGame.races.length +
+      ": " + race.name + ", " + race.distance + " m " + race.startMethod +
+      ", kl " + race.startTime.slice(11, 16);
+    heading.focus();
+
+    document.getElementById("avd-progress").textContent =
+      currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date;
+
+    var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
+    var markedCount = Object.keys(legLetters).length;
+    document.getElementById("avd-marked-count").textContent =
+      markedCount + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
+
+    var list = document.getElementById("horse-list");
+    list.innerHTML = "";
+
+    race.starts.forEach(function(start){
+      var horse = start.horse;
+      var driver = start.driver;
+      var trainer = horse.trainer;
+
+      var li = document.createElement("li");
+      li.className = "horse-row";
+
+      var p = document.createElement("p");
+      var text = start.number + ". " + horse.name + ".";
+
+      var driverPct = winPercentText(driver);
+      text += " Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
+        (driverPct ? ", " + driverPct : "") + ".";
+
+      var trainerPct = winPercentText(trainer);
+      text += " Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
+        (trainerPct ? ", " + trainerPct : "") + ".";
+
+      var pct = percentText(start, currentGame.type);
+      if(pct){ text += " Spelprocent " + pct + "."; }
+
+      var shoes = shoesText(horse);
+      if(shoes){ text += " " + shoes; }
+
+      p.textContent = text;
+      li.appendChild(p);
+
+      var letterWrap = document.createElement("div");
+      letterWrap.className = "horse-letter";
+
+      var label = document.createElement("label");
+      var selectId = "letter-" + currentAvd + "-" + start.number;
+      label.setAttribute("for", selectId);
+      label.textContent = "Bokstav för " + horse.name;
+      letterWrap.appendChild(label);
+
+      var select = document.createElement("select");
+      select.id = selectId;
+      ["Ej med", "A", "B", "C", "D"].forEach(function(opt){
+        var o = document.createElement("option");
+        o.value = opt === "Ej med" ? "" : opt;
+        o.textContent = opt;
+        select.appendChild(o);
+      });
+      select.value = legLetters[start.number] || "";
+      select.addEventListener("change", function(){
+        if(select.value){
+          legLetters[start.number] = select.value;
+          li.classList.add("marked");
+        } else {
+          delete legLetters[start.number];
+          li.classList.remove("marked");
+        }
+        lastCalculatedRows = null;
+        document.getElementById("btn-export").disabled = true;
+        document.getElementById("avd-marked-count").textContent =
+          Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
+      });
+      if(select.value){ li.classList.add("marked"); }
+      letterWrap.appendChild(select);
+
+      li.appendChild(letterWrap);
+      list.appendChild(li);
+    });
+
+    document.getElementById("btn-prev-avd").disabled = currentAvd === 0;
+    document.getElementById("btn-next-avd").disabled = currentAvd === currentGame.races.length - 1;
+  }
+
+  document.getElementById("btn-prev-avd").addEventListener("click", function(){
+    if(currentAvd > 0){ currentAvd--; renderAvdelning(); }
+  });
+  document.getElementById("btn-next-avd").addEventListener("click", function(){
+    if(currentGame && currentAvd < currentGame.races.length - 1){ currentAvd++; renderAvdelning(); }
+  });
+
+  // ---------- Vy: villkor och export ----------
+
+  function renderVillkor(){
+    var wrap = document.getElementById("villkor-rows");
+    wrap.innerHTML = "";
+    villkor.forEach(function(v, idx){
+      wrap.appendChild(buildVillkorRow(v, idx));
+    });
+  }
+
+  function buildVillkorRow(v, idx){
+    var row = document.createElement("div");
+    row.className = "villkor-row";
+
+    var letterDiv = document.createElement("div");
+    var letterLabel = document.createElement("label");
+    letterLabel.setAttribute("for", "villkor-letter-" + idx);
+    letterLabel.textContent = "Bokstav";
+    var letterSelect = document.createElement("select");
+    letterSelect.id = "villkor-letter-" + idx;
+    ["A", "B", "C", "D"].forEach(function(l){
+      var o = document.createElement("option");
+      o.value = l; o.textContent = l;
+      letterSelect.appendChild(o);
+    });
+    letterSelect.value = v.letter;
+    letterSelect.addEventListener("change", function(){
+      v.letter = letterSelect.value;
+      lastCalculatedRows = null;
+    });
+    letterDiv.appendChild(letterLabel);
+    letterDiv.appendChild(letterSelect);
+
+    var minDiv = document.createElement("div");
+    var minLabel = document.createElement("label");
+    minLabel.setAttribute("for", "villkor-min-" + idx);
+    minLabel.textContent = "Minst";
+    var minInput = document.createElement("input");
+    minInput.type = "number"; minInput.min = "0"; minInput.max = "8";
+    minInput.id = "villkor-min-" + idx;
+    minInput.style.width = "5rem";
+    minInput.value = v.min;
+    minInput.addEventListener("change", function(){
+      v.min = Number(minInput.value) || 0;
+      lastCalculatedRows = null;
+    });
+    minDiv.appendChild(minLabel);
+    minDiv.appendChild(minInput);
+
+    var maxDiv = document.createElement("div");
+    var maxLabel = document.createElement("label");
+    maxLabel.setAttribute("for", "villkor-max-" + idx);
+    maxLabel.textContent = "Högst";
+    var maxInput = document.createElement("input");
+    maxInput.type = "number"; maxInput.min = "0"; maxInput.max = "8";
+    maxInput.id = "villkor-max-" + idx;
+    maxInput.style.width = "5rem";
+    maxInput.value = v.max;
+    maxInput.addEventListener("change", function(){
+      v.max = Number(maxInput.value) || 0;
+      lastCalculatedRows = null;
+    });
+    maxDiv.appendChild(maxLabel);
+    maxDiv.appendChild(maxInput);
+
+    var removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.textContent = "Ta bort villkor för bokstav " + v.letter;
+    removeBtn.addEventListener("click", function(){
+      villkor.splice(idx, 1);
+      lastCalculatedRows = null;
+      renderVillkor();
+    });
+
+    row.appendChild(letterDiv);
+    row.appendChild(minDiv);
+    row.appendChild(maxDiv);
+    row.appendChild(removeBtn);
+    return row;
+  }
+
+  document.getElementById("btn-add-villkor").addEventListener("click", function(){
+    var legCount = currentGame ? currentGame.races.length : 8;
+    villkor.push({ letter: "A", min: 0, max: legCount });
+    renderVillkor();
+  });
+
+  function buildCandidates(){
+    return currentGame.races.map(function(race, idx){
+      var legLetters = letters[idx] || {};
+      var candidates = [];
+      race.starts.forEach(function(start){
+        var letter = legLetters[start.number];
+        if(letter){ candidates.push({ nr: start.number, letter: letter }); }
+      });
+      return candidates;
+    });
+  }
+
+  function countUnreduced(candidates){
+    return candidates.reduce(function(acc, c){ return acc * c.length; }, 1);
+  }
+
+  function passesVillkor(combo, villkorList){
+    if(villkorList.length === 0){ return true; }
+    var counts = {};
+    combo.forEach(function(c){ counts[c.letter] = (counts[c.letter] || 0) + 1; });
+    return villkorList.every(function(v){
+      var cnt = counts[v.letter] || 0;
+      return cnt >= v.min && cnt <= v.max;
+    });
+  }
+
+  function generateRows(candidates, villkorList){
+    var rows = [];
+    var n = candidates.length;
+    if(candidates.some(function(c){ return c.length === 0; })){ return rows; }
+    var idxArr = new Array(n).fill(0);
+    while(true){
+      var combo = idxArr.map(function(ix, i){ return candidates[i][ix]; });
+      if(passesVillkor(combo, villkorList)){
+        rows.push(combo.map(function(c){ return c.nr; }));
+      }
+      var pos = n - 1;
+      while(pos >= 0){
+        idxArr[pos]++;
+        if(idxArr[pos] < candidates[pos].length){ break; }
+        idxArr[pos] = 0;
+        pos--;
+      }
+      if(pos < 0){ break; }
+    }
+    return rows;
+  }
+
+  document.getElementById("btn-calculate").addEventListener("click", function(){
+    if(!currentGame){ return; }
+    var statusEl = document.getElementById("calc-status");
+    statusEl.className = "status-msg";
+    var candidates = buildCandidates();
+
+    if(candidates.some(function(c){ return c.length === 0; })){
+      statusEl.className = "status-msg error";
+      statusEl.textContent = "Minst en avdelning saknar bokstavsmärkta hästar. Gå tillbaka till Hästar och markera minst en häst i varje avdelning.";
+      return;
+    }
+
+    var unreduced = countUnreduced(candidates);
+
+    var proceed = function(){
+      statusEl.textContent = "Beräknar …";
+      document.getElementById("btn-export").disabled = true;
+      setTimeout(function(){
+        var rows = generateRows(candidates, villkor);
+        lastCalculatedRows = rows;
+        var pct = unreduced > 0 ? Math.round((rows.length / unreduced) * 100) : 0;
+        var price = (rows.length * 0.5).toFixed(2).replace(".", ",");
+        document.getElementById("summary-text").innerHTML =
+          "<span class=\"big\">" + rows.length + " rader</span> av " + unreduced + " oreducerat (" + pct + " %).<br>" +
+          "Uppskattat pris: ca " + price + " kr (0,50 kr/rad antaget, bekräfta alltid på atg.se).";
+        statusEl.textContent = rows.length > 0 ? "Klart." : "";
+        if(rows.length === 0){
+          statusEl.className = "status-msg error";
+          statusEl.textContent = "Inga rader klarar villkoren. Justera villkoren eller bokstavsvalen.";
+        } else {
+          document.getElementById("btn-export").disabled = false;
+        }
+      }, 20);
+    };
+
+    if(unreduced > MAX_UNREDUCED_WARN){
+      statusEl.textContent = "Oreducerat antal (" + unreduced + ") är mycket stort och kan ta en stund att beräkna.";
+      if(confirm("Systemet har " + unreduced + " kombinationer innan villkor. Det kan ta en stund att beräkna. Fortsätta?")){
+        proceed();
+      } else {
+        statusEl.textContent = "Avbrutet. Minska antalet bokstavsmärkta hästar för en mindre beräkning.";
+      }
+    } else {
+      proceed();
+    }
+  });
+
+  function buildMarks(nr){
+    var marks = "";
+    for(var i = 1; i <= 15; i++){
+      marks += (i === nr) ? "1" : "0";
+    }
+    return marks;
+  }
+
+  function pad(n){ return String(n).length < 2 ? "0" + n : String(n); }
+
+  function generateXml(rows, game){
+    var couponTag = COUPON_TAG[game.type];
+    var now = new Date();
+    var createddate = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
+    var createdtime = pad(now.getHours()) + ":" + pad(now.getMinutes()) + ":" + pad(now.getSeconds());
+
+    var xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<issuer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ' +
+      'xsi:noNamespaceSchemaLocation="https://www.atg.se/services/schemas/filebet/1.8.6/atg_filebetting.xsd" ' +
+      'company="Travreda" product="Travreda" version="1.0" ' +
+      'createddate="' + createddate + '" createdtime="' + createdtime + '" ' +
+      'schemaversion="ATG File Betting XSD ver 1.8">\n';
+    xml += "  <betcoupons>\n";
+
+    rows.forEach(function(row, i){
+      xml += '    <' + couponTag + ' couponid="' + (i + 1) + '" date="' + game.date +
+        '" trackcode="' + game.trackId + '" betmultiplier="1">\n';
+      row.forEach(function(nr, legIdx){
+        xml += '      <leg legno="' + (legIdx + 1) + '" marks="' + buildMarks(nr) + '" />\n';
+      });
+      xml += "    </" + couponTag + ">\n";
+    });
+
+    xml += "  </betcoupons>\n</issuer>\n";
+    return xml;
+  }
+
+  document.getElementById("btn-export").addEventListener("click", function(){
+    if(!currentGame || !lastCalculatedRows || lastCalculatedRows.length === 0){ return; }
+    var xml = generateXml(lastCalculatedRows, currentGame);
+    var blob = new Blob([xml], { type: "application/xml" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "travreda-" + currentGame.type + "-" + currentGame.date + ".xml";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  });
+
+  loadGamesList();
+})();
+</script>
+
+</body>
+</html>

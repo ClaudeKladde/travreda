@@ -1,0 +1,262 @@
+# CLAUDE.md — Travreda
+
+Projektinstruktioner för fortsatt utveckling. Läs hela filen innan du börjar.
+
+---
+
+## 1. Om projektet
+
+**Travreda** är en tillgänglighetsanpassad webbapp för att bygga reducerade
+travsystem (SK ABC-reducering) för ATG:s spelformer, i första hand **V85**,
+byggd specifikt för skärmläsaranvändare (VoiceOver på iPhone i första hand).
+
+- **Användare:** Claudio. Skärmläsaranvändare.
+- **Konversationsspråk:** svenska. Gränssnittet är bara på svenska (ingen
+  engelsk version, till skillnad från VO Turf List).
+- **Leverans:** en enda fil, `index.html`, som publiceras via GitHub Pages.
+  Repot är publikt (krävs för att GitHub Pages ska fungera på ett gratiskonto
+  — repo-synlighet skyddar inte den publicerade sidan, bara källkoden, och på
+  Free-planen kan Pages inte alls användas med ett privat repo).
+- **Stödfiler utanför appen:** en GitHub Action (`.github/workflows/`) som
+  hämtar dagens/kommande V85/V75/V86-omgångar från ATG åt oss, samt en liten
+  genererad `data/games.json` som `index.html` läser. Detta räknas inte som
+  ett avsteg från enfils-principen — det är infrastruktur, inte appkod.
+- **Inga byggverktyg för själva appen.** Ren HTML + CSS + JS i `index.html`.
+
+---
+
+## 2. Arbetssätt — samma regler som VO Turf List
+
+### Diskutera alltid först, bygg sedan
+
+**Skriv ALDRIG kod förrän användaren uttryckligen bekräftat.**
+
+1. Användaren beskriver vad han vill
+2. Undersök koden/API:et och bekräfta hur det faktiskt fungerar idag
+3. Sammanfatta exakt vad som ska ändras, ställ följdfrågor vid oklarheter —
+   **en fråga i taget**, inte flera på en gång
+4. Användaren säger uttryckligen "ja", "nu kör vi" eller liknande
+5. **Först då** bygger du
+
+### Undersök innan du påstår
+
+Gissa aldrig om hur ATG:s API eller filformat fungerar. Flera antaganden i det
+här projektet har visat sig fel vid närmare undersökning (se avsnitt 5–6) —
+lita på verifierad data (API-svar, riktiga schemafiler, riktiga exempel),
+inte på sekundärkällor eller dokumentation som kan vara inaktuell.
+
+### Var ärlig om begränsningar
+
+Om något är overifierat (t.ex. "ej testat med riktig GPS/riktig inlämning
+ännu") — säg det rakt ut i koden/kommentarer och till användaren, istället för
+att låtsas att det är bekräftat.
+
+---
+
+## 3. Obligatoriskt vid varje bygge
+
+Längst ner i `index.html` finns:
+
+```html
+<span class="update-line">Vibe coded with Claude, senast uppdaterad ÅÅÅÅ-MM-DD HH:MM</span>
+```
+
+Uppdatera alltid till aktuellt datum/klockslag vid varje nytt bygge.
+
+Verifiera JS-syntax (`node --check`) och HTML-taggbalans innan du presenterar
+resultatet, samma princip som VO Turf List.
+
+---
+
+## 4. Tillgänglighet — samma princip som VO Turf List
+
+Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
+
+- **Undvik ARIA-brus.** Semantisk HTML först (`<h2>`, `<ul>`/`<li>`,
+  `<select>`, `<button>`) — lägg bara till ARIA när HTML inte räcker.
+  Ingen `role="toolbar"` (dubbeluppläsning), inget `role="list"` på `<ul>`.
+- **Uppläsningsordning:** viktig info direkt efter namnet, i den ordning
+  användaren bad om: **häst, kusk, tränare, procent, barfota** — inte i
+  slutet av en lång mening.
+- **Tystnad hellre än brus:** nämn bara barfota när hästen faktiskt går
+  barfota (inte "skor på" för varje häst) — samma "hellre tyst än onödigt
+  pratig"-princip som VO Turf List.
+- **Fokushantering:** flytta fokus till avdelningens rubrik
+  (`tabindex="-1"`) när man byter avdelning, så VoiceOver-användare inte
+  tappar sammanhanget.
+- **Standardkontroller:** `<select>` för bokstavsval (Ej med/A/B/C/D) istället
+  för egenbyggda widgets — robust med VoiceOver utan extra ARIA.
+- **Mörkt läge som standard**, tydliga kontraster, gul färg (`--accent`) för
+  visuellt markerade/valda hästar.
+- Inga emoji i gränssnittet.
+
+---
+
+## 5. ATG:s API — vad vi vet, verifierat
+
+### Endpoints
+
+```
+https://www.atg.se/services/racinginfo/v1/api/calendar/day/{datum}   CORS-låst till atg.se, används bara server-sidan (GitHub Action)
+https://www.atg.se/services/racinginfo/v1/api/games/{spel-id}        CORS ÖPPEN (Access-Control-Allow-Origin: *) — kan hämtas direkt från index.html
+https://www.atg.se/services/racinginfo/v1/api/races/{lopp-id}        CORS-låst till atg.se, används inte
+```
+
+**Spel-id-format:** `{TYP}_{datum}_{bankod}_{första avdelningens loppnummer}`,
+t.ex. `V85_2026-08-22_23_5` (Romme = bankod 23). Bankoden och avdelningarnas
+loppnummer finns redan i `/games/{id}`-svaret (`race.track.id`/`.name`), så
+ingen separat hårdkodad bankodstabell behövs när vi väl har ett spel-id.
+
+**Hastighetsgräns:** okänd exakt gräns för denna endpoint (till skillnad från
+Turfs dokumenterade "1 anrop/sekund") — `index.html` gör bara ett anrop per
+vald omgång, ingen polling, så det har inte varit ett problem hittills.
+
+### Vad `/games/{id}` innehåller (per häst i `race.starts[]`)
+
+- `horse.name`, `horse.shoes.front/back.hasShoe` (barfota, `false` = barfota)
+  + `.changed` (skobyte)
+- `horse.trainer` / `driver` med namn och `statistics.years[år].winPercentage`
+  (observera: delas med 100 för procent, t.ex. `1333` → 13,33 %)
+- `pools.{TYP}.betDistribution` per häst = spelprocent × 100 (summerar till
+  10000 per lopp), `pools.vinnare.odds` = odds × 100
+
+### Hur vi hittar dagens/kommande omgångar
+
+`/calendar/day/{datum}` är CORS-låst till atg.se — **fungerar inte** från en
+webbläsare på GitHub Pages. Löst med en schemalagd GitHub Action
+(`.github/workflows/fetch-games.yml` + `scripts/fetch_games.py`) som gör
+anropet server-sidan (CORS gäller bara webbläsare) för kommande dagar, och
+skriver en liten `data/games.json` som `index.html` läser via ett vanligt
+`fetch()` (samma ursprung, GitHub Pages). Uppdateras några gånger om dagen.
+
+Manuellt fallback i appen (om `games.json` saknar en omgång): mata in
+datum + bankod + speltyp, appen provar spel-id med startavdelning 1–12 mot
+den öppna `/games/{id}`-endpointen tills rätt omgång hittas — ren
+klientsidig lösning, inget nytt serveranrop behövs.
+
+---
+
+## 6. Export till ATG (filinlämning) — verifierat
+
+**Källa:** det verkliga XML-schemat (`atg_filebetting` version **1.8.6** —
+inte 1.8.2/1.8.4 som är de enda versionerna som går att hitta direkt på
+`atg.se/services/schemas/filebet/`; 1.8.6 hittades i källkoden till det
+verkliga, i produktion beprövade verktyget
+[HPTClient](https://github.com/Hospodaren/HPTClient), som visar exakt hur en
+riktig ATG-fil för V85 byggs) plus ett verkligt exempel från Jokersystemet
+(PDF-export av ett riktigt V85-system, Romme 2026-08-22).
+
+**V85 saknas i de äldre schemaversionerna** (1.8.2/1.8.4) som går att hämta
+direkt från atg.se idag — det är därför det såg ut som att V85 saknade
+filstöd innan användaren rättade detta. `v85CouponType` finns i 1.8.6.
+
+### XML-struktur
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<issuer xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="https://www.atg.se/services/schemas/filebet/1.8.6/atg_filebetting.xsd"
+    company="Travreda" product="Travreda" version="1.0"
+    createddate="ÅÅÅÅ-MM-DD" createdtime="HH:MM:SS"
+    schemaversion="ATG File Betting XSD ver 1.8">
+  <betcoupons>
+    <v85Coupon couponid="1" date="ÅÅÅÅ-MM-DD" trackcode="23" betmultiplier="1">
+      <leg legno="1" marks="000000100000000" />
+      <!-- ... en leg per avdelning (8 för V85/V86, 7 för V75) ... -->
+    </v85Coupon>
+    <!-- en kupong per godkänd rad -->
+  </betcoupons>
+</issuer>
+```
+
+`marks` = 15 tecken, position = startnummer, `1` = markerad. `couponid` är
+löpnummer i filen (1–9999 enligt schemat).
+
+**Medvetet enkel modell för v1:** en `<coupon>` per godkänd rad (okomprimerat)
+istället för Jokersystemets kupong-komprimering (som packar tusentals rader
+till några hundra kuponger via en icke-trivial optimeringsalgoritm). Schemat
+tillåter upp till 9999 kuponger, vilket räcker gott för normala
+V85-systemstorlekar. Matematiskt identisk insats, bara mindre kompakt fil.
+Riktig komprimering kan byggas senare om filerna blir för stora.
+
+**Reservhästar (r1/r2 i schemat, för stryknings-ersättning) hanteras inte i
+v1** — medvetet vald begränsning, se konversationshistorik. Kuponger är
+giltiga utan dem, bara utan automatisk ersättning vid strykning.
+
+**Radpris:** antaget 0,50 kr/rad (bekräftat via Jokersystemet-exemplet:
+1865 rader × 0,50 kr = exakt 932,50 kr som visades i deras PDF) — **inte
+bekräftat direkt mot ATG för V85 specifikt**, dubbelkolla alltid faktiskt
+pris på atg.se innan du lämnar in en fil.
+
+**Detta är ännu inte testat mot en riktig `atg.se`-filinlämning** — bara
+verifierat mot det faktiska schemat och ett riktigt exempel. Bör testas live
+av användaren efter driftsättning.
+
+---
+
+## 7. Reduceringslogik — ABC(D)-bokstavshinkar + villkor
+
+Medvetet vald **klassisk bokstavsmodell**, inte Jokersystemets poängsystem
+(som använder ett numeriskt poäng per häst + en poängsummegräns över hela
+systemet — se konversationshistorik för ett verkligt exempel). Användaren
+valde uttryckligen bokstäver istället, trots att det egna Jokersystemet-
+exemplet faktiskt visade poängmodellen.
+
+- Varje häst i varje avdelning får **Ej med / A / B / C / D** via ett
+  `<select>`. "Ej med" = hästen är inte en kandidat alls i systemet.
+- **Villkor** (valfria, adderande, en per bokstav): "Bokstav X: minst N,
+  högst M" räknat över **hela systemet** (alla avdelningar tillsammans) —
+  t.ex. minst 2 A-hästar rätt. Utan villkor blir systemet hela
+  korsprodukten av de bokstavsmärkta hästarna (enklaste ABC-fallet).
+- **Oreducerat/Reducerat-antal** visas innan export (samma stil som
+  Jokersystemets sammanfattning), med en varning och bekräftelse-knapp om
+  den oreducerade korsprodukten är väldigt stor (>3 miljoner kombinationer)
+  innan beräkningen faktiskt körs — annars kan webbläsaren hänga sig.
+
+---
+
+## 8. Arkitektur
+
+### Vyer
+
+`view-start` (välj omgång, automatiskt från `data/games.json` eller manuellt
+datum+bankod), `view-avdelning` (en avdelning i taget: häst/kusk/tränare/
+procent/barfota + bokstavsval), `view-villkor` (villkor, sammanfattning,
+export). Enkel vy-växling, ingen History API ännu (kan läggas till senare
+om det behövs).
+
+### Datamodell
+
+```js
+currentGame = { type, id, date, trackId, trackName, races: [...] }
+letters = { [avdelningsindex]: { [startnummer]: 'A'|'B'|'C'|'D' } }
+villkor = [{ letter, min, max }, ...]
+```
+
+### localStorage
+
+Inget ännu i v1 (varje session börjar om). Kan läggas till senare om
+användaren vill spara pågående system mellan besök.
+
+---
+
+## 9. Kända begränsningar i v1
+
+- Bara V85, V75, V86 (samma XML-struktur, olika antal avdelningar/tagg).
+- Ingen reservhästhantering i exporten.
+- Ingen kupong-komprimering — kan ge stora filer vid breda system.
+- Radpris (0,50 kr) är ett antagande, inte bekräftat direkt mot ATG för V85.
+- Spel-id-upptäckt (GitHub Action) ej körd/verifierad över flera dagar än —
+  bör observeras några dagar för att bekräfta att den håller sig uppdaterad.
+- Ej testat mot en riktig filinlämning på atg.se.
+- Ingen engelsk översättning (bara svenska, till skillnad från VO Turf List).
+
+---
+
+## 10. Snabbreferens vid start av ny konversation
+
+1. Läs denna fil
+2. Läs `index.html` för att förstå nuläget
+3. Fråga vad användaren vill åstadkomma
+4. **Diskutera (en fråga i taget) → bekräfta → bygg → verifiera → uppdatera
+   tidsstämpel → presentera**
