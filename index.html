@@ -77,6 +77,12 @@
     box-shadow:0 0 0 2px var(--accent) inset;
   }
   .horse-row p{margin:.2rem 0;}
+  .horse-detail{
+    margin:.5rem 0;
+    padding:.6rem .75rem;
+    border-left:3px solid var(--card-border);
+    background:#191919;
+  }
   .horse-letter{margin-top:.5rem;}
   .avd-progress{color:var(--muted);margin-top:0;}
   .nav-buttons{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;}
@@ -193,7 +199,7 @@
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-21 23:10</span>
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 00:05</span>
 
 <script>
 (function(){
@@ -350,13 +356,24 @@
 
   // ---------- Vy: avdelning ----------
 
-  function winPercentText(entity){
+  function pl(n, singular, plural){
+    return n + " " + (n === 1 ? singular : plural);
+  }
+
+  var SEX_TEXT = { mare: "sto", stallion: "hingst", gelding: "valack", colt: "unghingst", filly: "ungsto" };
+  var START_METHOD_TEXT = { volte: "voltstart", auto: "autostart" };
+  var DISTANCE_TEXT = { short: "kort distans", medium: "medeldistans", long: "lång distans" };
+
+  function winStatsText(entity){
     if(!entity || !entity.statistics || !entity.statistics.years){ return null; }
     var years = Object.keys(entity.statistics.years).sort().reverse();
     if(years.length === 0){ return null; }
-    var stats = entity.statistics.years[years[0]];
+    var year = years[0];
+    var stats = entity.statistics.years[year];
     if(stats.winPercentage == null){ return null; }
-    return (stats.winPercentage / 100).toFixed(1) + " % (" + (stats.starts || 0) + " starter " + years[0] + ")";
+    var placement = stats.placement || {};
+    return (stats.winPercentage / 100).toFixed(1) + " % (" + pl(stats.starts || 0, "start", "starter") + ", " +
+      pl(placement["1"] || 0, "seger", "segrar") + " " + year + ")";
   }
 
   function shoesText(horse){
@@ -374,7 +391,97 @@
   function percentText(start, type){
     var pool = start.pools && start.pools[type];
     if(!pool || pool.betDistribution == null){ return null; }
-    return (pool.betDistribution / 100).toFixed(1) + " %";
+    return type + "-procent " + (pool.betDistribution / 100).toFixed(1) + " %.";
+  }
+
+  function sulkyMainRowText(horse){
+    var s = horse.sulky;
+    if(!s || !s.type){ return ""; }
+    var typeChanged = !!s.type.changed;
+    var colourChanged = !!(s.colour && s.colour.changed);
+    var isStandard = s.type.code === "VA";
+    if(isStandard && !typeChanged && !colourChanged){ return ""; }
+    return "Vagn: " + s.type.text + (typeChanged ? " (byte)" : "") + ".";
+  }
+
+  function sulkyDetailText(horse){
+    var s = horse.sulky;
+    if(!s || !s.type){ return null; }
+    var text = "Vagn: " + s.type.text + (s.type.changed ? " (byte)" : "");
+    if(s.colour){ text += ", " + s.colour.text + (s.colour.changed ? " (byte)" : ""); }
+    return text + ".";
+  }
+
+  function recordText(horse){
+    var r = horse.record;
+    if(!r || !r.time){ return null; }
+    var t = r.time;
+    var timeStr = t.minutes + "." + (t.seconds < 10 ? "0" + t.seconds : t.seconds) + "," + t.tenths;
+    var sm = START_METHOD_TEXT[r.startMethod] || r.startMethod;
+    var d = DISTANCE_TEXT[r.distance] || r.distance;
+    return timeStr + " (" + sm + ", " + d + ")";
+  }
+
+  function oddsText(start){
+    var vinnare = start.pools && start.pools.vinnare;
+    var plats = start.pools && start.pools.plats;
+    var parts = [];
+    if(vinnare && vinnare.odds){ parts.push("vinnarodds " + (vinnare.odds / 100).toFixed(2)); }
+    if(plats && plats.minOdds != null && plats.maxOdds != null){
+      parts.push("platsodds " + (plats.minOdds / 100).toFixed(2) + "–" + (plats.maxOdds / 100).toFixed(2));
+    }
+    return parts.length ? parts.join(", ") + "." : null;
+  }
+
+  function yearStatsText(entity, label){
+    if(!entity || !entity.statistics || !entity.statistics.years){ return null; }
+    var years = Object.keys(entity.statistics.years).sort().reverse();
+    if(years.length === 0){ return null; }
+    var year = years[0];
+    var stats = entity.statistics.years[year];
+    var placement = stats.placement || {};
+    return label + " " + year + ": " + pl(stats.starts || 0, "start", "starter") + ", " +
+      pl(placement["1"] || 0, "seger", "segrar") + ", " +
+      pl(placement["2"] || 0, "andraplats", "andraplatser") + ", " +
+      pl(placement["3"] || 0, "tredjeplats", "tredjeplatser") + ".";
+  }
+
+  function buildDetailText(start){
+    var horse = start.horse;
+    var driver = start.driver;
+    var trainer = horse.trainer;
+    var lines = [];
+
+    var driverPct = winStatsText(driver);
+    lines.push("Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
+      (driverPct ? ", " + driverPct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + ".");
+
+    var trainerPct = winStatsText(trainer);
+    lines.push("Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
+      (trainerPct ? ", " + trainerPct : "") + ".");
+
+    var record = recordText(horse);
+    if(record){ lines.push("Bästa rekord: " + record + "."); }
+
+    var sexText = SEX_TEXT[horse.sex] || horse.sex;
+    lines.push(horse.age + "-årig " + sexText + (horse.color ? ", " + horse.color : "") + ".");
+
+    var sulky = sulkyDetailText(horse);
+    if(sulky){ lines.push(sulky); }
+
+    if(horse.owner && horse.owner.name){ lines.push("Ägare: " + horse.owner.name + "."); }
+    if(horse.breeder && horse.breeder.name){
+      lines.push("Uppfödare: " + horse.breeder.name + (horse.breeder.location ? " (" + horse.breeder.location + ")" : "") + ".");
+    }
+    if(horse.homeTrack && horse.homeTrack.name){ lines.push("Hemmabana: " + horse.homeTrack.name + "."); }
+
+    var odds = oddsText(start);
+    if(odds){ lines.push("Odds: " + odds); }
+
+    var horseYear = yearStatsText(horse, "Hästens säsong");
+    if(horseYear){ lines.push(horseYear); }
+
+    return lines.join(" ");
   }
 
   function renderAvdelning(){
@@ -399,8 +506,6 @@
 
     race.starts.forEach(function(start){
       var horse = start.horse;
-      var driver = start.driver;
-      var trainer = horse.trainer;
 
       var li = document.createElement("li");
       li.className = "horse-row";
@@ -408,22 +513,42 @@
       var p = document.createElement("p");
       var text = start.number + ". " + horse.name + ".";
 
-      var driverPct = winPercentText(driver);
-      text += " Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
-        (driverPct ? ", " + driverPct : "") + ".";
-
-      var trainerPct = winPercentText(trainer);
-      text += " Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
-        (trainerPct ? ", " + trainerPct : "") + ".";
-
       var pct = percentText(start, currentGame.type);
-      if(pct){ text += " Spelprocent " + pct + "."; }
+      if(pct){ text += " " + pct; }
+
+      var sulkyMain = sulkyMainRowText(horse);
+      if(sulkyMain){ text += " " + sulkyMain; }
 
       var shoes = shoesText(horse);
       if(shoes){ text += " " + shoes; }
 
       p.textContent = text;
       li.appendChild(p);
+
+      var detailId = "detail-" + currentAvd + "-" + start.number;
+      var detailToggle = document.createElement("button");
+      detailToggle.type = "button";
+      detailToggle.setAttribute("aria-expanded", "false");
+      detailToggle.setAttribute("aria-controls", detailId);
+      detailToggle.textContent = "Visa fler detaljer om " + horse.name;
+
+      var detailDiv = document.createElement("div");
+      detailDiv.id = detailId;
+      detailDiv.className = "horse-detail";
+      detailDiv.hidden = true;
+      var detailP = document.createElement("p");
+      detailP.textContent = buildDetailText(start);
+      detailDiv.appendChild(detailP);
+
+      detailToggle.addEventListener("click", function(){
+        var expanded = detailToggle.getAttribute("aria-expanded") === "true";
+        detailToggle.setAttribute("aria-expanded", String(!expanded));
+        detailToggle.textContent = (!expanded ? "Dölj detaljer om " : "Visa fler detaljer om ") + horse.name;
+        detailDiv.hidden = expanded;
+      });
+
+      li.appendChild(detailToggle);
+      li.appendChild(detailDiv);
 
       var letterWrap = document.createElement("div");
       letterWrap.className = "horse-letter";
