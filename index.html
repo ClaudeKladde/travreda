@@ -76,6 +76,9 @@
     background:#2a2410;
     box-shadow:0 0 0 2px var(--accent) inset;
   }
+  .horse-row.new-barefoot{
+    border-left:6px solid var(--danger);
+  }
   .horse-row p{margin:.2rem 0;}
   .horse-detail{
     margin:.5rem 0;
@@ -376,16 +379,19 @@
       pl(placement["1"] || 0, "seger", "segrar") + " " + year + ")";
   }
 
-  function shoesText(horse){
+  function shoesInfo(horse){
     var s = horse.shoes;
-    if(!s || !s.reported){ return ""; }
+    if(!s || !s.reported){ return { text: "", isNew: false }; }
     var frontBare = s.front && s.front.hasShoe === false;
     var backBare = s.back && s.back.hasShoe === false;
-    var changed = (s.front && s.front.changed) || (s.back && s.back.changed);
-    if(frontBare && backBare){ return "Barfota fram och bak" + (changed ? " (byte)" : "") + "."; }
-    if(frontBare){ return "Barfota fram" + (changed ? " (byte)" : "") + "."; }
-    if(backBare){ return "Barfota bak" + (changed ? " (byte)" : "") + "."; }
-    return "";
+    var changed = !!((s.front && s.front.changed) || (s.back && s.back.changed));
+    var isNew = changed && (frontBare || backBare);
+    var suffix = isNew ? " (barfota för första gången)" : "";
+    var text = "";
+    if(frontBare && backBare){ text = "Barfota runt om" + suffix + "."; }
+    else if(frontBare){ text = "Barfota fram" + suffix + "."; }
+    else if(backBare){ text = "Barfota bak" + suffix + "."; }
+    return { text: text, isNew: isNew };
   }
 
   function percentText(start, type){
@@ -519,8 +525,9 @@
       var sulkyMain = sulkyMainRowText(horse);
       if(sulkyMain){ text += " " + sulkyMain; }
 
-      var shoes = shoesText(horse);
-      if(shoes){ text += " " + shoes; }
+      var shoes = shoesInfo(horse);
+      if(shoes.text){ text += " " + shoes.text; }
+      if(shoes.isNew){ li.classList.add("new-barefoot"); }
 
       p.textContent = text;
       li.appendChild(p);
