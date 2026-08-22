@@ -143,6 +143,11 @@
     font-weight:700;
     margin-bottom:.25rem;
   }
+  .horse-heading{
+    margin:0;
+    font-size:1rem;
+    font-weight:400;
+  }
   .horse-top{
     display:flex;
     align-items:baseline;
@@ -174,9 +179,9 @@
     font-weight:400;
   }
   .horse-pct{
-    display:block;
     font-weight:700;
     font-size:1.1rem;
+    margin-left:auto;
   }
   .horse-sub{
     display:block;
@@ -254,6 +259,8 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 00:32</span>
+
 </div>
 
 <!-- ===== VY: AVDELNING (HUVUDSIDA) ===== -->
@@ -294,7 +301,6 @@
   <select id="villkor-preset"></select>
 
   <div id="villkor-rows"></div>
-  <button type="button" id="btn-add-villkor">Lägg till eget villkor</button>
 
   <div class="summary-box" id="summary-box">
     <p id="summary-text">Beräkna för att se antal rader.</p>
@@ -333,8 +339,6 @@
   <p>Fler inställningar kommer att läggas till här senare.</p>
 
 </div>
-
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 00:19</span>
 
 <script>
 (function(){
@@ -803,12 +807,18 @@
       var detailId = "detail-" + currentAvd + "-" + start.number;
 
       var heading = document.createElement("h3");
-      heading.className = "horse-top";
-      var selectionLabel = document.createElement("span");
-      heading.appendChild(selectionLabel);
-      addSub(heading, "horse-badge", String(start.number));
-      addSub(heading, "horse-name", horse.name + ".");
+      heading.className = "horse-heading";
       li.appendChild(heading);
+
+      var detailToggle = document.createElement("button");
+      detailToggle.type = "button";
+      detailToggle.className = "horse-toggle";
+      detailToggle.setAttribute("aria-expanded", "false");
+      detailToggle.setAttribute("aria-controls", detailId);
+      heading.appendChild(detailToggle);
+
+      var selectionLabel = document.createElement("span");
+      detailToggle.appendChild(selectionLabel);
 
       function updateSelectionLabel(){
         if(scratched){
@@ -822,16 +832,16 @@
           selectionLabel.textContent = "";
         }
       }
-      updateSelectionLabel();
 
-      var detailToggle = document.createElement("button");
-      detailToggle.type = "button";
-      detailToggle.className = "horse-toggle";
-      detailToggle.setAttribute("aria-expanded", "false");
-      detailToggle.setAttribute("aria-controls", detailId);
-
+      var topRow = document.createElement("span");
+      topRow.className = "horse-top";
+      addSub(topRow, "horse-badge", String(start.number));
+      addSub(topRow, "horse-name", horse.name + ".");
       var pct = percentText(start, currentGame.type);
-      if(pct){ addSub(detailToggle, "horse-pct", pct); }
+      if(pct){ addSub(topRow, "horse-pct", pct); }
+      detailToggle.appendChild(topRow);
+
+      updateSelectionLabel();
 
       addSub(detailToggle, "horse-sub",
         "Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") + ". " +
@@ -874,7 +884,6 @@
       });
       minimizeBtn.addEventListener("click", collapseDetail);
 
-      li.appendChild(detailToggle);
       li.appendChild(detailDiv);
 
       var letterWrap = document.createElement("div");
@@ -1030,30 +1039,11 @@
     maxDiv.appendChild(maxLabel);
     maxDiv.appendChild(maxInput);
 
-    var removeBtn = document.createElement("button");
-    removeBtn.type = "button";
-    removeBtn.textContent = "Ta bort villkor för bokstav " + v.letter;
-    removeBtn.addEventListener("click", function(){
-      villkor.splice(idx, 1);
-      lastCalculatedRows = null;
-      renderVillkor();
-      saveState();
-    });
-
     row.appendChild(letterDiv);
     row.appendChild(minDiv);
     row.appendChild(maxDiv);
-    row.appendChild(removeBtn);
     return row;
   }
-
-  document.getElementById("btn-add-villkor").addEventListener("click", function(){
-    var legCount = currentGame ? currentGame.races.length : 8;
-    systemMode = "abc";
-    villkor.push({ letter: "A", min: 0, max: legCount });
-    renderVillkor();
-    saveState();
-  });
 
   var presetSelect = document.getElementById("villkor-preset");
   VILLKOR_PRESETS.forEach(function(preset){

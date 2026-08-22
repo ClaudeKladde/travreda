@@ -103,17 +103,21 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
 
 ### Hästkortens struktur (avdelningsvyn)
 
-Varje häst är en `<h3>` (rubrik, för rotornavigering mellan hästar) direkt
-följt av **en enda** knapp som både visar sammanfattningen och expanderar
-detaljvyn — inte separat text + knapp, för att halvera antal svep per häst.
+Varje häst är en `<h3>` som **omsluter** den enda knappen
+(`<h3><button class="horse-toggle">...</button></h3>`) — inte en syskon-
+rubrik bredvid knappen. Testat och bekräftat att detta ger exakt **ett**
+svep/tabbstopp per häst (plus ett till för bokstavsvalet/kryssrutan) i
+både VoiceOver-svep och Tab-navigering på dator, samtidigt som rubriken
+fortfarande går att nå via rotorns rubriknavigering — en h3 som bara
+innehåller en knapp är ett vanligt, giltigt mönster (samma som "kort med
+klickbar rubrik" överallt på webben). En tidigare version hade `<h3>` och
+knappen som syskon, vilket dubblerade antalet svep per häst — rättat.
 
-- **`<h3>`** innehåller alltid en statusetikett **först** (innan startnummer
-  och namn), som "Struken." eller "Vald A-häst." — bara en av dem kan gälla
-  samtidigt (en struken häst kan inte bokstavsmärkas). Statusetiketten
-  uppdateras live varje gång bokstavsvalet/kryssrutan ändras
-  (`updateSelectionLabel()`), inte bara vid nästa fulla omritning.
-- **Knappen** (`.horse-toggle`) innehåller procent, kusk, tränare, vagn och
-  barfota — allt utom namn/nummer, som ligger i rubriken istället.
+- Knappens innehåll, i uppläsningsordning: statusetikett **först** ("Struken."
+  eller "Vald A-häst."/"Vald." i Vanligt system-läge — bara en kan gälla
+  samtidigt), sedan nummer+namn+procent (`.horse-top`, samma rad
+  visuellt), sedan kusk/tränare, vagn, barfota. Statusetiketten uppdateras
+  live vid varje bokstavs-/kryssruteändring (`updateSelectionLabel()`).
 - **Minimera-knapp:** när detaljvyn expanderas läggs en "Minimera
   {namn}"-knapp till sist i detaljinnehållet, så att man landar på en
   tydlig stängknapp efter att ha svept igenom all information, istället för
@@ -286,8 +290,13 @@ Att välja ett villkor i listan skriver **över** hela `villkor`-arrayen med
 det förvalda villkoret — det är en snabb tillämpning, inte en sparad koppling
 till den exakta rullistevalen (manuell redigering av villkor efteråt
 återspeglas inte tillbaka i rullistan, förutom för specialläget "Vanligt
-system", se nedan). "Lägg till eget villkor" fungerar som förut för att
-bygga ett anpassat villkor för hand.
+system", se nedan).
+
+**Inga separata lägg till/ta bort-knappar** — togs bort på användarens
+begäran för att förenkla vyn, rullistan med fördefinierade villkor räcker.
+Min/högst-fälten för de rader som redan finns (från vald preset) går
+fortfarande att finjustera för hand; ett helt nytt bokstavsvillkor läggs
+bara till genom att välja en preset som innehåller det.
 
 ### Vanligt matematiskt system (utan bokstäver)
 
