@@ -38,34 +38,34 @@
     top:0;
     z-index:10;
     background:var(--bg);
-    display:flex;
-    justify-content:space-between;
-    align-items:flex-start;
-    gap:.5rem;
-    padding:.6rem 0;
+    padding:.6rem 1rem;
     margin:0 -1rem .75rem;
-    padding-left:1rem;
-    padding-right:1rem;
     border-bottom:1px solid var(--card-border);
   }
-  .avd-tabs{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .avd-tabs{
+    display:flex;
+    gap:.3rem;
+    flex-wrap:wrap;
+    padding-right:3.6rem;
+  }
   .avd-tab{
-    min-width:2.4rem;
-    height:2.4rem;
+    min-width:1.9rem;
+    height:1.9rem;
     padding:0;
     border-radius:50%;
     font-weight:700;
+    font-size:.85rem;
   }
   .avd-tab.active{
     background:var(--accent);
     color:var(--accent-fg);
     border-color:var(--accent);
   }
-  .menu-wrap{position:relative;flex-shrink:0;}
+  .menu-wrap{position:absolute;top:.6rem;right:1rem;}
   #main-menu{
     position:absolute;
     right:0;
-    top:2.7rem;
+    top:2.5rem;
     background:var(--card);
     border:1px solid var(--card-border);
     border-radius:8px;
@@ -137,12 +137,18 @@
     font-weight:700;
     margin-bottom:.25rem;
   }
+  .selected-label{
+    display:block;
+    color:var(--accent);
+    font-weight:700;
+    margin-bottom:.25rem;
+  }
   .horse-top{
     display:flex;
     align-items:baseline;
     flex-wrap:wrap;
     gap:.5rem;
-    margin-bottom:.15rem;
+    margin:0 0 .15rem;
   }
   .horse-badge{
     display:inline-flex;
@@ -168,9 +174,9 @@
     font-weight:400;
   }
   .horse-pct{
+    display:block;
     font-weight:700;
     font-size:1.1rem;
-    margin-left:auto;
   }
   .horse-sub{
     display:block;
@@ -181,6 +187,9 @@
     padding:.6rem .75rem;
     border-left:3px solid var(--card-border);
     background:#191919;
+  }
+  .btn-minimize{
+    margin-top:.6rem;
   }
   .horse-letter{margin-top:.5rem;}
   .avd-progress{color:var(--muted);margin-top:0;}
@@ -325,7 +334,7 @@
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 23:41</span>
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 00:19</span>
 
 <script>
 (function(){
@@ -792,21 +801,37 @@
       if(scratched){ li.classList.add("scratched"); }
 
       var detailId = "detail-" + currentAvd + "-" + start.number;
+
+      var heading = document.createElement("h3");
+      heading.className = "horse-top";
+      var selectionLabel = document.createElement("span");
+      heading.appendChild(selectionLabel);
+      addSub(heading, "horse-badge", String(start.number));
+      addSub(heading, "horse-name", horse.name + ".");
+      li.appendChild(heading);
+
+      function updateSelectionLabel(){
+        if(scratched){
+          selectionLabel.className = "scratched-label";
+          selectionLabel.textContent = "Struken. ";
+        } else if(legLetters[start.number]){
+          selectionLabel.className = "selected-label";
+          selectionLabel.textContent = (systemMode === "plain" ? "Vald. " : "Vald " + legLetters[start.number] + "-häst. ");
+        } else {
+          selectionLabel.className = "";
+          selectionLabel.textContent = "";
+        }
+      }
+      updateSelectionLabel();
+
       var detailToggle = document.createElement("button");
       detailToggle.type = "button";
       detailToggle.className = "horse-toggle";
       detailToggle.setAttribute("aria-expanded", "false");
       detailToggle.setAttribute("aria-controls", detailId);
 
-      if(scratched){ addSub(detailToggle, "scratched-label", "Struken."); }
-
-      var topRow = document.createElement("span");
-      topRow.className = "horse-top";
-      addSub(topRow, "horse-badge", String(start.number));
-      addSub(topRow, "horse-name", horse.name + ".");
       var pct = percentText(start, currentGame.type);
-      if(pct){ addSub(topRow, "horse-pct", pct); }
-      detailToggle.appendChild(topRow);
+      if(pct){ addSub(detailToggle, "horse-pct", pct); }
 
       addSub(detailToggle, "horse-sub",
         "Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") + ". " +
@@ -827,11 +852,27 @@
       detailP.textContent = buildDetailText(start);
       detailDiv.appendChild(detailP);
 
+      var minimizeBtn = document.createElement("button");
+      minimizeBtn.type = "button";
+      minimizeBtn.className = "btn-minimize";
+      minimizeBtn.textContent = "Minimera " + horse.name;
+      detailDiv.appendChild(minimizeBtn);
+
+      function collapseDetail(){
+        detailToggle.setAttribute("aria-expanded", "false");
+        detailDiv.hidden = true;
+      }
+
       detailToggle.addEventListener("click", function(){
         var expanded = detailToggle.getAttribute("aria-expanded") === "true";
-        detailToggle.setAttribute("aria-expanded", String(!expanded));
-        detailDiv.hidden = expanded;
+        if(expanded){
+          collapseDetail();
+        } else {
+          detailToggle.setAttribute("aria-expanded", "true");
+          detailDiv.hidden = false;
+        }
       });
+      minimizeBtn.addEventListener("click", collapseDetail);
 
       li.appendChild(detailToggle);
       li.appendChild(detailDiv);
@@ -845,6 +886,7 @@
         document.getElementById("avd-marked-count").textContent =
           Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
         renderAvdTabs();
+        updateSelectionLabel();
         saveState();
       }
 
@@ -886,9 +928,9 @@
 
         var select = document.createElement("select");
         select.id = selectId;
-        ["Ej med", "A", "B", "C", "D"].forEach(function(opt){
+        ["Ej vald", "A", "B", "C", "D"].forEach(function(opt){
           var o = document.createElement("option");
-          o.value = opt === "Ej med" ? "" : opt;
+          o.value = opt === "Ej vald" ? "" : opt;
           o.textContent = opt;
           select.appendChild(o);
         });

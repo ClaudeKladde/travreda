@@ -94,11 +94,39 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
 - **Fokushantering:** flytta fokus till avdelningens rubrik
   (`tabindex="-1"`) när man byter avdelning, så VoiceOver-användare inte
   tappar sammanhanget.
-- **Standardkontroller:** `<select>` för bokstavsval (Ej med/A/B/C/D) istället
+- **Standardkontroller:** `<select>` för bokstavsval (Ej vald/A/B/C/D) i
+  normalläge, `<input type="checkbox">` i "Vanligt system"-läget, istället
   för egenbyggda widgets — robust med VoiceOver utan extra ARIA.
 - **Mörkt läge som standard**, tydliga kontraster, gul färg (`--accent`) för
   visuellt markerade/valda hästar.
 - Inga emoji i gränssnittet.
+
+### Hästkortens struktur (avdelningsvyn)
+
+Varje häst är en `<h3>` (rubrik, för rotornavigering mellan hästar) direkt
+följt av **en enda** knapp som både visar sammanfattningen och expanderar
+detaljvyn — inte separat text + knapp, för att halvera antal svep per häst.
+
+- **`<h3>`** innehåller alltid en statusetikett **först** (innan startnummer
+  och namn), som "Struken." eller "Vald A-häst." — bara en av dem kan gälla
+  samtidigt (en struken häst kan inte bokstavsmärkas). Statusetiketten
+  uppdateras live varje gång bokstavsvalet/kryssrutan ändras
+  (`updateSelectionLabel()`), inte bara vid nästa fulla omritning.
+- **Knappen** (`.horse-toggle`) innehåller procent, kusk, tränare, vagn och
+  barfota — allt utom namn/nummer, som ligger i rubriken istället.
+- **Minimera-knapp:** när detaljvyn expanderas läggs en "Minimera
+  {namn}"-knapp till sist i detaljinnehållet, så att man landar på en
+  tydlig stängknapp efter att ha svept igenom all information, istället för
+  att behöva svepa bakåt till den ursprungliga knappen.
+
+### Sticky avdelningsflikar + meny
+
+Menyknappen (`.menu-wrap`) är `position:absolute` i sticky-radens
+övre högra hörn, medvetet borttagen ur flikradens flex-flöde (`.avd-tabs`
+har `padding-right` som reserverar plats åt den) — annars konkurrerar
+menyknappens bredd med flikarna om utrymmet och tvingar den sista fliken
+att radbryta för sig själv. Flikstorleken (`.avd-tab`, ~1,9 rem) är avpassad
+för att rymma alla 8 avdelningar på en rad även på en smal mobilskärm.
 
 ---
 
