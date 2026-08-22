@@ -79,6 +79,10 @@
   .horse-row.new-barefoot{
     border-left:6px solid var(--danger);
   }
+  .horse-row.scratched{
+    border-left:6px solid var(--danger);
+    opacity:.75;
+  }
   .horse-row p{margin:.2rem 0;}
   .horse-toggle{
     display:block;
@@ -86,6 +90,51 @@
     text-align:left;
     white-space:normal;
     line-height:1.4;
+  }
+  .scratched-label{
+    display:block;
+    color:var(--danger);
+    font-weight:700;
+    margin-bottom:.25rem;
+  }
+  .horse-top{
+    display:flex;
+    align-items:baseline;
+    flex-wrap:wrap;
+    gap:.5rem;
+    margin-bottom:.15rem;
+  }
+  .horse-badge{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:1.8rem;
+    height:1.8rem;
+    padding:0 .3rem;
+    border-radius:50%;
+    background:#2a2a2a;
+    border:1px solid var(--card-border);
+    font-weight:700;
+    flex-shrink:0;
+  }
+  .horse-name{
+    font-weight:700;
+    font-size:1.05rem;
+    flex:1 1 auto;
+  }
+  .horse-row.scratched .horse-name{
+    text-decoration:line-through;
+    color:var(--muted);
+    font-weight:400;
+  }
+  .horse-pct{
+    font-weight:700;
+    font-size:1.1rem;
+    margin-left:auto;
+  }
+  .horse-sub{
+    display:block;
+    color:var(--muted);
   }
   .horse-detail{
     margin:.5rem 0;
@@ -209,7 +258,7 @@
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 01:52</span>
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 22:16</span>
 
 <script>
 (function(){
@@ -410,11 +459,7 @@
   function sulkyMainRowText(horse){
     var s = horse.sulky;
     if(!s || !s.type){ return ""; }
-    var typeChanged = !!s.type.changed;
-    var colourChanged = !!(s.colour && s.colour.changed);
-    var isStandard = s.type.code === "VA";
-    if(isStandard && !typeChanged && !colourChanged){ return ""; }
-    return "Vagn: " + s.type.text + (typeChanged ? " (byte)" : "") + ".";
+    return "Vagn: " + s.type.text + (s.type.changed ? ", vagnbyte" : "") + ".";
   }
 
   function sulkyDetailText(horse){
@@ -517,28 +562,22 @@
     var list = document.getElementById("horse-list");
     list.innerHTML = "";
 
+    function addSub(parent, className, text){
+      var span = document.createElement("span");
+      span.className = className;
+      span.textContent = text + " ";
+      parent.appendChild(span);
+    }
+
     race.starts.forEach(function(start){
       var horse = start.horse;
       var driver = start.driver;
       var trainer = horse.trainer;
+      var scratched = start.scratched === true;
 
       var li = document.createElement("li");
       li.className = "horse-row";
-
-      var text = start.number + ". " + horse.name + ".";
-
-      var pct = percentText(start, currentGame.type);
-      if(pct){ text += " " + pct; }
-
-      text += " Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") + ".";
-      text += " Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") + ".";
-
-      var sulkyMain = sulkyMainRowText(horse);
-      if(sulkyMain){ text += " " + sulkyMain; }
-
-      var shoes = shoesInfo(horse);
-      if(shoes.text){ text += " " + shoes.text; }
-      if(shoes.isNew){ li.classList.add("new-barefoot"); }
+      if(scratched){ li.classList.add("scratched"); }
 
       var detailId = "detail-" + currentAvd + "-" + start.number;
       var detailToggle = document.createElement("button");
@@ -546,7 +585,27 @@
       detailToggle.className = "horse-toggle";
       detailToggle.setAttribute("aria-expanded", "false");
       detailToggle.setAttribute("aria-controls", detailId);
-      detailToggle.textContent = text;
+
+      if(scratched){ addSub(detailToggle, "scratched-label", "Struken."); }
+
+      var topRow = document.createElement("span");
+      topRow.className = "horse-top";
+      addSub(topRow, "horse-badge", String(start.number));
+      addSub(topRow, "horse-name", horse.name + ".");
+      var pct = percentText(start, currentGame.type);
+      if(pct){ addSub(topRow, "horse-pct", pct); }
+      detailToggle.appendChild(topRow);
+
+      addSub(detailToggle, "horse-sub",
+        "Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") + ". " +
+        "Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") + ".");
+
+      var sulkyMain = sulkyMainRowText(horse);
+      if(sulkyMain){ addSub(detailToggle, "horse-sub", sulkyMain); }
+
+      var shoes = shoesInfo(horse);
+      if(shoes.text){ addSub(detailToggle, "horse-sub", shoes.text); }
+      if(shoes.isNew){ li.classList.add("new-barefoot"); }
 
       var detailDiv = document.createElement("div");
       detailDiv.id = detailId;
@@ -582,7 +641,13 @@
         o.textContent = opt;
         select.appendChild(o);
       });
-      select.value = legLetters[start.number] || "";
+      if(scratched){
+        delete legLetters[start.number];
+        select.value = "";
+        select.disabled = true;
+      } else {
+        select.value = legLetters[start.number] || "";
+      }
       select.addEventListener("change", function(){
         if(select.value){
           legLetters[start.number] = select.value;
