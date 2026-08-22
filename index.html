@@ -281,8 +281,11 @@
   bokstav som får/måste vara med i en godkänd rad, räknat över alla
   avdelningar tillsammans.</p>
 
+  <label for="villkor-preset">Fördefinierat villkor</label>
+  <select id="villkor-preset"></select>
+
   <div id="villkor-rows"></div>
-  <button type="button" id="btn-add-villkor">Lägg till villkor</button>
+  <button type="button" id="btn-add-villkor">Lägg till eget villkor</button>
 
   <div class="summary-box" id="summary-box">
     <p id="summary-text">Beräkna för att se antal rader.</p>
@@ -305,11 +308,24 @@
 
   <button type="button" id="btn-back-installningar">Tillbaka till hästar</button>
   <h2 id="installningar-heading" tabindex="-1">Inställningar</h2>
+
+  <fieldset>
+    <legend>Sortering av startlistor</legend>
+    <div>
+      <input type="radio" name="sort-order" id="sort-procent" value="procent">
+      <label for="sort-procent">Spelprocent (mest spelade häst överst)</label>
+    </div>
+    <div>
+      <input type="radio" name="sort-order" id="sort-startnummer" value="startnummer">
+      <label for="sort-startnummer">Startnummer</label>
+    </div>
+  </fieldset>
+
   <p>Fler inställningar kommer att läggas till här senare.</p>
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 23:27</span>
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 23:41</span>
 
 <script>
 (function(){
@@ -325,6 +341,31 @@
   var villkor = [];
   var currentAvd = 0;
   var lastCalculatedRows = null;
+  var systemMode = "abc";
+
+  var VILLKOR_PRESETS = [
+    { id: "a2c1", label: "Minst 2 A-hästar och max 1 C-häst", rules: [{ letter: "A", min: 2 }, { letter: "C", min: 0, max: 1 }] },
+    { id: "a1", label: "Minst 1 A-häst", rules: [{ letter: "A", min: 1 }] },
+    { id: "a2", label: "Minst 2 A-hästar", rules: [{ letter: "A", min: 2 }] },
+    { id: "a1c1", label: "Minst 1 A-häst och max 1 C-häst", rules: [{ letter: "A", min: 1 }, { letter: "C", min: 0, max: 1 }] },
+    { id: "a3c1", label: "Minst 3 A-hästar och max 1 C-häst", rules: [{ letter: "A", min: 3 }, { letter: "C", min: 0, max: 1 }] },
+    { id: "a3c2", label: "Minst 3 A-hästar och max 2 C-hästar", rules: [{ letter: "A", min: 3 }, { letter: "C", min: 0, max: 2 }] },
+    { id: "plain", label: "Vanligt matematiskt system utan reducering", rules: [], mode: "plain" }
+  ];
+  var DEFAULT_PRESET_ID = "a2c1";
+
+  function presetToVillkor(preset, legCount){
+    return preset.rules.map(function(r){
+      return { letter: r.letter, min: r.min, max: r.max != null ? r.max : legCount };
+    });
+  }
+
+  var SORT_ORDER_KEY = "travreda-sort-order";
+  var sortOrder = "procent";
+  try {
+    var storedSortOrder = localStorage.getItem(SORT_ORDER_KEY);
+    if(storedSortOrder === "procent" || storedSortOrder === "startnummer"){ sortOrder = storedSortOrder; }
+  } catch(e){}
 
   var views = {
     start: document.getElementById("view-start"),
@@ -374,6 +415,18 @@
   document.getElementById("menu-installningar").addEventListener("click", function(){ showView("installningar"); });
   document.getElementById("btn-back-villkor").addEventListener("click", function(){ showView("avdelning"); });
   document.getElementById("btn-back-installningar").addEventListener("click", function(){ showView("avdelning"); });
+
+  var sortRadios = document.querySelectorAll('input[name="sort-order"]');
+  sortRadios.forEach(function(radio){
+    radio.checked = (radio.value === sortOrder);
+    radio.addEventListener("change", function(){
+      if(radio.checked){
+        sortOrder = radio.value;
+        try { localStorage.setItem(SORT_ORDER_KEY, sortOrder); } catch(e){}
+        if(currentGame){ renderAvdelning(); }
+      }
+    });
+  });
 
   function setGlobalStatus(msg){
     document.getElementById("global-status").textContent = msg || "";
@@ -477,6 +530,7 @@
       letters: letters,
       villkor: villkor,
       currentAvd: currentAvd,
+      systemMode: systemMode,
       savedAt: new Date().toISOString()
     };
     try {
@@ -517,10 +571,13 @@
         letters = restoreData.letters || {};
         villkor = restoreData.villkor || [];
         currentAvd = restoreData.currentAvd || 0;
+        systemMode = restoreData.systemMode === "plain" ? "plain" : "abc";
         if(currentAvd < 0 || currentAvd >= currentGame.races.length){ currentAvd = 0; }
       } else {
         letters = {};
-        villkor = [];
+        systemMode = "abc";
+        var defaultPreset = VILLKOR_PRESETS.filter(function(p){ return p.id === DEFAULT_PRESET_ID; })[0];
+        villkor = presetToVillkor(defaultPreset, currentGame.races.length);
         currentAvd = 0;
       }
       lastCalculatedRows = null;
@@ -713,7 +770,18 @@
       parent.appendChild(span);
     }
 
-    race.starts.forEach(function(start){
+    var sortedStarts = race.starts.slice();
+    if(sortOrder === "procent"){
+      sortedStarts.sort(function(a, b){
+        var pa = (a.pools && a.pools[currentGame.type] && a.pools[currentGame.type].betDistribution) || 0;
+        var pb = (b.pools && b.pools[currentGame.type] && b.pools[currentGame.type].betDistribution) || 0;
+        return pb - pa;
+      });
+    } else {
+      sortedStarts.sort(function(a, b){ return a.number - b.number; });
+    }
+
+    sortedStarts.forEach(function(start){
       var horse = start.horse;
       var driver = start.driver;
       var trainer = horse.trainer;
@@ -771,44 +839,79 @@
       var letterWrap = document.createElement("div");
       letterWrap.className = "horse-letter";
 
-      var label = document.createElement("label");
-      var selectId = "letter-" + currentAvd + "-" + start.number;
-      label.setAttribute("for", selectId);
-      label.textContent = "Bokstav för " + horse.name;
-      letterWrap.appendChild(label);
-
-      var select = document.createElement("select");
-      select.id = selectId;
-      ["Ej med", "A", "B", "C", "D"].forEach(function(opt){
-        var o = document.createElement("option");
-        o.value = opt === "Ej med" ? "" : opt;
-        o.textContent = opt;
-        select.appendChild(o);
-      });
-      if(scratched){
-        delete legLetters[start.number];
-        select.value = "";
-        select.disabled = true;
-      } else {
-        select.value = legLetters[start.number] || "";
-      }
-      select.addEventListener("change", function(){
-        if(select.value){
-          legLetters[start.number] = select.value;
-          li.classList.add("marked");
-        } else {
-          delete legLetters[start.number];
-          li.classList.remove("marked");
-        }
+      function markChanged(){
         lastCalculatedRows = null;
         document.getElementById("btn-export").disabled = true;
         document.getElementById("avd-marked-count").textContent =
           Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
         renderAvdTabs();
         saveState();
-      });
-      if(select.value){ li.classList.add("marked"); }
-      letterWrap.appendChild(select);
+      }
+
+      if(systemMode === "plain"){
+        var checkboxId = "include-" + currentAvd + "-" + start.number;
+        var checkLabel = document.createElement("label");
+        checkLabel.setAttribute("for", checkboxId);
+        checkLabel.textContent = "Ta med " + horse.name;
+        letterWrap.appendChild(checkLabel);
+
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.id = checkboxId;
+        if(scratched){
+          delete legLetters[start.number];
+          checkbox.checked = false;
+          checkbox.disabled = true;
+        } else {
+          checkbox.checked = !!legLetters[start.number];
+        }
+        checkbox.addEventListener("change", function(){
+          if(checkbox.checked){
+            legLetters[start.number] = "A";
+            li.classList.add("marked");
+          } else {
+            delete legLetters[start.number];
+            li.classList.remove("marked");
+          }
+          markChanged();
+        });
+        if(checkbox.checked){ li.classList.add("marked"); }
+        letterWrap.appendChild(checkbox);
+      } else {
+        var label = document.createElement("label");
+        var selectId = "letter-" + currentAvd + "-" + start.number;
+        label.setAttribute("for", selectId);
+        label.textContent = "Bokstav för " + horse.name;
+        letterWrap.appendChild(label);
+
+        var select = document.createElement("select");
+        select.id = selectId;
+        ["Ej med", "A", "B", "C", "D"].forEach(function(opt){
+          var o = document.createElement("option");
+          o.value = opt === "Ej med" ? "" : opt;
+          o.textContent = opt;
+          select.appendChild(o);
+        });
+        if(scratched){
+          delete legLetters[start.number];
+          select.value = "";
+          select.disabled = true;
+        } else {
+          select.value = legLetters[start.number] || "";
+        }
+        select.addEventListener("change", function(){
+          if(select.value){
+            legLetters[start.number] = select.value;
+            li.classList.add("marked");
+          } else {
+            delete legLetters[start.number];
+            li.classList.remove("marked");
+          }
+          markChanged();
+        });
+        if(select.value){ li.classList.add("marked"); }
+        letterWrap.appendChild(select);
+      }
 
       li.appendChild(letterWrap);
       list.appendChild(li);
@@ -823,6 +926,8 @@
     villkor.forEach(function(v, idx){
       wrap.appendChild(buildVillkorRow(v, idx));
     });
+    var presetEl = document.getElementById("villkor-preset");
+    if(systemMode === "plain"){ presetEl.value = "plain"; }
   }
 
   function buildVillkorRow(v, idx){
@@ -902,8 +1007,28 @@
 
   document.getElementById("btn-add-villkor").addEventListener("click", function(){
     var legCount = currentGame ? currentGame.races.length : 8;
+    systemMode = "abc";
     villkor.push({ letter: "A", min: 0, max: legCount });
     renderVillkor();
+    saveState();
+  });
+
+  var presetSelect = document.getElementById("villkor-preset");
+  VILLKOR_PRESETS.forEach(function(preset){
+    var o = document.createElement("option");
+    o.value = preset.id;
+    o.textContent = preset.label;
+    presetSelect.appendChild(o);
+  });
+  presetSelect.value = DEFAULT_PRESET_ID;
+  presetSelect.addEventListener("change", function(){
+    var preset = VILLKOR_PRESETS.filter(function(p){ return p.id === presetSelect.value; })[0];
+    if(!preset){ return; }
+    var legCount = currentGame ? currentGame.races.length : 8;
+    systemMode = preset.mode === "plain" ? "plain" : "abc";
+    villkor = presetToVillkor(preset, legCount);
+    renderVillkor();
+    if(currentGame){ renderAvdelning(); }
     saveState();
   });
 

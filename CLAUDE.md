@@ -240,6 +240,44 @@ exemplet faktiskt visade poängmodellen.
   den oreducerade korsprodukten är väldigt stor (>3 miljoner kombinationer)
   innan beräkningen faktiskt körs — annars kan webbläsaren hänga sig.
 
+### Fördefinierade villkor
+
+En rullista (`#villkor-preset`) i Villkor-vyn med sex färdiga
+bokstavsvillkor plus ett sjunde specialläge:
+
+1. Minst 2 A-hästar och max 1 C-häst (**förvalt** — `DEFAULT_PRESET_ID`,
+   sätts automatiskt när en ny omgång laddas första gången)
+2. Minst 1 A-häst
+3. Minst 2 A-hästar
+4. Minst 1 A-häst och max 1 C-häst
+5. Minst 3 A-hästar och max 1 C-häst
+6. Minst 3 A-hästar och max 2 C-hästar
+7. **Vanligt matematiskt system utan reducering** (`systemMode = "plain"`)
+
+Att välja ett villkor i listan skriver **över** hela `villkor`-arrayen med
+det förvalda villkoret — det är en snabb tillämpning, inte en sparad koppling
+till den exakta rullistevalen (manuell redigering av villkor efteråt
+återspeglas inte tillbaka i rullistan, förutom för specialläget "Vanligt
+system", se nedan). "Lägg till eget villkor" fungerar som förut för att
+bygga ett anpassat villkor för hand.
+
+### Vanligt matematiskt system (utan bokstäver)
+
+`systemMode` (`"abc"` | `"plain"`, sparas per omgång i `saveState()`) styr
+vilken kontroll som visas per häst i avdelningsvyn:
+
+- `"abc"` (normalläge): `<select>` Ej med/A/B/C/D, som förut.
+- `"plain"`: en enkel `<input type="checkbox">` ("Ta med {namn}") — internt
+  sätts bokstaven `"A"` när ikryssad, precis som om hästen manuellt valts
+  som A i vanligt läge. Eftersom villkor samtidigt töms (`rules: []`) blir
+  resultatet hela korsprodukten av ikryssade hästar, utan reducering —
+  ingen ändring behövdes i `buildCandidates()`/`generateRows()`/export,
+  de bryr sig bara om att en bokstav finns satt, inte vilken.
+- Byter man till ett riktigt villkor (rullistan eller "Lägg till eget
+  villkor") växlar `systemMode` automatiskt tillbaka till `"abc"` och
+  hästlistan ritas om med bokstavsväljare — redan ikryssade hästar (bokstav
+  "A") följer med rätt över.
+
 ---
 
 ## 8. Arkitektur
@@ -247,10 +285,11 @@ exemplet faktiskt visade poängmodellen.
 ### Vyer
 
 `view-start` (välj omgång, automatiskt från `data/games.json` eller manuellt
-datum+bankod), `view-avdelning` (en avdelning i taget: häst/kusk/tränare/
-procent/barfota + bokstavsval), `view-villkor` (villkor, sammanfattning,
-export). Enkel vy-växling, ingen History API ännu (kan läggas till senare
-om det behövs).
+datum+bankod), `view-avdelning` (huvudsidan: sticky avdelningsflikar + meny,
+en avdelning i taget: häst/kusk/tränare/procent/barfota + bokstavsval eller
+kryssruta), `view-villkor` (villkor, sammanfattning, export),
+`view-installningar` (sorteringsval, mer kommer). Enkel vy-växling, ingen
+History API ännu (kan läggas till senare om det behövs).
 
 ### Datamodell
 
@@ -258,7 +297,20 @@ om det behövs).
 currentGame = { type, id, date, trackId, trackName, races: [...] }
 letters = { [avdelningsindex]: { [startnummer]: 'A'|'B'|'C'|'D' } }
 villkor = [{ letter, min, max }, ...]
+systemMode = 'abc' | 'plain'
+sortOrder = 'procent' | 'startnummer'
 ```
+
+### Inställningar — sortering av startlistor
+
+Två radioknappar (`sort-procent`/`sort-startnummer`, `name="sort-order"`)
+under Inställningar. **Spelprocent (mest spelade häst överst)** är standard
+— sorterar fallande på `pools[type].betDistribution`, samma fält som redan
+visas på huvudraden. **Startnummer** sorterar stigande på `start.number`
+(ATG:s egen, "naturliga" ordning). Sparas i en egen localStorage-nyckel
+(`travreda-sort-order`, separat från `travreda-state-v1` eftersom det är en
+global appinställning, inte kopplad till en specifik omgång) och gäller
+direkt vid byte, oavsett vilken omgång som är laddad.
 
 ### localStorage — automatisk sparning
 
