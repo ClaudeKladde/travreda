@@ -260,10 +260,46 @@ letters = { [avdelningsindex]: { [startnummer]: 'A'|'B'|'C'|'D' } }
 villkor = [{ letter, min, max }, ...]
 ```
 
-### localStorage
+### localStorage — automatisk sparning
 
-Inget ännu i v1 (varje session börjar om). Kan läggas till senare om
-användaren vill spara pågående system mellan besök.
+**Bakgrund:** rapporterad bugg — användaren tappade allt ifyllt (bokstäver,
+villkor, vald avdelning) vid flikbyte i mobil webbläsare. Orsak: mobil
+Safari kan tömma en bakgrundsflikens minne helt för att spara RAM/batteri;
+växlar man tillbaka laddas sidan om från noll, och all appstate låg bara i
+JS-variabler utan något att återställa från.
+
+**`travreda-state-v1`** — en enda JSON-blob: `{game, letters, villkor,
+currentAvd, savedAt}` där `game` är precis det som behövs för att hämta om
+omgången (`type/id/date/trackId/trackName`) — själva startlistan/oddsen
+hämtas alltid färskt igen från ATG vid återställning, bara dina val
+(bokstäver/villkor/avdelning) sparas och läses tillbaka.
+
+**`saveState()`** anropas efter **varje** förändring (bokstavsval, lägg
+till/ändra/ta bort villkor, byte av avdelningsflik) — inte bara vid någon
+explicit "spara"-knapp, så även ett abrupt avbrutet tabbyte tappar minimalt.
+Extra skyddsnät utöver det: `visibilitychange` (fliken döljs) och
+`pagehide` utlöser också ett sparförsök, ifall något enstaka
+mutationsställe skulle missas. `localStorage`-anrop är inbäddade i
+`try/catch` — privat surfläge eller fullt lagringsutrymme får appen att
+fortsätta fungera utan att spara, istället för att krascha.
+
+**Vid sidladdning** läses `travreda-state-v1` in före `loadGamesList()`
+hinner rendera Startsidan — finns sparad data hämtas omgången om via
+samma `loadGame()`, men med bokstäver/villkor/avdelning återställda istället
+för nollställda, och användaren hamnar direkt på huvudsidan igen istället
+för Startsidan. Misslyckas återhämtningen (omgången kan ha avslutats)
+visas ett tydligt felmeddelande och den sparade datan lämnas orörd.
+
+En liten textrad (`#autosave-status`, "Sparat automatiskt kl HH:MM.") på
+huvudsidan bekräftar synligt att sparningen faktiskt sker, i samma stil som
+`#status-msg`/`#nav-status` i VO Turf List — ingen `aria-live`, bara vanlig
+uppdaterad text.
+
+**Ej byggt:** inloggning eller serverlagring — bedömdes som en stor
+överdrift (kräver backend/databas/autentisering) för ett personligt
+verktyg med en användare, och bryter mot enfils/ingen-server-principen.
+`localStorage` löser det faktiska problemet (data överlever flikbyte och
+hel omladdning) utan den komplexiteten.
 
 ---
 
