@@ -198,9 +198,26 @@ giltiga utan dem, bara utan automatisk ersättning vid strykning.
 bekräftat direkt mot ATG för V85 specifikt**, dubbelkolla alltid faktiskt
 pris på atg.se innan du lämnar in en fil.
 
-**Detta är ännu inte testat mot en riktig `atg.se`-filinlämning** — bara
-verifierat mot det faktiska schemat och ett riktigt exempel. Bör testas live
-av användaren efter driftsättning.
+**Testat mot en riktig filinlämning på atg.se** (2026-08-22, inför omgången
+den 25:e) — filen gick att lämna in, men gav ett varningsmeddelande:
+"Det verkar som om filen har ändrats sedan den tillverkades
+(checksummefel) ... Det går bra att lämna in filen trots detta fel."
+
+**Orsak och fix:** filnamnet måste innehålla en CRC16-checksumma av filens
+eget innehåll, som ATG tydligen verifierar vid uppladdning. Detta hittades
+i HPTClients källkod (`Crc16.cs`) — standard **CRC-16/ARC** (polynom
+`0xA001`, reflekterad, init `0000`, XorOut `0000`, verifierad mot det kända
+testvärdet `"123456789"` → `BB3D`), beräknad över filens UTF-8-bytes
+(utan BOM). Checksumman läggs till i filnamnet som fyra versala hexsiffror:
+`{filnamn}_{CRC}.xml`, t.ex. `travreda-V85-2026-08-25_A1B2.xml` — inte i
+själva XML-innehållet. `index.html` gör nu detta automatiskt
+(`crc16HexFromString()`), verifierat genom att oberoende räkna om
+checksumman för en riktig nedladdad fil i Node.js och jämföra mot
+filnamnet.
+
+**Fortfarande inte bekräftat:** om felmeddelandet försvinner helt med
+checksumman på plats, eller om filen faktiskt går igenom till spel utan
+fler varningar — nästa verkliga inlämningsförsök avgör det.
 
 ---
 

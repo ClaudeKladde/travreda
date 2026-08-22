@@ -308,7 +308,7 @@
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 22:44</span>
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 23:13</span>
 
 <script>
 (function(){
@@ -954,6 +954,36 @@
 
   function pad(n){ return String(n).length < 2 ? "0" + n : String(n); }
 
+  var CRC16_TABLE = (function(){
+    var table = [];
+    for(var i = 0; i < 256; i++){
+      var value = 0, temp = i;
+      for(var j = 0; j < 8; j++){
+        if(((value ^ temp) & 1) !== 0){
+          value = (value >>> 1) ^ 0xA001;
+        } else {
+          value = value >>> 1;
+        }
+        temp = temp >>> 1;
+      }
+      table[i] = value;
+    }
+    return table;
+  })();
+
+  function crc16HexFromString(str){
+    var bytes = new TextEncoder().encode(str);
+    var crc = 0;
+    for(var k = 0; k < bytes.length; k++){
+      var index = (crc ^ bytes[k]) & 0xFF;
+      crc = (crc >>> 8) ^ CRC16_TABLE[index];
+    }
+    var high = (crc >> 8) & 0xFF;
+    var low = crc & 0xFF;
+    var hex2 = function(n){ var s = n.toString(16).toUpperCase(); return s.length < 2 ? "0" + s : s; };
+    return hex2(high) + hex2(low);
+  }
+
   function generateXml(rows, game){
     var couponTag = COUPON_TAG[game.type];
     var now = new Date();
@@ -984,11 +1014,12 @@
   document.getElementById("btn-export").addEventListener("click", function(){
     if(!currentGame || !lastCalculatedRows || lastCalculatedRows.length === 0){ return; }
     var xml = generateXml(lastCalculatedRows, currentGame);
+    var crcHex = crc16HexFromString(xml);
     var blob = new Blob([xml], { type: "application/xml" });
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
-    a.download = "travreda-" + currentGame.type + "-" + currentGame.date + ".xml";
+    a.download = "travreda-" + currentGame.type + "-" + currentGame.date + "_" + crcHex + ".xml";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
