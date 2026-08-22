@@ -261,16 +261,17 @@ systemet — se konversationshistorik för ett verkligt exempel). Användaren
 valde uttryckligen bokstäver istället, trots att det egna Jokersystemet-
 exemplet faktiskt visade poängmodellen.
 
-- Varje häst i varje avdelning får **Ej med / A / B / C / D** via ett
-  `<select>`. "Ej med" = hästen är inte en kandidat alls i systemet.
+- Varje häst i varje avdelning får **Ej vald / A / B / C / D** via ett
+  `<select>`. "Ej vald" = hästen är inte en kandidat alls i systemet.
 - **Villkor** (valfria, adderande, en per bokstav): "Bokstav X: minst N,
   högst M" räknat över **hela systemet** (alla avdelningar tillsammans) —
   t.ex. minst 2 A-hästar rätt. Utan villkor blir systemet hela
   korsprodukten av de bokstavsmärkta hästarna (enklaste ABC-fallet).
-- **Oreducerat/Reducerat-antal** visas innan export (samma stil som
-  Jokersystemets sammanfattning), med en varning och bekräftelse-knapp om
-  den oreducerade korsprodukten är väldigt stor (>3 miljoner kombinationer)
-  innan beräkningen faktiskt körs — annars kan webbläsaren hänga sig.
+- **Oreducerat/Reducerat-antal** visas löpande (se "Live sammanfattning och
+  insatsprocent per häst" nedan), med en varning och bekräftelse-knapp om
+  den oreducerade korsprodukten är väldigt stor (>3 miljoner kombinationer,
+  `MAX_UNREDUCED_WARN`) innan en tvingad beräkning faktiskt körs — annars
+  kan webbläsaren hänga sig.
 
 ### Fördefinierade villkor
 
@@ -292,18 +293,25 @@ till den exakta rullistevalen (manuell redigering av villkor efteråt
 återspeglas inte tillbaka i rullistan, förutom för specialläget "Vanligt
 system", se nedan).
 
-**Inga separata lägg till/ta bort-knappar** — togs bort på användarens
-begäran för att förenkla vyn, rullistan med fördefinierade villkor räcker.
-Min/högst-fälten för de rader som redan finns (från vald preset) går
-fortfarande att finjustera för hand; ett helt nytt bokstavsvillkor läggs
-bara till genom att välja en preset som innehåller det.
+**Ingen manuell villkor-redigering längre** — det tidigare gränssnittet med
+en rad per villkor (bokstavsväljare + min/högst-fält + ta bort-knapp) är
+helt borttaget på användarens begäran ("dom behövs inte längre"). Rullistan
+med fördefinierade villkor är nu det enda sättet att sätta/ändra villkor —
+`villkor`-arrayen finns fortfarande internt (`presetToVillkor()` bygger
+den), men det finns inget UI för att se eller finjustera den rad för rad.
+Istället visas en enkel, skrivskyddad sammanfattning direkt under
+rullistan: **`#letter-tally`** (`renderLetterTally()`) räknar hur många
+hästar som är märkta med respektive bokstav över hela systemet (alla
+avdelningar), t.ex. "8 A-hästar, 0 B-hästar, 0 C-hästar, 0 D-hästar." —
+räknar bara markerade hästar, oberoende av om något villkor faktiskt är
+aktivt.
 
 ### Vanligt matematiskt system (utan bokstäver)
 
 `systemMode` (`"abc"` | `"plain"`, sparas per omgång i `saveState()`) styr
 vilken kontroll som visas per häst i avdelningsvyn:
 
-- `"abc"` (normalläge): `<select>` Ej med/A/B/C/D, som förut.
+- `"abc"` (normalläge): `<select>` Ej vald/A/B/C/D, som förut.
 - `"plain"`: en enkel `<input type="checkbox">` ("Ta med {namn}") — internt
   sätts bokstaven `"A"` när ikryssad, precis som om hästen manuellt valts
   som A i vanligt läge. Eftersom villkor samtidigt töms (`rules: []`) blir
@@ -314,6 +322,68 @@ vilken kontroll som visas per häst i avdelningsvyn:
   villkor") växlar `systemMode` automatiskt tillbaka till `"abc"` och
   hästlistan ritas om med bokstavsväljare — redan ikryssade hästar (bokstav
   "A") följer med rätt över.
+
+### Live sammanfattning och insatsprocent per häst
+
+Byggt efter uttrycklig begäran: *"Det är viktigt att förstå hur mycket av
+insatsen som läggs på respektive vald häst när villkoren är aktiva"* — och
+att detta ska uppdateras **automatiskt**, inte bara vid tryck på en
+"Beräkna"-knapp.
+
+**`computeLiveStats(forceHuge)`** är den enda platsen som faktiskt genererar
+rader (`generateRows()`) och sätter det globala `liveStats`-objektet
+(`{tooBig, unreduced, rows, perLegCounts}` — `perLegCounts` är en array,
+en post per avdelning, med `{startnummer: antal godkända rader som
+innehåller den hästen}`). Körs automatiskt (`forceHuge=false`) efter
+**varje** ändring (bokstavsval, kryssruta, villkor-preset) via
+`refreshLiveStatsAndUI()`, anropad från `markChanged()` och i slutet av
+`renderAvdelning()`.
+
+- **Prestandaspärr (`LIVE_STATS_MAX`, 200 000):** är den oreducerade
+  korsprodukten större än så, körs **ingen** automatisk beräkning — bara
+  ett `{tooBig:true}`-läge sparas, och texten ber användaren trycka på
+  "Beräkna rader" manuellt istället. Detta är en lägre, "tyst" spärr än den
+  gamla `MAX_UNREDUCED_WARN` (3 miljoner) som fortfarande gäller för den
+  manuella knappen (`btn-calculate`, `computeLiveStats(true)`) — där visas
+  istället en `confirm()`-dialog eftersom ett explicit knapptryck är en
+  medveten handling, till skillnad från en automatisk bakgrundsberäkning
+  efter varje litet bokstavsval.
+- **Insatsprocent per häst** (i `updateSelectionLabel()`, samma funktion
+  som redan byggde "Vald A-häst"-etiketten): är `liveStats` färskt och
+  `rows > 0`, räknas `perLegCounts[avdelning][startnummer] / liveStats.rows
+  × 100` och läggs till direkt efter statusetiketten — exakt den
+  uppläsningsordning användaren bad om: `"Vald A-häst, 65% av
+  insatsen. 1 Varenne. ..."`. Saknas `liveStats` (inga hästar markerade i
+  alla avdelningar än, eller `tooBig`), visas ingen procent alls — bara
+  "Vald A-häst." som förut.
+- **Registrering av uppdaterare:** varje hästrad registrerar sin egen
+  `updateSelectionLabel` i den modulglobala `currentRowUpdaters`-arrayen
+  (nollställd i början av varje `renderAvdelning()`). `refreshLiveStatsAndUI()`
+  kör om **alla** registrerade uppdaterare efter varje omräkning — så även
+  hästar i **andra** avdelningar (inte bara den man just ändrade i) får sin
+  insatsprocent uppdaterad, eftersom en ändring i avdelning 3 påverkar hur
+  insatsen fördelas i alla åtta avdelningar. Uppdaterar bara textinnehåll,
+  bygger inte om DOM-element — samma "uppdatera bara det som ändrats"-
+  princip som VO Turf List använder för att inte störa en pågående
+  VoiceOver-svepning.
+
+**Sticky knapp (`#btn-sticky-summary`)** längst ner i avdelningsvyn (Jokersystemet-
+inspirerad, byggd efter uttrycklig begäran) visar och läser upp
+(`aria-live="polite"` direkt på knappen) samma sammanfattning i kompakt
+form: `"{oreducerat} rader, reducerat {X} %, {reducerat} rader, pris {kr}
+kr."` — `{X}` är hur många procent som **togs bort** av villkoren
+(`100 − (reducerat/oreducerat×100)`), inte hur många som blev kvar. Ett
+tryck navigerar till Villkor-vyn (`showView("villkor")`) där samma tal
+visas mer utförligt (`#summary-text`, samma `renderLiveSummary()`-funktion
+skriver båda). Innan alla åtta avdelningar har minst en markerad häst visar
+knappen en vägledande text istället ("Markera minst en häst i varje
+avdelning …").
+
+`renderLiveSummary()` är den enda platsen som skriver till
+`#btn-sticky-summary`, `#summary-text`, `#calc-status` och togglar
+`#btn-export`s `disabled`-status — både den automatiska vägen
+(`refreshLiveStatsAndUI`) och den manuella knappen (`btn-calculate`) går
+via samma funktion, så de två aldrig kan visa olika/inaktuella tal.
 
 ---
 

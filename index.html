@@ -198,8 +198,6 @@
   }
   .horse-letter{margin-top:.5rem;}
   .avd-progress{color:var(--muted);margin-top:0;}
-  .villkor-row{display:flex;gap:.5rem;align-items:end;flex-wrap:wrap;margin-bottom:.6rem;}
-  .villkor-row div{display:flex;flex-direction:column;}
   .summary-box{
     border:1px solid var(--card-border);
     border-radius:10px;
@@ -208,6 +206,21 @@
     margin:1rem 0;
   }
   .summary-box .big{font-size:1.3rem;font-weight:700;}
+  .sticky-footer{
+    position:sticky;
+    bottom:0;
+    background:var(--bg);
+    border-top:1px solid var(--card-border);
+    padding:.75rem 1rem;
+    margin:1rem -1rem 0;
+    display:flex;
+    justify-content:center;
+  }
+  .sticky-footer button{
+    width:100%;
+    max-width:28rem;
+    text-align:center;
+  }
   .status-msg{margin:.5rem 0 1rem;min-height:1.4em;}
   .status-msg.error{color:var(--danger);}
   [hidden]{display:none !important;}
@@ -259,7 +272,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 00:32</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 01:06</span>
 
 </div>
 
@@ -285,6 +298,10 @@
 
   <ul class="horse-list" id="horse-list"></ul>
 
+  <div class="sticky-footer">
+    <button type="button" id="btn-sticky-summary" aria-live="polite">Markera minst en häst i varje avdelning för att se antal rader.</button>
+  </div>
+
 </div>
 
 <!-- ===== VY: VILLKOR OCH EXPORT ===== -->
@@ -300,7 +317,7 @@
   <label for="villkor-preset">Fördefinierat villkor</label>
   <select id="villkor-preset"></select>
 
-  <div id="villkor-rows"></div>
+  <p id="letter-tally" class="avd-progress"></p>
 
   <div class="summary-box" id="summary-box">
     <p id="summary-text">Beräkna för att se antal rader.</p>
@@ -355,6 +372,9 @@
   var currentAvd = 0;
   var lastCalculatedRows = null;
   var systemMode = "abc";
+  var liveStats = null;
+  var currentRowUpdaters = [];
+  var LIVE_STATS_MAX = 200000;
 
   var VILLKOR_PRESETS = [
     { id: "a2c1", label: "Minst 2 A-hästar och max 1 C-häst", rules: [{ letter: "A", min: 2 }, { letter: "C", min: 0, max: 1 }] },
@@ -760,9 +780,8 @@
     var race = currentGame.races[currentAvd];
     renderAvdTabs();
     var heading = document.getElementById("avd-heading");
-    heading.textContent = "Avdelning " + (currentAvd + 1) + " av " + currentGame.races.length +
-      ": " + race.name + ", " + race.distance + " m " + race.startMethod +
-      ", kl " + race.startTime.slice(11, 16);
+    heading.textContent = "Avd " + (currentAvd + 1) + ": " + race.name + ", " + race.distance + " m " +
+      race.startMethod + ", kl " + race.startTime.slice(11, 16);
     heading.focus();
 
     document.getElementById("avd-progress").textContent =
@@ -775,6 +794,7 @@
 
     var list = document.getElementById("horse-list");
     list.innerHTML = "";
+    currentRowUpdaters = [];
 
     function addSub(parent, className, text){
       var span = document.createElement("span");
@@ -825,13 +845,21 @@
           selectionLabel.className = "scratched-label";
           selectionLabel.textContent = "Struken. ";
         } else if(legLetters[start.number]){
+          var label = systemMode === "plain" ? "Vald" : "Vald " + legLetters[start.number] + "-häst";
+          var stakeText = "";
+          if(liveStats && !liveStats.tooBig && liveStats.rows > 0){
+            var cnt = (liveStats.perLegCounts[currentAvd] || {})[start.number] || 0;
+            var stakePct = Math.round((cnt / liveStats.rows) * 100);
+            stakeText = ", " + stakePct + "% av insatsen";
+          }
           selectionLabel.className = "selected-label";
-          selectionLabel.textContent = (systemMode === "plain" ? "Vald. " : "Vald " + legLetters[start.number] + "-häst. ");
+          selectionLabel.textContent = label + stakeText + ". ";
         } else {
           selectionLabel.className = "";
           selectionLabel.textContent = "";
         }
       }
+      currentRowUpdaters.push(updateSelectionLabel);
 
       var topRow = document.createElement("span");
       topRow.className = "horse-top";
@@ -890,12 +918,10 @@
       letterWrap.className = "horse-letter";
 
       function markChanged(){
-        lastCalculatedRows = null;
-        document.getElementById("btn-export").disabled = true;
         document.getElementById("avd-marked-count").textContent =
           Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
         renderAvdTabs();
-        updateSelectionLabel();
+        refreshLiveStatsAndUI();
         saveState();
       }
 
@@ -967,82 +993,31 @@
       li.appendChild(letterWrap);
       list.appendChild(li);
     });
+
+    refreshLiveStatsAndUI();
   }
 
   // ---------- Vy: villkor och export ----------
 
   function renderVillkor(){
-    var wrap = document.getElementById("villkor-rows");
-    wrap.innerHTML = "";
-    villkor.forEach(function(v, idx){
-      wrap.appendChild(buildVillkorRow(v, idx));
-    });
     var presetEl = document.getElementById("villkor-preset");
     if(systemMode === "plain"){ presetEl.value = "plain"; }
+    renderLetterTally();
+    renderLiveSummary();
   }
 
-  function buildVillkorRow(v, idx){
-    var row = document.createElement("div");
-    row.className = "villkor-row";
-
-    var letterDiv = document.createElement("div");
-    var letterLabel = document.createElement("label");
-    letterLabel.setAttribute("for", "villkor-letter-" + idx);
-    letterLabel.textContent = "Bokstav";
-    var letterSelect = document.createElement("select");
-    letterSelect.id = "villkor-letter-" + idx;
-    ["A", "B", "C", "D"].forEach(function(l){
-      var o = document.createElement("option");
-      o.value = l; o.textContent = l;
-      letterSelect.appendChild(o);
+  function renderLetterTally(){
+    var counts = { A: 0, B: 0, C: 0, D: 0 };
+    Object.keys(letters).forEach(function(legIdx){
+      Object.keys(letters[legIdx]).forEach(function(nr){
+        var l = letters[legIdx][nr];
+        if(counts[l] != null){ counts[l]++; }
+      });
     });
-    letterSelect.value = v.letter;
-    letterSelect.addEventListener("change", function(){
-      v.letter = letterSelect.value;
-      lastCalculatedRows = null;
-      saveState();
-    });
-    letterDiv.appendChild(letterLabel);
-    letterDiv.appendChild(letterSelect);
-
-    var minDiv = document.createElement("div");
-    var minLabel = document.createElement("label");
-    minLabel.setAttribute("for", "villkor-min-" + idx);
-    minLabel.textContent = "Minst";
-    var minInput = document.createElement("input");
-    minInput.type = "number"; minInput.min = "0"; minInput.max = "8";
-    minInput.id = "villkor-min-" + idx;
-    minInput.style.width = "5rem";
-    minInput.value = v.min;
-    minInput.addEventListener("change", function(){
-      v.min = Number(minInput.value) || 0;
-      lastCalculatedRows = null;
-      saveState();
-    });
-    minDiv.appendChild(minLabel);
-    minDiv.appendChild(minInput);
-
-    var maxDiv = document.createElement("div");
-    var maxLabel = document.createElement("label");
-    maxLabel.setAttribute("for", "villkor-max-" + idx);
-    maxLabel.textContent = "Högst";
-    var maxInput = document.createElement("input");
-    maxInput.type = "number"; maxInput.min = "0"; maxInput.max = "8";
-    maxInput.id = "villkor-max-" + idx;
-    maxInput.style.width = "5rem";
-    maxInput.value = v.max;
-    maxInput.addEventListener("change", function(){
-      v.max = Number(maxInput.value) || 0;
-      lastCalculatedRows = null;
-      saveState();
-    });
-    maxDiv.appendChild(maxLabel);
-    maxDiv.appendChild(maxInput);
-
-    row.appendChild(letterDiv);
-    row.appendChild(minDiv);
-    row.appendChild(maxDiv);
-    return row;
+    var text = ["A", "B", "C", "D"].map(function(l){
+      return pl(counts[l], l + "-häst", l + "-hästar");
+    }).join(", ") + ".";
+    document.getElementById("letter-tally").textContent = text;
   }
 
   var presetSelect = document.getElementById("villkor-preset");
@@ -1112,10 +1087,98 @@
     return rows;
   }
 
+  function computeLiveStats(forceHuge){
+    if(!currentGame){ liveStats = null; return; }
+    var candidates = buildCandidates();
+    if(candidates.some(function(c){ return c.length === 0; })){
+      liveStats = null;
+      return;
+    }
+    var unreduced = countUnreduced(candidates);
+    if(!forceHuge && unreduced > LIVE_STATS_MAX){
+      liveStats = { tooBig: true, unreduced: unreduced, rows: 0, perLegCounts: [] };
+      return;
+    }
+    if(forceHuge && unreduced > MAX_UNREDUCED_WARN){
+      if(!confirm("Systemet har " + unreduced + " kombinationer innan villkor. Det kan ta en stund att beräkna. Fortsätta?")){
+        liveStats = { tooBig: true, cancelled: true, unreduced: unreduced, rows: 0, perLegCounts: [] };
+        return;
+      }
+    }
+    var rows = generateRows(candidates, villkor);
+    lastCalculatedRows = rows;
+    var perLegCounts = candidates.map(function(){ return {}; });
+    rows.forEach(function(combo){
+      combo.forEach(function(nr, legIdx){
+        perLegCounts[legIdx][nr] = (perLegCounts[legIdx][nr] || 0) + 1;
+      });
+    });
+    liveStats = { tooBig: false, unreduced: unreduced, rows: rows.length, perLegCounts: perLegCounts };
+  }
+
+  function renderLiveSummary(){
+    var btn = document.getElementById("btn-sticky-summary");
+    var summaryText = document.getElementById("summary-text");
+    var statusEl = document.getElementById("calc-status");
+    var exportBtn = document.getElementById("btn-export");
+
+    if(!currentGame || !liveStats){
+      btn.textContent = "Markera minst en häst i varje avdelning för att se antal rader.";
+      if(summaryText){ summaryText.textContent = "Beräkna för att se antal rader."; }
+      if(statusEl){ statusEl.className = "status-msg"; statusEl.textContent = ""; }
+      exportBtn.disabled = true;
+      return;
+    }
+
+    if(liveStats.tooBig){
+      var msg = liveStats.cancelled ?
+        "Avbrutet. Minska antalet bokstavsmärkta hästar för en mindre beräkning." :
+        "Oreducerat antal (" + liveStats.unreduced + ") är mycket stort. Tryck på \"Beräkna rader\" för att beräkna ändå.";
+      btn.textContent = msg;
+      if(summaryText){ summaryText.textContent = msg; }
+      if(statusEl){
+        statusEl.className = liveStats.cancelled ? "status-msg error" : "status-msg";
+        statusEl.textContent = liveStats.cancelled ? msg : "";
+      }
+      exportBtn.disabled = true;
+      return;
+    }
+
+    var pct = liveStats.unreduced > 0 ? Math.round((liveStats.rows / liveStats.unreduced) * 100) : 0;
+    var reducedPct = 100 - pct;
+    var price = (liveStats.rows * 0.5).toFixed(2).replace(".", ",");
+    btn.textContent = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr.";
+
+    if(summaryText){
+      summaryText.innerHTML =
+        "<span class=\"big\">" + liveStats.rows + " rader</span> av " + liveStats.unreduced + " oreducerat (" + pct + " %).<br>" +
+        "Uppskattat pris: ca " + price + " kr (0,50 kr/rad antaget, bekräfta alltid på atg.se).";
+    }
+    if(statusEl){
+      if(liveStats.rows > 0){
+        statusEl.className = "status-msg";
+        statusEl.textContent = "Klart.";
+      } else {
+        statusEl.className = "status-msg error";
+        statusEl.textContent = "Inga rader klarar villkoren. Justera villkoren eller bokstavsvalen.";
+      }
+    }
+    exportBtn.disabled = liveStats.rows === 0;
+  }
+
+  function refreshLiveStatsAndUI(){
+    computeLiveStats(false);
+    renderLiveSummary();
+    currentRowUpdaters.forEach(function(fn){ fn(); });
+  }
+
+  document.getElementById("btn-sticky-summary").addEventListener("click", function(){
+    showView("villkor");
+  });
+
   document.getElementById("btn-calculate").addEventListener("click", function(){
     if(!currentGame){ return; }
     var statusEl = document.getElementById("calc-status");
-    statusEl.className = "status-msg";
     var candidates = buildCandidates();
 
     if(candidates.some(function(c){ return c.length === 0; })){
@@ -1124,39 +1187,14 @@
       return;
     }
 
-    var unreduced = countUnreduced(candidates);
-
-    var proceed = function(){
-      statusEl.textContent = "Beräknar …";
-      document.getElementById("btn-export").disabled = true;
-      setTimeout(function(){
-        var rows = generateRows(candidates, villkor);
-        lastCalculatedRows = rows;
-        var pct = unreduced > 0 ? Math.round((rows.length / unreduced) * 100) : 0;
-        var price = (rows.length * 0.5).toFixed(2).replace(".", ",");
-        document.getElementById("summary-text").innerHTML =
-          "<span class=\"big\">" + rows.length + " rader</span> av " + unreduced + " oreducerat (" + pct + " %).<br>" +
-          "Uppskattat pris: ca " + price + " kr (0,50 kr/rad antaget, bekräfta alltid på atg.se).";
-        statusEl.textContent = rows.length > 0 ? "Klart." : "";
-        if(rows.length === 0){
-          statusEl.className = "status-msg error";
-          statusEl.textContent = "Inga rader klarar villkoren. Justera villkoren eller bokstavsvalen.";
-        } else {
-          document.getElementById("btn-export").disabled = false;
-        }
-      }, 20);
-    };
-
-    if(unreduced > MAX_UNREDUCED_WARN){
-      statusEl.textContent = "Oreducerat antal (" + unreduced + ") är mycket stort och kan ta en stund att beräkna.";
-      if(confirm("Systemet har " + unreduced + " kombinationer innan villkor. Det kan ta en stund att beräkna. Fortsätta?")){
-        proceed();
-      } else {
-        statusEl.textContent = "Avbrutet. Minska antalet bokstavsmärkta hästar för en mindre beräkning.";
-      }
-    } else {
-      proceed();
-    }
+    statusEl.className = "status-msg";
+    statusEl.textContent = "Beräknar …";
+    document.getElementById("btn-export").disabled = true;
+    setTimeout(function(){
+      computeLiveStats(true);
+      renderLiveSummary();
+      currentRowUpdaters.forEach(function(fn){ fn(); });
+    }, 20);
   });
 
   function buildMarks(nr){
