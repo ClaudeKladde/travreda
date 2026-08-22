@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Travreda — SK ABC-reducering</title>
+<title>Travreda — Ett tillgängligt verktyg för reducerade travspel</title>
 <style>
   :root{
     --bg:#121212;
@@ -33,11 +33,51 @@
   a{color:var(--link);}
   :focus-visible{outline:3px solid var(--focus);outline-offset:2px;}
   .subtitle{color:var(--muted);margin-top:0;}
-  nav.main-nav{
-    display:flex;gap:.5rem;flex-wrap:wrap;
+  .topbar{
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:var(--bg);
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:.5rem;
+    padding:.6rem 0;
+    margin:0 -1rem .75rem;
+    padding-left:1rem;
+    padding-right:1rem;
     border-bottom:1px solid var(--card-border);
-    padding-bottom:1rem;margin-bottom:1rem;
   }
+  .avd-tabs{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .avd-tab{
+    min-width:2.4rem;
+    height:2.4rem;
+    padding:0;
+    border-radius:50%;
+    font-weight:700;
+  }
+  .avd-tab.active{
+    background:var(--accent);
+    color:var(--accent-fg);
+    border-color:var(--accent);
+  }
+  .menu-wrap{position:relative;flex-shrink:0;}
+  #main-menu{
+    position:absolute;
+    right:0;
+    top:2.7rem;
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:8px;
+    padding:.4rem;
+    list-style:none;
+    margin:0;
+    min-width:12rem;
+    z-index:20;
+  }
+  #main-menu li{margin:0 0 .3rem;}
+  #main-menu li:last-child{margin-bottom:0;}
+  #main-menu button{width:100%;text-align:left;}
   button, select, input[type="number"], input[type="text"], input[type="date"]{
     font-size:1rem;
     padding:.5rem .7rem;
@@ -144,7 +184,6 @@
   }
   .horse-letter{margin-top:.5rem;}
   .avd-progress{color:var(--muted);margin-top:0;}
-  .nav-buttons{display:flex;gap:.75rem;margin-top:1rem;flex-wrap:wrap;}
   .villkor-row{display:flex;gap:.5rem;align-items:end;flex-wrap:wrap;margin-bottom:.6rem;}
   .villkor-row div{display:flex;flex-direction:column;}
   .summary-box{
@@ -167,19 +206,13 @@
 </head>
 <body>
 
-<h1>Travreda</h1>
-<p class="subtitle">SK ABC-reducering för V85, V75 och V86</p>
-
-<nav class="main-nav">
-  <button id="nav-start" type="button">Välj omgång</button>
-  <button id="nav-avdelning" type="button" disabled>Hästar</button>
-  <button id="nav-villkor" type="button" disabled>Villkor och export</button>
-</nav>
-
 <p id="global-status" class="status-msg" role="status"></p>
 
-<!-- ===== VY: VÄLJ OMGÅNG ===== -->
+<!-- ===== VY: VÄLJ OMGÅNG (STARTSIDA) ===== -->
 <div id="view-start">
+
+  <h1>Travreda</h1>
+  <p class="subtitle">Ett tillgängligt verktyg för reducerade travspel.</p>
 
   <h2 id="heading-start" tabindex="-1">Kommande omgångar</h2>
   <p id="games-list-status">Laddar…</p>
@@ -214,8 +247,20 @@
 
 </div>
 
-<!-- ===== VY: AVDELNING ===== -->
+<!-- ===== VY: AVDELNING (HUVUDSIDA) ===== -->
 <div id="view-avdelning" hidden>
+
+  <div class="topbar">
+    <div class="avd-tabs" id="avd-tabs"></div>
+    <div class="menu-wrap">
+      <button type="button" id="btn-menu-toggle" aria-expanded="false" aria-controls="main-menu">Meny</button>
+      <ul id="main-menu" hidden>
+        <li><button type="button" id="menu-startsida">Gå till startsidan</button></li>
+        <li><button type="button" id="menu-villkor">Villkor och export</button></li>
+        <li><button type="button" id="menu-installningar">Inställningar</button></li>
+      </ul>
+    </div>
+  </div>
 
   <h2 id="avd-heading" tabindex="-1">Avdelning</h2>
   <p class="avd-progress" id="avd-progress"></p>
@@ -223,16 +268,12 @@
 
   <ul class="horse-list" id="horse-list"></ul>
 
-  <div class="nav-buttons">
-    <button type="button" id="btn-prev-avd">Föregående avdelning</button>
-    <button type="button" id="btn-next-avd">Nästa avdelning</button>
-  </div>
-
 </div>
 
 <!-- ===== VY: VILLKOR OCH EXPORT ===== -->
 <div id="view-villkor" hidden>
 
+  <button type="button" id="btn-back-villkor">Tillbaka till hästar</button>
   <h2 id="villkor-heading" tabindex="-1">Villkor och export</h2>
   <p>Villkor är valfria. Utan villkor blir systemet hela korsprodukten av de
   bokstavsmärkta hästarna. Ett villkor begränsar hur många hästar av en viss
@@ -258,7 +299,16 @@
 
 </div>
 
-<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 22:16</span>
+<!-- ===== VY: INSTÄLLNINGAR ===== -->
+<div id="view-installningar" hidden>
+
+  <button type="button" id="btn-back-installningar">Tillbaka till hästar</button>
+  <h2 id="installningar-heading" tabindex="-1">Inställningar</h2>
+  <p>Fler inställningar kommer att läggas till här senare.</p>
+
+</div>
+
+<span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-22 22:44</span>
 
 <script>
 (function(){
@@ -278,28 +328,51 @@
   var views = {
     start: document.getElementById("view-start"),
     avdelning: document.getElementById("view-avdelning"),
-    villkor: document.getElementById("view-villkor")
+    villkor: document.getElementById("view-villkor"),
+    installningar: document.getElementById("view-installningar")
   };
-  var navButtons = {
-    start: document.getElementById("nav-start"),
-    avdelning: document.getElementById("nav-avdelning"),
-    villkor: document.getElementById("nav-villkor")
+  var viewHeadings = {
+    start: document.getElementById("heading-start"),
+    avdelning: document.getElementById("avd-heading"),
+    villkor: document.getElementById("villkor-heading"),
+    installningar: document.getElementById("installningar-heading")
   };
 
   function showView(name){
     Object.keys(views).forEach(function(key){
       views[key].hidden = key !== name;
     });
+    closeMenu();
     if(name === "avdelning"){
       renderAvdelning();
     } else if(name === "villkor"){
       renderVillkor();
+      viewHeadings.villkor.focus();
+    } else if(name === "installningar"){
+      viewHeadings.installningar.focus();
+    } else if(name === "start"){
+      viewHeadings.start.focus();
     }
   }
 
-  navButtons.start.addEventListener("click", function(){ showView("start"); });
-  navButtons.avdelning.addEventListener("click", function(){ showView("avdelning"); });
-  navButtons.villkor.addEventListener("click", function(){ showView("villkor"); });
+  var menuToggle = document.getElementById("btn-menu-toggle");
+  var mainMenu = document.getElementById("main-menu");
+
+  function closeMenu(){
+    menuToggle.setAttribute("aria-expanded", "false");
+    mainMenu.hidden = true;
+  }
+
+  menuToggle.addEventListener("click", function(){
+    var expanded = menuToggle.getAttribute("aria-expanded") === "true";
+    menuToggle.setAttribute("aria-expanded", String(!expanded));
+    mainMenu.hidden = expanded;
+  });
+  document.getElementById("menu-startsida").addEventListener("click", function(){ showView("start"); });
+  document.getElementById("menu-villkor").addEventListener("click", function(){ showView("villkor"); });
+  document.getElementById("menu-installningar").addEventListener("click", function(){ showView("installningar"); });
+  document.getElementById("btn-back-villkor").addEventListener("click", function(){ showView("avdelning"); });
+  document.getElementById("btn-back-installningar").addEventListener("click", function(){ showView("avdelning"); });
 
   function setGlobalStatus(msg){
     document.getElementById("global-status").textContent = msg || "";
@@ -403,8 +476,6 @@
       villkor = [];
       lastCalculatedRows = null;
       currentAvd = 0;
-      navButtons.avdelning.disabled = false;
-      navButtons.villkor.disabled = false;
       document.getElementById("btn-export").disabled = true;
       setGlobalStatus(type + " — " + currentGame.trackName + " laddad.");
       showView("avdelning");
@@ -542,9 +613,30 @@
     return lines.join(" ");
   }
 
+  function renderAvdTabs(){
+    var container = document.getElementById("avd-tabs");
+    container.innerHTML = "";
+    if(!currentGame){ return; }
+    currentGame.races.forEach(function(race, idx){
+      var count = Object.keys(letters[idx] || {}).length;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "avd-tab" + (idx === currentAvd ? " active" : "");
+      btn.textContent = String(idx + 1);
+      btn.setAttribute("aria-label", "avd" + (idx + 1) + ", " + pl(count, "vald häst", "valda hästar"));
+      if(idx === currentAvd){ btn.setAttribute("aria-current", "true"); }
+      btn.addEventListener("click", function(){
+        currentAvd = idx;
+        renderAvdelning();
+      });
+      container.appendChild(btn);
+    });
+  }
+
   function renderAvdelning(){
     if(!currentGame){ return; }
     var race = currentGame.races[currentAvd];
+    renderAvdTabs();
     var heading = document.getElementById("avd-heading");
     heading.textContent = "Avdelning " + (currentAvd + 1) + " av " + currentGame.races.length +
       ": " + race.name + ", " + race.distance + " m " + race.startMethod +
@@ -660,6 +752,7 @@
         document.getElementById("btn-export").disabled = true;
         document.getElementById("avd-marked-count").textContent =
           Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
+        renderAvdTabs();
       });
       if(select.value){ li.classList.add("marked"); }
       letterWrap.appendChild(select);
@@ -667,17 +760,7 @@
       li.appendChild(letterWrap);
       list.appendChild(li);
     });
-
-    document.getElementById("btn-prev-avd").disabled = currentAvd === 0;
-    document.getElementById("btn-next-avd").disabled = currentAvd === currentGame.races.length - 1;
   }
-
-  document.getElementById("btn-prev-avd").addEventListener("click", function(){
-    if(currentAvd > 0){ currentAvd--; renderAvdelning(); }
-  });
-  document.getElementById("btn-next-avd").addEventListener("click", function(){
-    if(currentGame && currentAvd < currentGame.races.length - 1){ currentAvd++; renderAvdelning(); }
-  });
 
   // ---------- Vy: villkor och export ----------
 
