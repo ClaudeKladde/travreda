@@ -133,7 +133,7 @@ extra ARIA, bara vanliga stycken efter varandra, byggda av
 `buildOddsGroupLines()`:
 
 1. **Häst** — Trendprocent, säsongsstatistik, intjänade pengar, bästa
-   rekord, ålder/kön/färg, vagn (detaljraden), ägare, uppfödare, hemmabana.
+   rekord, hemmabana.
 2. **Tränare**
 3. **Kusk**
 4. **Odds** (vinnarodds/platsodds), en avslutande rad för sig, inte en del
@@ -144,6 +144,13 @@ Ordningen häst → tränare → kusk (kusken flyttad från första till sista
 platsen) var uttryckligen efterfrågad. En grupp med tom rad-lista renderas
 inte alls (t.ex. om alla fält i en grupp är avstängda) — samma "hellre tyst
 än tomt element"-princip som resten av appen.
+
+**Ålder/kön/färg, vagn (detaljraden), ägare och uppfödare är borttagna helt**
+från detaljvyn, på uttrycklig begäran — inte bara avstängda. Vagnens
+huvuduppgift finns kvar på hästens huvudrad (`sulkyMainRowText`) som förut,
+bara detaljradens mer utförliga variant (färg, bytesmarkering) är borta.
+`sulkyDetailText()` och `SEX_TEXT` togs bort som död kod eftersom de bara
+användes av de borttagna raderna.
 
 **Två nya fält, hittade i data som redan hämtas men aldrig använts:**
 
@@ -160,18 +167,17 @@ inte alls (t.ex. om alla fält i en grupp är avstängda) — samma "hellre tyst
 
 **Total omsättning** för hela omgången (`currentGame.pools[TYP].turnover`,
 från spelets toppnivå-`pools`-objekt — måste sparas explicit på
-`currentGame` i `loadGame()`, fanns inte där tidigare) visas i
-`#avd-progress` bredvid omgångens namn: `"V85 — Romme — 2026-08-22.
-Omsättning: 6 507 253 kr."` Avrundad till hela kronor.
+`currentGame` i `loadGame()`, fanns inte där tidigare) visas i en egen rad,
+**`#avd-turnover`**, direkt under `#avd-progress` (omgångens namn) — en
+egen `<p>` och därmed ett eget svep, inte sammanslagen med namn-raden.
+Döljs helt (`hidden`) om omsättning saknas i svaret. Avrundad till hela
+kronor: `"Omsättning: 6 507 253 kr."`
 
-**Valbara fält:** en kryssrutegrupp under Inställningar
-(`DETAIL_FIELDS`, en post per rad ovan plus Tränare/Kusk/Odds som egna
-kryssrutor — tolv totalt) låter användaren stänga av enskilda rader.
+**Valbara fält:** en kryssrutegrupp under Inställningar (`DETAIL_FIELDS`,
+en post per kvarvarande rad ovan plus Tränare/Kusk/Odds som egna
+kryssrutor — åtta totalt) låter användaren stänga av enskilda rader.
 Sparas i `travreda-detail-fields` (ett objekt `{nyckel: boolean}` i
-localStorage), alla på som standard. Byggd på uttrycklig begäran istället
-för att gissa vilka av de befintliga fälten (ålder/kön/färg, ägare,
-uppfödare) som skulle tas bort för att göra plats åt de två nya — nu är
-inget borttaget, allt är valbart.
+localStorage), alla på som standard.
 
 ### Sticky avdelningsflikar + meny
 

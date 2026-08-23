@@ -279,7 +279,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 15:15</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 15:26</span>
 
 </div>
 
@@ -300,6 +300,7 @@
 
   <h2 id="avd-heading" tabindex="-1">Avdelning</h2>
   <p class="avd-progress" id="avd-progress"></p>
+  <p class="avd-progress" id="avd-turnover" hidden></p>
   <p class="avd-progress" id="avd-marked-count"></p>
 
   <ul class="horse-list" id="horse-list"></ul>
@@ -418,10 +419,6 @@
     { key: "seasonStats", label: "Säsongsstatistik" },
     { key: "money", label: "Intjänade pengar" },
     { key: "record", label: "Bästa rekord" },
-    { key: "ageSexColor", label: "Ålder, kön och färg" },
-    { key: "sulkyDetail", label: "Vagn (i detaljvyn)" },
-    { key: "owner", label: "Ägare" },
-    { key: "breeder", label: "Uppfödare" },
     { key: "homeTrack", label: "Hemmabana" },
     { key: "trainerLine", label: "Tränare" },
     { key: "driverLine", label: "Kusk" },
@@ -748,7 +745,6 @@
     return n + " " + (n === 1 ? singular : plural);
   }
 
-  var SEX_TEXT = { mare: "sto", stallion: "hingst", gelding: "valack", colt: "unghingst", filly: "ungsto" };
   var START_METHOD_TEXT = { volte: "voltstart", auto: "autostart" };
   var DISTANCE_TEXT = { short: "kort distans", medium: "medeldistans", long: "lång distans" };
 
@@ -791,14 +787,6 @@
     return "Vagn: " + s.type.text + (s.type.changed ? ", vagnbyte" : "") + ".";
   }
 
-  function sulkyDetailText(horse){
-    var s = horse.sulky;
-    if(!s || !s.type){ return null; }
-    var text = "Vagn: " + s.type.text + (s.type.changed ? " (byte)" : "");
-    if(s.colour){ text += ", " + s.colour.text + (s.colour.changed ? " (byte)" : ""); }
-    return text + ".";
-  }
-
   function recordText(horse){
     var r = horse.record;
     if(!r || !r.time){ return null; }
@@ -835,8 +823,8 @@
 
   function turnoverText(){
     var pool = currentGame.pools && currentGame.pools[currentGame.type];
-    if(!pool || pool.turnover == null){ return ""; }
-    return ". Omsättning: " + Math.round(pool.turnover / 100).toLocaleString("sv-SE") + " kr";
+    if(!pool || pool.turnover == null){ return null; }
+    return "Omsättning: " + Math.round(pool.turnover / 100).toLocaleString("sv-SE") + " kr.";
   }
 
   function trendText(start, type){
@@ -873,20 +861,6 @@
     if(detailFields.record){
       var record = recordText(horse);
       if(record){ lines.push("Bästa rekord: " + record + "."); }
-    }
-    if(detailFields.ageSexColor){
-      var sexText = SEX_TEXT[horse.sex] || horse.sex;
-      lines.push(horse.age + "-årig " + sexText + (horse.color ? ", " + horse.color : "") + ".");
-    }
-    if(detailFields.sulkyDetail){
-      var sulky = sulkyDetailText(horse);
-      if(sulky){ lines.push(sulky); }
-    }
-    if(detailFields.owner && horse.owner && horse.owner.name){
-      lines.push("Ägare: " + horse.owner.name + ".");
-    }
-    if(detailFields.breeder && horse.breeder && horse.breeder.name){
-      lines.push("Uppfödare: " + horse.breeder.name + (horse.breeder.location ? " (" + horse.breeder.location + ")" : "") + ".");
     }
     if(detailFields.homeTrack && horse.homeTrack && horse.homeTrack.name){
       lines.push("Hemmabana: " + horse.homeTrack.name + ".");
@@ -947,7 +921,12 @@
     heading.focus();
 
     document.getElementById("avd-progress").textContent =
-      currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date + turnoverText();
+      currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date;
+
+    var turnoverEl = document.getElementById("avd-turnover");
+    var turnover = turnoverText();
+    turnoverEl.hidden = !turnover;
+    turnoverEl.textContent = turnover || "";
 
     var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
     var markedCount = Object.keys(legLetters).length;
