@@ -119,31 +119,48 @@ knappen som syskon, vilket dubblerade antalet svep per häst — rättat.
   samtidigt), sedan nummer+namn+procent (`.horse-top`, samma rad
   visuellt), sedan kusk/tränare, vagn, barfota. Statusetiketten uppdateras
   live vid varje bokstavs-/kryssruteändring (`updateSelectionLabel()`).
+- **Kommaseparerad, inte punktseparerad** huvudrad, på uttrycklig begäran
+  (kortare paus mellan delarna i talsyntesen): `"5 Mellby Narrow, 33.4%,
+  Daniel Wäjersten, Daniel Wäjersten, Vanlig vagn, Barfota runt om."` — bara
+  den allra sista delen (vagn eller barfota, beroende på vilka som finns)
+  avslutas med punkt. Byggs av en array (`subParts`) i renderingen istället
+  för att varje del bakar in sitt eget skiljetecken, eftersom vilken del som
+  är sist varierar (vagn/barfota kan saknas). "Kusk:"/"Tränare:"-etiketterna
+  är borttagna från huvudraden (bara namnen) — etiketterna finns kvar i
+  detaljvyn.
+- **Vagnbyte/skobyte som prefix, inte suffix.** Var tidigare `"Vagn: X,
+  vagnbyte."` respektive en parentetisk `"(barfota för första gången)"` sist
+  i meningen — båda flyttade till ett prefix istället, konsekvent med
+  varandra: `"Vagnbyte Amerikansk vagn"` / `"Skobyte Barfota runt om"`.
+  `sulkyMainRowText()`/`shoesInfo()` returnerar numera texten utan eget
+  avslutande skiljetecken (huvudradens `subParts`-array lägger till rätt
+  tecken beroende på position).
 - **Minimera-knapp:** när detaljvyn expanderas läggs en "Minimera
   {namn}"-knapp till sist i detaljinnehållet, så att man landar på en
   tydlig stängknapp efter att ha svept igenom all information, istället för
   att behöva svepa bakåt till den ursprungliga knappen.
 
-### Detaljvyns tre grupper + valbara fält
+### Detaljvyns rader + valbara fält
 
-Den utfällda detaljvyn (tidigare ett enda sammanhängande stycke) är nu
-uppdelad i upp till fyra `<p>`-element — en `<ul>`-liknande gruppering utan
-extra ARIA, bara vanliga stycken efter varandra, byggda av
-`buildHorseGroupLines()`/`buildTrainerGroupLines()`/`buildDriverGroupLines()`/
-`buildOddsGroupLines()`:
+Den utfällda detaljvyn (tidigare ett enda sammanhängande stycke, sedan
+grupperad i fyra stycken) är nu uppdelad i **en `<p>` per rad** — en
+`<ul>`-liknande gruppering utan extra ARIA, byggd av `buildDetailLines()`.
+Varje rad motsvarar exakt en kryssruta under Inställningar (`DETAIL_FIELDS`,
+se nedan), på uttrycklig begäran: "detta blir tydligare enligt kryssrutorna
+i inställningarna" — en VoiceOver-användare svepar alltså förbi en rad i
+taget, inte en hel grupp. Ordningen är, i tur och ordning: Trendprocent,
+säsongsstatistik, intjänade pengar, rekord, hemmabana, Tränare, Kusk, Odds
+(häst → tränare → kusk var uttryckligen efterfrågad tidigare, oförändrat).
+En rad utan data eller vars kryssruta är avstängd renderas inte alls —
+samma "hellre tyst än tomt element"-princip som resten av appen.
 
-1. **Häst** — Trendprocent, säsongsstatistik, intjänade pengar, bästa
-   rekord, hemmabana.
-2. **Tränare**
-3. **Kusk**
-4. **Odds** (vinnarodds/platsodds), en avslutande rad för sig, inte en del
-   av häst-gruppen — placerad sist eftersom den hör till marknadsdata
-   snarare än hästens egna fakta.
-
-Ordningen häst → tränare → kusk (kusken flyttad från första till sista
-platsen) var uttryckligen efterfrågad. En grupp med tom rad-lista renderas
-inte alls (t.ex. om alla fält i en grupp är avstängda) — samma "hellre tyst
-än tomt element"-princip som resten av appen.
+**Förkortad text, på uttrycklig begäran** ("ta bort en del överflödiga
+ord"): `"Trendprocent: +2,2 procentenheter."` → `"Trend +2,2%."`,
+`"Pengar: X kr intjänat totalt."` → `"Pengar: X kr."`, `"Bästa rekord:"` →
+`"Rekord:"`. Kusk/tränare-procenten (`winStatsText()`) skriver nu ut
+decimaltecknet med komma och utan mellanslag före procenttecknet
+(`"27,2% (...)"`, inte `"27.2 % (...)"`) — konsekvent med resten av appens
+talformat.
 
 **Ålder/kön/färg, vagn (detaljraden), ägare och uppfödare är borttagna helt**
 från detaljvyn, på uttrycklig begäran — inte bara avstängda. Vagnens

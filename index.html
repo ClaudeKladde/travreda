@@ -299,7 +299,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 15:29</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 17:51</span>
 
 </div>
 
@@ -791,7 +791,7 @@
     var stats = entity.statistics.years[year];
     if(stats.winPercentage == null){ return null; }
     var placement = stats.placement || {};
-    return (stats.winPercentage / 100).toFixed(1) + " % (" + pl(stats.starts || 0, "start", "starter") + ", " +
+    return (stats.winPercentage / 100).toFixed(1).replace(".", ",") + "% (" + pl(stats.starts || 0, "start", "starter") + ", " +
       pl(placement["1"] || 0, "seger", "segrar") + " " + year + ")";
   }
 
@@ -802,24 +802,24 @@
     var backBare = s.back && s.back.hasShoe === false;
     var changed = !!((s.front && s.front.changed) || (s.back && s.back.changed));
     var isNew = changed && (frontBare || backBare);
-    var suffix = isNew ? " (barfota för första gången)" : "";
+    var prefix = isNew ? "Skobyte " : "";
     var text = "";
-    if(frontBare && backBare){ text = "Barfota runt om" + suffix + "."; }
-    else if(frontBare){ text = "Barfota fram" + suffix + "."; }
-    else if(backBare){ text = "Barfota bak" + suffix + "."; }
+    if(frontBare && backBare){ text = prefix + "Barfota runt om"; }
+    else if(frontBare){ text = prefix + "Barfota fram"; }
+    else if(backBare){ text = prefix + "Barfota bak"; }
     return { text: text, isNew: isNew };
   }
 
   function percentText(start, type){
     var pool = start.pools && start.pools[type];
     if(!pool || pool.betDistribution == null){ return null; }
-    return (pool.betDistribution / 100).toFixed(1) + "%.";
+    return (pool.betDistribution / 100).toFixed(1) + "%,";
   }
 
   function sulkyMainRowText(horse){
     var s = horse.sulky;
     if(!s || !s.type){ return ""; }
-    return "Vagn: " + s.type.text + (s.type.changed ? ", vagnbyte" : "") + ".";
+    return (s.type.changed ? "Vagnbyte " : "") + s.type.text + " vagn";
   }
 
   function recordText(horse){
@@ -867,18 +867,18 @@
     if(!pool || pool.trend == null){ return null; }
     var rounded = Math.abs(pool.trend * 100).toFixed(1);
     var sign = rounded === "0.0" ? "" : (pool.trend > 0 ? "+" : "-");
-    return "Trendprocent: " + sign + rounded.replace(".", ",") + " procentenheter.";
+    return "Trend " + sign + rounded.replace(".", ",") + "%.";
   }
 
   function moneyText(horse){
     if(horse.money == null){ return null; }
-    return "Pengar: " + horse.money.toLocaleString("sv-SE") + " kr intjänat totalt.";
+    return "Pengar: " + horse.money.toLocaleString("sv-SE") + " kr.";
   }
 
-  // Detaljvyn är uppdelad i tre grupper (häst, tränare, kusk) plus en
-  // avslutande oddsrad, en <p> per grupp — så en VoiceOver-användare kan
-  // svepa förbi en grupp i taget istället för allt i ett enda stycke.
-  function buildHorseGroupLines(start){
+  // Varje rad i detaljvyn motsvarar exakt en kryssruta under Inställningar
+  // (DETAIL_FIELDS) och blir sitt eget <p> — en VoiceOver-användare svepar
+  // alltså förbi en rad i taget istället för allt i ett enda stycke.
+  function buildDetailLines(start){
     var horse = start.horse;
     var lines = [];
     if(detailFields.trend){
@@ -895,34 +895,28 @@
     }
     if(detailFields.record){
       var record = recordText(horse);
-      if(record){ lines.push("Bästa rekord: " + record + "."); }
+      if(record){ lines.push("Rekord: " + record + "."); }
     }
     if(detailFields.homeTrack && horse.homeTrack && horse.homeTrack.name){
       lines.push("Hemmabana: " + horse.homeTrack.name + ".");
     }
+    if(detailFields.trainerLine){
+      var trainer = horse.trainer;
+      var trainerPct = winStatsText(trainer);
+      lines.push("Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
+        (trainerPct ? ", " + trainerPct : "") + ".");
+    }
+    if(detailFields.driverLine){
+      var driver = start.driver;
+      var driverPct = winStatsText(driver);
+      lines.push("Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
+        (driverPct ? ", " + driverPct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + ".");
+    }
+    if(detailFields.odds){
+      var odds = oddsText(start);
+      if(odds){ lines.push(odds); }
+    }
     return lines;
-  }
-
-  function buildTrainerGroupLines(start){
-    if(!detailFields.trainerLine){ return []; }
-    var trainer = start.horse.trainer;
-    var pct = winStatsText(trainer);
-    return ["Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
-      (pct ? ", " + pct : "") + "."];
-  }
-
-  function buildDriverGroupLines(start){
-    if(!detailFields.driverLine){ return []; }
-    var driver = start.driver;
-    var pct = winStatsText(driver);
-    return ["Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
-      (pct ? ", " + pct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + "."];
-  }
-
-  function buildOddsGroupLines(start){
-    if(!detailFields.odds){ return []; }
-    var odds = oddsText(start);
-    return odds ? [odds] : [];
   }
 
   function renderAvdTabs(){
@@ -1040,22 +1034,24 @@
       var topRow = document.createElement("span");
       topRow.className = "horse-top";
       addSub(topRow, "horse-badge", String(start.number));
-      addSub(topRow, "horse-name", horse.name + ".");
+      addSub(topRow, "horse-name", horse.name + ",");
       var pct = percentText(start, currentGame.type);
       if(pct){ addSub(topRow, "horse-pct", pct); }
       detailToggle.appendChild(topRow);
 
       updateSelectionLabel();
 
-      addSub(detailToggle, "horse-sub",
-        "Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") + ". " +
-        "Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") + ".");
-
+      var subParts = [
+        driver ? (driver.firstName + " " + driver.lastName) : "okänd",
+        trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd"
+      ];
       var sulkyMain = sulkyMainRowText(horse);
-      if(sulkyMain){ addSub(detailToggle, "horse-sub", sulkyMain); }
-
+      if(sulkyMain){ subParts.push(sulkyMain); }
       var shoes = shoesInfo(horse);
-      if(shoes.text){ addSub(detailToggle, "horse-sub", shoes.text); }
+      if(shoes.text){ subParts.push(shoes.text); }
+      addSub(detailToggle, "horse-sub", subParts.map(function(part, i){
+        return part + (i === subParts.length - 1 ? "." : ",");
+      }).join(" "));
       if(shoes.isNew){ li.classList.add("new-barefoot"); }
 
       var detailDiv = document.createElement("div");
@@ -1063,11 +1059,9 @@
       detailDiv.className = "horse-detail";
       detailDiv.hidden = true;
 
-      [buildHorseGroupLines(start), buildTrainerGroupLines(start),
-        buildDriverGroupLines(start), buildOddsGroupLines(start)].forEach(function(groupLines){
-        if(groupLines.length === 0){ return; }
+      buildDetailLines(start).forEach(function(lineText){
         var p = document.createElement("p");
-        p.textContent = groupLines.join(" ");
+        p.textContent = lineText;
         detailDiv.appendChild(p);
       });
 
