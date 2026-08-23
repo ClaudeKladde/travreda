@@ -311,6 +311,38 @@ filnamnet.
 checksumman på plats, eller om filen faktiskt går igenom till spel utan
 fler varningar — nästa verkliga inlämningsförsök avgör det.
 
+### Automatisk inlämning till ATG — undersökt, inte möjlig
+
+Användaren frågade om Travreda kunde skicka in systemet direkt till ATG,
+som Jokersystemet och andra verktyg verkar göra. Undersökt genom att läsa
+[HPTClients](https://github.com/Hospodaren/HPTClient) källkod direkt
+(`UCMarksGame.xaml.cs`, `miSaveAndGoToATG_Click`) och research kring ATG:s
+API-utbud. Slutsats: **det finns ingen genväg** — inte ens i HPTClient.
+
+- HPTClients "spara och gå till ATG"-knapp gör bara `Clipboard.SetDataObject
+  (filnamn)` + `wbATG.Navigate("https://www.atg.se/spel/fil")` i en inbyggd
+  webbläsarruta — samma manuella filuppladdning som Travreda redan har, bara
+  med urklipp-ifyllnad och utan att byta fönster. Ingen riktig API-inlämning.
+- ATG har en riktig programmatisk vadslagnings-API (**ABI, "ATG Betting
+  Interface"**, hittad via `swedishhorseracing.com/for-partners`) — men den
+  är en företagsintegration för **certifierade internationella
+  spelbolag/totalisatorer**, inte något en privatperson kan skaffa nyckel
+  till.
+- Även om åtkomst funnits hade det inte gått att bygga in i en statisk
+  webbsida ändå: ingen inramning av atg.se är möjlig (troligen
+  `X-Frame-Options`/CSP mot clickjacking, standard för spelsajter), och en
+  webbsida kan inte lägga en nedladdad fils sökväg på operativsystemets
+  urklipp åt en filväljardialog på en annan sajt (skulle vara ett
+  säkerhetshål om det gick).
+
+**Byggt istället:** `#btn-open-atg` ("Öppna ATG:s filinlämning") direkt
+efter nedladdningsknappen, öppnar `atg.se/spel/reducerat` i en ny flik
+(`window.open(..., "_blank", "noopener")`) — samma URL som redan låg i
+förklaringstexten som en vanlig länk, nu som en tydlig egen knapp i
+handlingsflödet ladda ner → öppna ATG. Detta är själva taket för vad en
+statisk sida kan göra här; motsvarar exakt HPTClients bekvämlighet minus
+urklipps-tricket, som webbläsare av säkerhetsskäl inte tillåter.
+
 ### Kupongkomprimering (exakt, tre nivåer)
 
 Byggt efter uttrycklig begäran om att hålla ner antalet kuponger (mål:

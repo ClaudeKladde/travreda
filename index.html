@@ -279,7 +279,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 14:10</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 14:36</span>
 
 </div>
 
@@ -339,6 +339,7 @@
   Radpris är antaget till 0,50 kr — dubbelkolla alltid det faktiska priset på
   atg.se innan du lämnar in.</p>
   <button type="button" id="btn-export" class="btn-primary" disabled>Ladda ner ATG-fil</button>
+  <button type="button" id="btn-open-atg">Öppna ATG:s filinlämning</button>
 
 </div>
 
@@ -1481,6 +1482,10 @@
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("btn-open-atg").addEventListener("click", function(){
+    window.open("https://www.atg.se/spel/reducerat", "_blank", "noopener");
   });
 
   document.addEventListener("visibilitychange", function(){
