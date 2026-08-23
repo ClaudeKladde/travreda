@@ -1,7 +1,13 @@
 #!/usr/bin/env python3
-"""Hämtar kommande V85/V75/V86-omgångar från ATG:s kalender-API (server-sidan,
-ingen CORS-begränsning här) och skriver en liten data/games.json som
-index.html läser via ett vanligt same-origin fetch() på GitHub Pages."""
+"""Hämtar kommande V85/V75/V86/GS75/V64/V5-omgångar från ATG:s kalender-API
+(server-sidan, ingen CORS-begränsning här) och skriver en liten
+data/games.json som index.html läser via ett vanligt same-origin fetch() på
+GitHub Pages.
+
+GS75/V64/V5 är, till skillnad från V85/V75/V86, inte travexklusiva spelformer
+— de kan gå på galoppbanor. Travreda hanterar bara travdata (inga skor-/
+kusk-fält för galopp), så alla omgångar filtreras på travets egen
+tracks[].sport-fält innan de tas med, oavsett speltyp."""
 
 import json
 import sys
@@ -11,7 +17,7 @@ import urllib.request
 from datetime import date, datetime, timedelta, timezone
 
 API_BASE = "https://www.atg.se/services/racinginfo/v1/api"
-BET_TYPES = ["V85", "V75", "V86"]
+BET_TYPES = ["V85", "V75", "V86", "GS75", "V64", "V5"]
 DAYS_AHEAD = 10
 OUT_PATH = "data/games.json"
 
@@ -41,6 +47,7 @@ def main():
             continue
 
         track_names = {t["id"]: t["name"] for t in data.get("tracks", [])}
+        track_sports = {t["id"]: t.get("sport") for t in data.get("tracks", [])}
         day_games = data.get("games", {})
 
         for bet_type in BET_TYPES:
@@ -51,6 +58,10 @@ def main():
                     continue
                 tracks = game.get("tracks") or []
                 track_id = tracks[0] if tracks else None
+                if track_sports.get(track_id) != "trot":
+                    # Travreda hanterar bara trav — hoppar över galoppomgångar
+                    # (förekommer för GS75/V64/V5, aldrig för V85/V75/V86).
+                    continue
                 games.append(
                     {
                         "type": bet_type,

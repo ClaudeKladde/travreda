@@ -7,8 +7,9 @@ Projektinstruktioner för fortsatt utveckling. Läs hela filen innan du börjar.
 ## 1. Om projektet
 
 **Travreda** är en tillgänglighetsanpassad webbapp för att bygga reducerade
-travsystem (SK ABC-reducering) för ATG:s spelformer, i första hand **V85**,
-byggd specifikt för skärmläsaranvändare (VoiceOver på iPhone i första hand).
+travsystem (SK ABC-reducering) för ATG:s spelformer — **V85, V75, V86, GS75,
+V64, V5**, i första hand V85 — byggd specifikt för skärmläsaranvändare
+(VoiceOver på iPhone i första hand).
 
 - **Användare:** Claudio. Skärmläsaranvändare.
 - **Konversationsspråk:** svenska. Gränssnittet är bara på svenska (ingen
@@ -175,6 +176,49 @@ Manuellt fallback i appen (om `games.json` saknar en omgång): mata in
 datum + bankod + speltyp, appen provar spel-id med startavdelning 1–12 mot
 den öppna `/games/{id}`-endpointen tills rätt omgång hittas — ren
 klientsidig lösning, inget nytt serveranrop behövs.
+
+### Spelformer — V85, V75, V86, GS75, V64, V5
+
+Utökat från de ursprungliga V85/V75/V86 efter uttrycklig begäran. Verifierat
+mot det riktiga XSD-schemat (`atg_filebetting_1_8_6.xsd`, hittat i
+HPTClient-källkoden, se avsnitt 6) och live mot ATG:s eget API, inte antaget:
+
+| Typ | Avdelningar | `trackcode` i exporten? |
+|---|---|---|
+| V85 | 8 | Ja |
+| V86 | 8 | Ja |
+| V75 | 7 | **Nej** |
+| GS75 | 7 | **Nej** |
+| V64 | 6 | **Nej** |
+| V5 | 5 | Ja |
+
+`LEG_COUNT`/`COUPON_TAG`/`COUPON_HAS_TRACKCODE` styr detta generiskt per
+speltyp — spel-id-formatet (`{TYP}_{datum}_{bankod}_{avdelning}`), brute
+force-sökningen och `/games/{id}`-svarets struktur (pools/driver/tränare/
+skor) är identiska för alla sex typerna, verifierat live mot riktiga
+spel-id:n för samtliga.
+
+**Galoppfiltrering:** till skillnad från V85/V75/V86 (alltid trav) kan
+GS75/V64/V5 gå på **galoppbanor** — verifierat live (t.ex. `V64_2026-08-23
+_79_4` på Övrevoll är galopp, samma dags GS75/V5 är trav). Travreda hanterar
+bara travdata (inga fält för galoppens `blinders`/`jockey` etc.), så
+`scripts/fetch_games.py` filtrerar **alla** speltyper (inte bara de tre
+nya, som extra säkerhetsmarginal) på kalenderns egna `tracks[].sport`-fält
+(`"trot"`/`"gallop"`) innan en omgång tas med i `data/games.json` — ingen
+extra API-anrop behövs, fältet finns redan i samma `/calendar/day/{datum}`
+-svar som `track_names` byggs från. Det manuella fallbacket i appen (mata
+in datum/bankod/speltyp) har ingen motsvarande filtrering — en galoppomgång
+går alltså tekniskt att ladda manuellt, men visar då tomma/felaktiga fält
+eftersom `horse.shoes`/`start.driver` saknas i galoppdata. Medvetet
+accepterad begränsning i den manuella vägen, inte byggd ännu.
+
+**Bugg hittad och fixad i samband med detta:** exporten skrev tidigare ut
+`trackcode`-attributet på **alla** kupongtyper, inklusive V75 — men enligt
+schemat saknar `v75Coupon` (liksom det nya `gs75Coupon`/`v64Coupon`) det
+attributet helt (flerbane-spel, inget enskilt spårnummer att ange). Ospårat
+tidigare eftersom bara V85 testats mot en riktig filinlämning på atg.se.
+`generateXml()` kollar nu `COUPON_HAS_TRACKCODE[game.type]` och utelämnar
+attributet helt för de typer som saknar det.
 
 ---
 
@@ -349,16 +393,22 @@ exemplet faktiskt visade poängmodellen.
 ### Fördefinierade villkor
 
 En rullista (`#villkor-preset`) i Villkor-vyn med sex färdiga
-bokstavsvillkor plus ett sjunde specialläge:
+bokstavsvillkor plus ett specialläge, i denna ordning:
 
 1. Minst 2 A-hästar och max 1 C-häst (**förvalt** — `DEFAULT_PRESET_ID`,
    sätts automatiskt när en ny omgång laddas första gången)
-2. Minst 1 A-häst
-3. Minst 2 A-hästar
-4. Minst 1 A-häst och max 1 C-häst
-5. Minst 3 A-hästar och max 1 C-häst
-6. Minst 3 A-hästar och max 2 C-hästar
-7. **Vanligt matematiskt system utan reducering** (`systemMode = "plain"`)
+2. **Vanligt matematiskt system utan reducering** (`systemMode = "plain"`)
+   — flyttad hit från sista platsen på användarens begäran, för synlighet
+   direkt efter förvalet
+3. Minst 1 A-häst
+4. Minst 2 A-hästar
+5. Minst 1 A-häst och max 1 C-häst
+6. Minst 3 A-hästar och max 1 C-häst
+7. Minst 3 A-hästar och max 2 C-hästar
+
+Introtexten i Villkor-vyn nämner numera uttryckligen att "Vanligt
+matematiskt system utan reducering" finns som ett eget alternativ i
+listan, så det inte bara upptäcks av en slump.
 
 Att välja ett villkor i listan skriver **över** hela `villkor`-arrayen med
 det förvalda villkoret — det är en snabb tillämpning, inte en sparad koppling

@@ -268,6 +268,9 @@
         <option value="V85">V85</option>
         <option value="V75">V75</option>
         <option value="V86">V86</option>
+        <option value="GS75">GS75</option>
+        <option value="V64">V64</option>
+        <option value="V5">V5</option>
       </select>
     </div>
     <div>
@@ -276,7 +279,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 12:59</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 13:47</span>
 
 </div>
 
@@ -316,7 +319,9 @@
   <p>Villkor är valfria. Utan villkor blir systemet hela korsprodukten av de
   bokstavsmärkta hästarna. Ett villkor begränsar hur många hästar av en viss
   bokstav som får/måste vara med i en godkänd rad, räknat över alla
-  avdelningar tillsammans.</p>
+  avdelningar tillsammans. Vill du inte reducera alls finns "Vanligt
+  matematiskt system utan reducering" som ett eget alternativ i listan
+  nedan.</p>
 
   <label for="villkor-preset">Fördefinierat villkor</label>
   <select id="villkor-preset"></select>
@@ -384,8 +389,12 @@
   "use strict";
 
   var API_BASE = "https://www.atg.se/services/racinginfo/v1/api";
-  var LEG_COUNT = { V85: 8, V75: 7, V86: 8 };
-  var COUPON_TAG = { V85: "v85Coupon", V75: "v75Coupon", V86: "v86Coupon" };
+  var LEG_COUNT = { V85: 8, V75: 7, V86: 8, GS75: 7, V64: 6, V5: 5 };
+  var COUPON_TAG = { V85: "v85Coupon", V75: "v75Coupon", V86: "v86Coupon", GS75: "gs75Coupon", V64: "v64Coupon", V5: "v5Coupon" };
+  // v85/v86/v5-kupongtypen har ett trackcode-attribut i ATG:s XSD (atg_filebetting
+  // 1.8.6) — v75/v64/gs75Coupon saknar det helt (flerbane-spel, inget enskilt
+  // trackcode att ange). Verifierat direkt i schemat, inte en gissning.
+  var COUPON_HAS_TRACKCODE = { V85: true, V75: false, V86: true, GS75: false, V64: false, V5: true };
   var MAX_UNREDUCED_WARN = 3000000;
 
   var currentGame = null;
@@ -401,12 +410,12 @@
 
   var VILLKOR_PRESETS = [
     { id: "a2c1", label: "Minst 2 A-hästar och max 1 C-häst", rules: [{ letter: "A", min: 2 }, { letter: "C", min: 0, max: 1 }] },
+    { id: "plain", label: "Vanligt matematiskt system utan reducering", rules: [], mode: "plain" },
     { id: "a1", label: "Minst 1 A-häst", rules: [{ letter: "A", min: 1 }] },
     { id: "a2", label: "Minst 2 A-hästar", rules: [{ letter: "A", min: 2 }] },
     { id: "a1c1", label: "Minst 1 A-häst och max 1 C-häst", rules: [{ letter: "A", min: 1 }, { letter: "C", min: 0, max: 1 }] },
     { id: "a3c1", label: "Minst 3 A-hästar och max 1 C-häst", rules: [{ letter: "A", min: 3 }, { letter: "C", min: 0, max: 1 }] },
-    { id: "a3c2", label: "Minst 3 A-hästar och max 2 C-hästar", rules: [{ letter: "A", min: 3 }, { letter: "C", min: 0, max: 2 }] },
-    { id: "plain", label: "Vanligt matematiskt system utan reducering", rules: [], mode: "plain" }
+    { id: "a3c2", label: "Minst 3 A-hästar och max 2 C-hästar", rules: [{ letter: "A", min: 3 }, { letter: "C", min: 0, max: 2 }] }
   ];
   var DEFAULT_PRESET_ID = "a2c1";
 
@@ -1421,6 +1430,7 @@
 
   function generateXml(coupons, game){
     var couponTag = COUPON_TAG[game.type];
+    var hasTrackcode = COUPON_HAS_TRACKCODE[game.type];
     var now = new Date();
     var createddate = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
     var createdtime = pad(now.getHours()) + ":" + pad(now.getMinutes()) + ":" + pad(now.getSeconds());
@@ -1434,8 +1444,8 @@
     xml += "  <betcoupons>\n";
 
     coupons.forEach(function(coupon, i){
-      xml += '    <' + couponTag + ' couponid="' + (i + 1) + '" date="' + game.date +
-        '" trackcode="' + game.trackId + '" betmultiplier="1">\n';
+      xml += '    <' + couponTag + ' couponid="' + (i + 1) + '" date="' + game.date + '"' +
+        (hasTrackcode ? ' trackcode="' + game.trackId + '"' : '') + ' betmultiplier="1">\n';
       coupon.forEach(function(nrs, legIdx){
         xml += '      <leg legno="' + (legIdx + 1) + '" marks="' + buildMarks(nrs) + '" />\n';
       });
