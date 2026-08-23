@@ -299,15 +299,17 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 17:56</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:03</span>
 
 </div>
 
 <!-- ===== VY: AVDELNING (HUVUDSIDA) ===== -->
 <div id="view-avdelning" hidden>
 
+  <p class="avd-progress" id="avd-progress"></p>
+  <p class="avd-progress" id="avd-turnover" hidden></p>
+
   <div class="topbar">
-    <div class="avd-tabs" id="avd-tabs"></div>
     <div class="menu-wrap">
       <button type="button" id="btn-menu-toggle" aria-expanded="false" aria-controls="main-menu">Meny</button>
       <ul id="main-menu" hidden>
@@ -316,11 +318,11 @@
         <li><button type="button" id="menu-installningar">Inställningar</button></li>
       </ul>
     </div>
+    <div class="avd-tabs" id="avd-tabs"></div>
   </div>
 
   <h2 id="avd-heading" tabindex="-1">Avdelning</h2>
-  <p class="avd-progress" id="avd-progress"></p>
-  <p class="avd-progress" id="avd-turnover" hidden></p>
+  <p class="avd-progress" id="avd-terms" hidden></p>
   <p class="avd-progress" id="avd-marked-count"></p>
 
   <ul class="horse-list" id="horse-list"></ul>
@@ -336,7 +338,7 @@
 <!-- ===== VY: VILLKOR OCH EXPORT ===== -->
 <div id="view-villkor" hidden>
 
-  <button type="button" id="btn-back-villkor">Tillbaka till hästar</button>
+  <button type="button" id="btn-back-villkor">Tillbaka till avdelningar</button>
   <h2 id="villkor-heading" tabindex="-1">Villkor och export</h2>
   <p>Villkor är valfria och styr hur många hästar av en bokstav som får/måste
   vara med, räknat över alla avdelningar. Utan villkor blir det hela
@@ -346,6 +348,10 @@
   <select id="villkor-preset"></select>
 
   <p id="letter-tally" class="avd-progress"></p>
+
+  <h2 id="systemoversikt-heading">Systemöversikt</h2>
+  <p id="system-overview-unreduced" class="avd-progress" hidden></p>
+  <div id="system-overview"></div>
 
   <div class="summary-box" id="summary-box">
     <p id="summary-text">Beräkna för att se antal rader.</p>
@@ -367,7 +373,7 @@
 <!-- ===== VY: INSTÄLLNINGAR ===== -->
 <div id="view-installningar" hidden>
 
-  <button type="button" id="btn-back-installningar">Tillbaka till hästar</button>
+  <button type="button" id="btn-back-installningar">Tillbaka till avdelningar</button>
   <h2 id="installningar-heading" tabindex="-1">Inställningar</h2>
 
   <fieldset>
@@ -949,6 +955,11 @@
       race.startMethod + ", kl " + race.startTime.slice(11, 16);
     heading.focus();
 
+    var termsEl = document.getElementById("avd-terms");
+    var termsText = (race.terms && race.terms.length) ? race.terms.join(" ") : "";
+    termsEl.hidden = !termsText;
+    termsEl.textContent = termsText;
+
     document.getElementById("avd-progress").textContent =
       currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date;
 
@@ -967,7 +978,7 @@
       });
       var letterParts = ["A", "B", "C", "D"].filter(function(l){ return counts[l] > 0; })
         .map(function(l){ return pl(counts[l], l.toLowerCase() + "-häst", l.toLowerCase() + "-hästar"); });
-      var text = Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen";
+      var text = Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade";
       return letterParts.length ? text + ", " + letterParts.join(", ") + "." : text + ".";
     }
 
@@ -1194,6 +1205,7 @@
     var presetEl = document.getElementById("villkor-preset");
     if(systemMode === "plain"){ presetEl.value = "plain"; }
     renderLetterTally();
+    renderSystemOverview();
     renderLiveSummary();
   }
 
@@ -1209,6 +1221,42 @@
       return pl(counts[l], l + "-häst", l + "-hästar");
     }).join(", ") + ".";
     document.getElementById("letter-tally").textContent = text;
+  }
+
+  function renderSystemOverview(){
+    var container = document.getElementById("system-overview");
+    var unreducedEl = document.getElementById("system-overview-unreduced");
+    if(!currentGame){ container.innerHTML = ""; unreducedEl.hidden = true; return; }
+
+    if(liveStats && !liveStats.tooBig){
+      unreducedEl.hidden = false;
+      unreducedEl.textContent = "Oreducerat: " + liveStats.unreduced.toLocaleString("sv-SE") + " kombinationer.";
+    } else {
+      unreducedEl.hidden = true;
+    }
+
+    container.innerHTML = "";
+    currentGame.races.forEach(function(race, idx){
+      var legLetters = letters[idx] || {};
+      var numbers = Object.keys(legLetters).map(Number).sort(function(a, b){ return a - b; });
+      var heading = document.createElement("h3");
+
+      if(systemMode === "plain"){
+        heading.textContent = "Avd " + (idx + 1) + ": " + pl(numbers.length, "häst", "hästar") + " valda" +
+          (numbers.length ? ": " + numbers.join(", ") : "") + ".";
+        container.appendChild(heading);
+      } else {
+        heading.textContent = "Avd " + (idx + 1) + ": " + pl(numbers.length, "häst", "hästar") + " valda:";
+        container.appendChild(heading);
+        ["A", "B", "C", "D"].forEach(function(letter){
+          var nrsForLetter = numbers.filter(function(nr){ return legLetters[nr] === letter; });
+          if(nrsForLetter.length === 0){ return; }
+          var p = document.createElement("p");
+          p.textContent = letter + ": " + nrsForLetter.join(", ") + ".";
+          container.appendChild(p);
+        });
+      }
+    });
   }
 
   var presetSelect = document.getElementById("villkor-preset");
@@ -1472,15 +1520,16 @@
     var pct = liveStats.unreduced > 0 ? Math.round((liveStats.rows / liveStats.unreduced) * 100) : 0;
     var reducedPct = 100 - pct;
     var price = (liveStats.rows * 0.5).toFixed(2).replace(".", ",");
-    var couponText = compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger");
-    btn.textContent = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr" + couponText + ".";
+    var levelText = compressionLevel === "none" ? " (okomprimerad)" :
+      compressionLevel === "light" ? " (lättare komprimering)" : " (hårdare komprimering)";
+    var couponText = compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger") + levelText;
+    var coreText = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr" + couponText + ".";
+    btn.textContent = coreText;
 
     if(summaryText){
       summaryText.innerHTML =
-        "<span class=\"big\">" + liveStats.rows + " rader</span> av " + liveStats.unreduced + " oreducerat (" + pct + " %).<br>" +
-        "Uppskattat pris: ca " + price + " kr (0,50 kr/rad antaget, bekräfta alltid på atg.se).<br>" +
-        "Exportfilen får <span class=\"big\">" + pl(liveStats.coupons, "kupong", "kuponger") + "</span>" +
-        (compressionLevel === "none" ? " (okomprimerad)." : compressionLevel === "light" ? " (lättare komprimering)." : " (hårdare komprimering).");
+        "<span class=\"big\">" + coreText + "</span><br>" +
+        "0,50 kr/rad antaget — bekräfta alltid på atg.se.";
     }
     if(statusEl){
       if(liveStats.rows > 0){
@@ -1497,6 +1546,7 @@
   function refreshLiveStatsAndUI(){
     computeLiveStats(false);
     renderLiveSummary();
+    renderSystemOverview();
     currentRowUpdaters.forEach(function(fn){ fn(); });
   }
 

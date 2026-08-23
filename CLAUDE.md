@@ -205,6 +205,29 @@ menyknappens bredd med flikarna om utrymmet och tvingar den sista fliken
 att radbryta för sig själv. Flikstorleken (`.avd-tab`, ~1,9 rem) är avpassad
 för att rymma alla 8 avdelningar på en rad även på en smal mobilskärm.
 
+**Tabbordning:** `.menu-wrap` ligger nu **före** `.avd-tabs` i DOM:en (på
+användarens begäran, för att nå menyn utan att först behöva svepa/tabba
+förbi alla avdelningsknapparna) — påverkar bara läsordning/tabbordning,
+inte det visuella utseendet, eftersom `.menu-wrap` redan var absolut
+positionerad och alltså opåverkad av var den ligger i flödet.
+
+**Sidhuvudets ordning på huvudsidan** (`view-avdelning`): `#avd-progress`
+(omgångens namn: "V85 — Romme — 2026-08-22") och `#avd-turnover`
+(omsättning) ligger nu **högst upp på sidan**, före den sticky menyraden
+— på användarens begäran, så att omgångens sammanhang läses innan man når
+avdelningsflikarna/menyn. Ordningen är: `avd-progress` → `avd-turnover` →
+`.topbar` (meny + flikar) → `avd-heading` (lopprubrik) → `avd-terms` (se
+nedan) → `avd-marked-count` → hästlistan.
+
+**`#avd-terms`** (direkt efter lopprubriken `avd-heading`) visar loppets
+deltagandevillkor — ålder, kön, intjänandegränser, körsvenskrav — direkt
+från ATG:s egen `race.terms`-array (redan hämtad, inga extra anrop),
+sammanslagen till en löpande text. Verifierat mot ett riktigt API-svar:
+fältet finns och är redan färdigformulerad, läsbar svensk text (t.ex.
+"3-åriga och äldre ston 300.001 - 1.950.000 kr. Körsvenskrav kat. 1.
+Körsvenner födda 080822 eller tidigare."), så ingen egen formatering
+eller tolkning behövs. Döljs helt om loppet saknar `terms`.
+
 ---
 
 ## 5. ATG:s API — vad vi vet, verifierat
@@ -632,10 +655,13 @@ kr, {N} kuponger."` — `{X}` är hur många procent som **togs bort** av
 villkoren (`100 − (reducerat/oreducerat×100)`), inte hur många som blev
 kvar. Kupongantalet utelämnas bara vid `compressionLevel === "none"`
 (redundant mot radantalet där). Ett tryck navigerar till Villkor-vyn
-(`showView("villkor")`) där samma tal visas mer utförligt (`#summary-text`,
-samma `renderLiveSummary()`-funktion skriver båda). Innan alla åtta
-avdelningar har minst en markerad häst visar knappen en vägledande text
-istället ("Markera minst en häst i varje avdelning …").
+(`showView("villkor")`) där **exakt samma text** (`coreText` i
+`renderLiveSummary()`) visas i `#summary-text`, fetstilad, med en extra
+rad om prisantagandet under — de två visar alltså aldrig olika/inaktuella
+tal, på uttrycklig begäran ("sammanfattningen ... presenteras likadant som
+på knappen"). Innan alla åtta avdelningar har minst en markerad häst visar
+knappen en vägledande text istället ("Markera minst en häst i varje
+avdelning …").
 
 **Visuell prominens (byggd efter uttrycklig begäran — knappen "syntes inte"):**
 `class="btn-primary"` (samma gula accentfärg som andra viktiga knappar,
@@ -651,6 +677,32 @@ absolut skärmkant utan har lite luft nedåt.
 `#btn-export`s `disabled`-status — både den automatiska vägen
 (`refreshLiveStatsAndUI`) och den manuella knappen (`btn-calculate`) går
 via samma funktion, så de två aldrig kan visa olika/inaktuella tal.
+
+### Systemöversikt
+
+Egen `<h2>` i Villkor-vyn, direkt efter bokstavssammanställningen
+(`#letter-tally`), byggd efter uttrycklig begäran om att se exakt vilka
+hästar som är markerade i varje avdelning utan att behöva bläddra dit.
+`renderSystemOverview()` anropas både från `renderVillkor()` (vid
+navigering till vyn) och `refreshLiveStatsAndUI()` (vid varje ändring i
+avdelningsvyn), samma dubbla anropsmönster som `renderLiveSummary()`.
+
+- **`#system-overview-unreduced`** ("Oreducerat: X kombinationer.") visas
+  bara när `liveStats` är färskt (alla avdelningar har minst en markerad
+  häst) — annars döljs den helt, samma "hellre tyst"-princip.
+- Per avdelning byggs en `<h3>` ("Avd N: X hästar valda:") följt av, i
+  ABC-läge, en `<p>` per bokstav som faktiskt har markerade hästar
+  (`"A: 5, 9."`) — bokstäver utan träffar utelämnas helt, samma princip
+  som `#avd-marked-count`s bokstavsuppdelning. En avdelning utan några
+  markerade hästar visar ändå sin `<h3>` ("0 hästar valda:") men inga
+  bokstavsrader — **varje** avdelning listas alltid, till skillnad från
+  andra "hellre tyst"-ställen i appen, eftersom hela poängen är en
+  fullständig översikt.
+- **Vanligt matematiskt system:** hela avdelningen radas upp på samma rad
+  som rubriken istället ("Avd 1: 4 hästar valda: 6, 7, 9, 10.") — ingen
+  bokstavsuppdelning behövs eftersom alla ikryssade hästar internt är
+  bokstaven "A", på uttrycklig begäran ("kan varje avdelning presenteras
+  på samma rad").
 
 ---
 
