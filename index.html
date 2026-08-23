@@ -299,7 +299,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:10</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:41</span>
 
 </div>
 
@@ -1069,15 +1069,15 @@
           selectionLabel.className = "scratched-label";
           selectionLabel.textContent = "Struken. ";
         } else if(legLetters[start.number]){
-          var label = systemMode === "plain" ? "Vald" : "Vald " + legLetters[start.number] + "-häst";
+          var label = systemMode === "plain" ? "Vald" : "Vald " + legLetters[start.number];
           var stakeText = "";
           if(liveStats && !liveStats.tooBig && liveStats.rows > 0){
             var cnt = (liveStats.perLegCounts[currentAvd] || {})[start.number] || 0;
             var stakePct = Math.round((cnt / liveStats.rows) * 100);
-            stakeText = ", " + stakePct + "% av insatsen";
+            stakeText = " " + stakePct + "%";
           }
           selectionLabel.className = "selected-label";
-          selectionLabel.textContent = label + stakeText + ". ";
+          selectionLabel.textContent = label + stakeText + ", ";
         } else {
           selectionLabel.className = "";
           selectionLabel.textContent = "";

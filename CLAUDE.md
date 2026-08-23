@@ -631,11 +631,18 @@ innehåller den hästen}`). Körs automatiskt (`forceHuge=false`) efter
 - **Insatsprocent per häst** (i `updateSelectionLabel()`, samma funktion
   som redan byggde "Vald A-häst"-etiketten): är `liveStats` färskt och
   `rows > 0`, räknas `perLegCounts[avdelning][startnummer] / liveStats.rows
-  × 100` och läggs till direkt efter statusetiketten — exakt den
-  uppläsningsordning användaren bad om: `"Vald A-häst, 65% av
-  insatsen. 1 Varenne. ..."`. Saknas `liveStats` (inga hästar markerade i
-  alla avdelningar än, eller `tooBig`), visas ingen procent alls — bara
-  "Vald A-häst." som förut.
+  × 100` och läggs till direkt efter statusetiketten. Saknas `liveStats`
+  (inga hästar markerade i alla avdelningar än, eller `tooBig`), visas ingen
+  procent alls.
+  **Förkortad på uttrycklig begäran** (var `"Vald A-häst, 65% av
+  insatsen. 1 Varenne, ..."` — bokstaven fick eget "-häst"-suffix, ett eget
+  kommatecken, och "% av insatsen" utskrivet, sedan en punkt som bröt av
+  innan hästnamnet): är nu `"Vald A 65%, 1 Varenne, ..."` — inget
+  "-häst"-suffix, procenten skrivs direkt efter bokstaven utan mellanliggande
+  komma, och hela etiketten avslutas med **komma** (inte punkt) så den
+  flyter ihop med resten av den redan kommaseparerade huvudraden istället
+  för att bryta av som en egen mening. Gäller även Vanligt matematiskt
+  system (`"Vald 65%, ..."`, inget bokstavsled).
 - **Registrering av uppdaterare:** varje hästrad registrerar sin egen
   `updateSelectionLabel` i den modulglobala `currentRowUpdaters`-arrayen
   (nollställd i början av varje `renderAvdelning()`). `refreshLiveStatsAndUI()`
