@@ -185,10 +185,15 @@ V64, V5**. En speltyp utan några kommande omgångar får ingen rubrik alls
 (döljs helt, inte en tom sektion) — samma "hellre tyst än onödigt
 pratig"-princip som resten av appen. `#games-list` är numera en `<div>`
 istället för en `<ul>` (måste kunna innehålla `<h3>`+`<ul>`-par, en ren
-`<ul>` kan bara ha `<li>` som direkta barn). Knapptexten under varje rubrik
-upprepar inte längre speltypen (`"Romme — 2026-08-22 kl 18:00"`, inte
-`"V85 — Romme — …"`) eftersom rubriken redan säger det — samma
-uppläsningsprincip som annars i appen, inget dubbelt sagt.
+`<ul>` kan bara ha `<li>` som direkta barn).
+
+Knapptexten under varje rubrik hade först speltypen borttagen helt (rubriken
+sa det redan) — **återinförd på användarens begäran**, men i ett nytt
+format: banan följt av speltypen (`"Solvalla, V86 — 2026-08-26 kl 18:00"`,
+inte `"V86 — Solvalla — …"` som innan grupperingen). Motiveringen var att
+göra det tydligt när samma bana har flera omgångar av olika speltyper
+samma dag — bara rubriken räcker inte om man svepit förbi den och tappat
+sammanhanget.
 
 ### Spelformer — V85, V75, V86, GS75, V64, V5
 
@@ -598,7 +603,9 @@ visas ett tydligt felmeddelande och den sparade datan lämnas orörd.
 En liten textrad (`#autosave-status`, "Sparat automatiskt kl HH:MM.") på
 huvudsidan bekräftar synligt att sparningen faktiskt sker, i samma stil som
 `#status-msg`/`#nav-status` i VO Turf List — ingen `aria-live`, bara vanlig
-uppdaterad text.
+uppdaterad text. Placerad direkt under startlistan (`#horse-list`), inte
+högst upp bland de andra statusraderna — flyttad dit på användarens
+begäran för att inte ta plats/uppmärksamhet högst upp på sidan.
 
 **Ej byggt:** inloggning eller serverlagring — bedömdes som en stor
 överdrift (kräver backend/databas/autentisering) för ett personligt

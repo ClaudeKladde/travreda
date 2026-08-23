@@ -279,7 +279,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 14:04</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 14:10</span>
 
 </div>
 
@@ -301,9 +301,10 @@
   <h2 id="avd-heading" tabindex="-1">Avdelning</h2>
   <p class="avd-progress" id="avd-progress"></p>
   <p class="avd-progress" id="avd-marked-count"></p>
-  <p class="avd-progress" id="autosave-status"></p>
 
   <ul class="horse-list" id="horse-list"></ul>
+
+  <p class="avd-progress" id="autosave-status"></p>
 
   <div class="sticky-footer">
     <button type="button" id="btn-sticky-summary" class="btn-primary" aria-live="polite">Markera minst en häst i varje avdelning för att se antal rader.</button>
@@ -548,7 +549,7 @@
           var li = document.createElement("li");
           var btn = document.createElement("button");
           btn.type = "button";
-          btn.textContent = (g.trackName || "okänd bana") + " — " + formatDateTime(g.date, g.startTime);
+          btn.textContent = (g.trackName || "okänd bana") + ", " + g.type + " — " + formatDateTime(g.date, g.startTime);
           btn.addEventListener("click", function(){
             loadGame(g.type, g.id, g.date, g.trackId, g.trackName);
           });
