@@ -89,9 +89,13 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
 - **Uppläsningsordning:** viktig info direkt efter namnet, i den ordning
   användaren bad om: **häst, kusk, tränare, procent, barfota** — inte i
   slutet av en lång mening.
-- **Tystnad hellre än brus:** nämn bara barfota när hästen faktiskt går
-  barfota (inte "skor på" för varje häst) — samma "hellre tyst än onödigt
-  pratig"-princip som VO Turf List.
+- **Barfota visas alltid, precis som vagn** (`shoesInfo()`) — ändrat på
+  uttrycklig begäran från en tidigare princip om att bara nämna barfota
+  när hästen faktiskt går barfota. Visar nu "Skor på" som grundläge, exakt
+  samma mönster som `sulkyMainRowText()`: ett prefix ("Skobyte ") läggs
+  bara till om skorna faktiskt bytts sedan senast (`s.front.changed`/
+  `s.back.changed`), oavsett om bytet ledde till barfota eller till skor
+  på igen.
 - **Fokushantering:** flytta fokus till avdelningens rubrik
   (`tabindex="-1"`) när man byter avdelning, så VoiceOver-användare inte
   tappar sammanhanget.

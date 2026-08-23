@@ -315,7 +315,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 22:43</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 23:18</span>
 
 </div>
 
@@ -971,13 +971,13 @@
     var frontBare = s.front && s.front.hasShoe === false;
     var backBare = s.back && s.back.hasShoe === false;
     var changed = !!((s.front && s.front.changed) || (s.back && s.back.changed));
+    var base;
+    if(frontBare && backBare){ base = "Barfota runt om"; }
+    else if(frontBare){ base = "Barfota fram"; }
+    else if(backBare){ base = "Barfota bak"; }
+    else { base = "Skor på"; }
     var isNew = changed && (frontBare || backBare);
-    var prefix = isNew ? "Skobyte " : "";
-    var text = "";
-    if(frontBare && backBare){ text = prefix + "Barfota runt om"; }
-    else if(frontBare){ text = prefix + "Barfota fram"; }
-    else if(backBare){ text = prefix + "Barfota bak"; }
-    return { text: text, isNew: isNew };
+    return { text: (changed ? "Skobyte " : "") + base, isNew: isNew };
   }
 
   function percentText(start, type){
