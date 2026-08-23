@@ -299,7 +299,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:03</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:10</span>
 
 </div>
 
@@ -346,6 +346,8 @@
 
   <label for="villkor-preset">Fördefinierat villkor</label>
   <select id="villkor-preset"></select>
+
+  <button type="button" id="btn-clear-system">Rensa system</button>
 
   <p id="letter-tally" class="avd-progress"></p>
 
@@ -642,6 +644,7 @@
           btn.type = "button";
           btn.textContent = (g.trackName || "okänd bana") + ", " + g.type + " — " + formatDateTime(g.date, g.startTime);
           btn.addEventListener("click", function(){
+            if(!confirmDiscardIfNeeded()){ return; }
             loadGame(g.type, g.id, g.date, g.trackId, g.trackName);
           });
           li.appendChild(btn);
@@ -672,6 +675,7 @@
       statusEl.textContent = "Ange både datum och bankod.";
       return;
     }
+    if(!confirmDiscardIfNeeded()){ return; }
     statusEl.textContent = "Söker efter omgången …";
     findGameByBruteForce(type, date, track).then(function(result){
       statusEl.textContent = "";
@@ -740,6 +744,34 @@
     } catch(e){
       return null;
     }
+  }
+
+  function hasAnyMarkedLetters(){
+    return Object.keys(letters).some(function(legIdx){
+      return Object.keys(letters[legIdx] || {}).length > 0;
+    });
+  }
+
+  function confirmDiscardIfNeeded(){
+    if(currentGame && hasAnyMarkedLetters()){
+      return confirm("Du har redan markerat hästar i ett pågående system. Fortsätta och rensa det?");
+    }
+    return true;
+  }
+
+  function clearSystem(){
+    if(!currentGame){ return; }
+    if(!confirm("Rensa alla bokstavsmarkeringar i det här systemet?")){ return; }
+    letters = {};
+    systemMode = "abc";
+    var defaultPreset = VILLKOR_PRESETS.filter(function(p){ return p.id === DEFAULT_PRESET_ID; })[0];
+    villkor = presetToVillkor(defaultPreset, currentGame.races.length);
+    currentAvd = 0;
+    lastCalculatedRows = null;
+    lastCoupons = null;
+    document.getElementById("btn-export").disabled = true;
+    renderVillkor();
+    saveState();
   }
 
   function loadGame(type, id, date, trackId, trackName, restoreData){
@@ -1277,6 +1309,8 @@
     if(currentGame){ renderAvdelning(); }
     saveState();
   });
+
+  document.getElementById("btn-clear-system").addEventListener("click", clearSystem);
 
   function buildCandidates(){
     return currentGame.races.map(function(race, idx){

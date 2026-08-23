@@ -795,6 +795,43 @@ verktyg med en användare, och bryter mot enfils/ingen-server-principen.
 `localStorage` löser det faktiska problemet (data överlever flikbyte och
 hel omladdning) utan den komplexiteten.
 
+### Skydd mot att tappa ett system av misstag
+
+**Bakgrund:** användaren frågade vad som händer om man vill bygga ett nytt
+system för samma omgång (t.ex. går tillbaka till Startsidan och väljer
+samma omgång igen) — `loadGame()` utan `restoreData` nollställer tyst
+`letters`/`villkor`/`systemMode`, och `saveState()` skriver omedelbart över
+den sparade datan, så det fanns ingen väg tillbaka.
+
+- **`hasAnyMarkedLetters()`** — sant om minst en häst i någon avdelning har
+  en bokstav satt.
+- **`confirmDiscardIfNeeded()`** — visar en `confirm()`-dialog ("Du har
+  redan markerat hästar i ett pågående system. Fortsätta och rensa det?")
+  bara om `hasAnyMarkedLetters()` är sant. Anropas av **båda** ställena som
+  kan starta en ny omgångsladdning: knapparna i omgångslistan på Startsidan
+  och den manuella datum/bankod-inmatningen (`btn-manual-load`) — precis
+  före respektive `loadGame()`-anrop, aldrig inuti `loadGame()` självt, så
+  den vanliga automatiska återställningen vid sidladdning (som skickar
+  `restoreData`) aldrig påverkas. Avbryter man dialogen (`confirm()`
+  returnerar `false`) händer ingenting — ingen laddning sker, systemet
+  ligger kvar orört.
+- **`clearSystem()`** — ny knapp **`#btn-clear-system`** ("Rensa system") i
+  Villkor-vyn, direkt efter villkor-rullistan. Egen `confirm()`-dialog
+  ("Rensa alla bokstavsmarkeringar i det här systemet?"), och nollställer
+  vid bekräftelse `letters`, `systemMode` (tillbaka till `"abc"`) och
+  `villkor` (tillbaka till förvalet `DEFAULT_PRESET_ID`, samma
+  `presetToVillkor()`-anrop som `loadGame()`s eget resetblock använder) utan
+  att lämna omgången — till skillnad från att ladda om omgången helt,
+  behåller detta startlistan/oddsen som redan är hämtade. Ritar om
+  Villkor-vyn (`renderVillkor()`) och sparar (`saveState()`) direkt.
+
+Verifierat med Playwright mot en riktig V85-fixture: bekräftad omladdning
+av samma omgång med markeringar utlöser exakt en dialog och nollställer
+`#avd-marked-count` till `"0 av N hästar markerade."`; en omladdning med
+**tomt** system (inga markeringar) utlöser **ingen** dialog alls; "Rensa
+system" utlöser sin egen dialog och nollställer på samma sätt utan att
+lämna Villkor-vyn.
+
 ---
 
 ## 9. Kända begränsningar i v1
