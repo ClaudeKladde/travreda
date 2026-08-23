@@ -448,10 +448,31 @@ kupongkomprimering är nu byggd, se "Kupongkomprimering" nedan.
 v1** — medvetet vald begränsning, se konversationshistorik. Kuponger är
 giltiga utan dem, bara utan automatisk ersättning vid strykning.
 
-**Radpris:** antaget 0,50 kr/rad (bekräftat via Jokersystemet-exemplet:
-1865 rader × 0,50 kr = exakt 932,50 kr som visades i deras PDF) — **inte
-bekräftat direkt mot ATG för V85 specifikt**, dubbelkolla alltid faktiskt
-pris på atg.se innan du lämnar in en fil.
+**Radpris varierar per speltyp** (`ROW_PRICE`) — **bugg rapporterad och
+fixad:** appen antog tidigare 0,50 kr/rad för alla sex speltyper (kvar
+sedan v1, innan V86/GS75/V64/V5 lades till). Fel: bara V85/V75 kostar
+0,50 kr. Verifierat mot ATG:s egen kundtjänstguide ("Vilka spelformer
+finns och hur högt är radpriset?"):
+
+| Typ | Kr/rad |
+|---|---|
+| V85 | 0,50 |
+| V75 | 0,50 |
+| V86 | 0,25 |
+| GS75 | 1 |
+| V64 | 1 |
+| V5 | 1 |
+
+V85:s pris (0,50 kr) är dessutom bekräftat via ett oberoende verkligt
+exempel (Jokersystemet-PDF:en: 1865 rader × 0,50 kr = exakt 932,50 kr) —
+övriga fem typers pris vilar bara på kundtjänstguiden ovan, inte på ett
+eget verkligt inlämnat exempel. Dubbelkolla alltid faktiskt pris på
+atg.se innan du lämnar in en fil, speciellt för en ny speltyp.
+`renderLiveSummary()` slår upp `ROW_PRICE[currentGame.type]` istället för
+ett hårdkodat tal, och sammanfattningsraden anger numera vilket pris/rad
+och vilken speltyp som använts (`"0,50 kr/rad för V85 — bekräfta alltid på
+atg.se."`) istället för ett generiskt "0,50 kr/rad antaget" oavsett
+speltyp.
 
 **Testat mot en riktig filinlämning på atg.se** (2026-08-22, inför omgången
 den 25:e) — filen gick att lämna in, men gav ett varningsmeddelande:
@@ -914,7 +935,9 @@ lämna Villkor-vyn.
 - Bara V85, V75, V86 (samma XML-struktur, olika antal avdelningar/tagg).
 - Ingen reservhästhantering i exporten.
 - Ingen kupong-komprimering — kan ge stora filer vid breda system.
-- Radpris (0,50 kr) är ett antagande, inte bekräftat direkt mot ATG för V85.
+- Radpris per speltyp (se `ROW_PRICE` i avsnitt 6) vilar för fem av sex
+  typer bara på ATG:s kundtjänstguide, inte ett eget verkligt inlämnat
+  exempel (bara V85 är bekräftat så, via Jokersystemet-PDF:en).
 - Spel-id-upptäckt (GitHub Action) ej körd/verifierad över flera dagar än —
   bör observeras några dagar för att bekräfta att den håller sig uppdaterad.
 - Ej testat mot en riktig filinlämning på atg.se.

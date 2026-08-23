@@ -307,7 +307,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:52</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 22:01</span>
 
 </div>
 
@@ -373,7 +373,8 @@
   <h3>Exportera till ATG</h3>
   <p>Skapar en XML-fil som du laddar upp under
   <a href="https://www.atg.se/spel/reducerat" target="_blank" rel="noopener">Filinlämning på atg.se</a>.
-  Radpris är antaget till 0,50 kr — dubbelkolla alltid det faktiska priset på
+  Radpriset varierar per spelform (t.ex. 50 öre för V85/V75, 25 öre för V86,
+  1 krona för GS75/V64/V5) — dubbelkolla alltid det faktiska priset på
   atg.se innan du lämnar in.</p>
   <button type="button" id="btn-export" class="btn-primary" disabled>Ladda ner ATG-fil</button>
   <button type="button" id="btn-open-atg">Öppna ATG:s filinlämning</button>
@@ -401,7 +402,8 @@
   <fieldset>
     <legend>Komprimering av exportfil</legend>
     <p class="avd-progress">Slår ihop rader som delar bokstavsmönster till färre kupongrader
-    i exportfilen. Priset (antal rader × 0,50 kr) påverkas inte, bara antalet kupongrader.</p>
+    i exportfilen. Priset (antal rader × radpriset för vald spelform) påverkas
+    inte, bara antalet kupongrader.</p>
     <div>
       <input type="radio" name="compression-level" id="compression-none" value="none">
       <label for="compression-none">Okomprimerad (en kupong per rad)</label>
@@ -436,6 +438,11 @@
   // 1.8.6) — v75/v64/gs75Coupon saknar det helt (flerbane-spel, inget enskilt
   // trackcode att ange). Verifierat direkt i schemat, inte en gissning.
   var COUPON_HAS_TRACKCODE = { V85: true, V75: false, V86: true, GS75: false, V64: false, V5: true };
+  // Radpris i kronor per speltyp — verifierat mot ATG:s egen kundtjänstguide
+  // ("Vilka spelformer finns och hur högt är radpriset?"), inte längre ett
+  // enda antaget värde för alla spelformer. V85 och V75 delar samma pris
+  // (V85 efterträdde V75 som ATG:s flaggskeppsspel).
+  var ROW_PRICE = { V85: 0.5, V75: 0.5, V86: 0.25, GS75: 1, V64: 1, V5: 1 };
   var GAME_TYPE_ORDER = ["V85", "V86", "V75", "GS75", "V64", "V5"];
   var MAX_UNREDUCED_WARN = 3000000;
 
@@ -893,6 +900,10 @@
 
   function pl(n, singular, plural){
     return n + " " + (n === 1 ? singular : plural);
+  }
+
+  function formatKr(v){
+    return v % 1 === 0 ? String(v) : v.toFixed(2).replace(".", ",");
   }
 
   var START_METHOD_TEXT = { volte: "voltstart", auto: "autostart" };
@@ -1667,7 +1678,8 @@
 
     var pct = liveStats.unreduced > 0 ? Math.round((liveStats.rows / liveStats.unreduced) * 100) : 0;
     var reducedPct = 100 - pct;
-    var price = (liveStats.rows * 0.5).toFixed(2).replace(".", ",");
+    var rowPrice = ROW_PRICE[currentGame.type];
+    var price = (liveStats.rows * rowPrice).toFixed(2).replace(".", ",");
     var levelText = compressionLevel === "none" ? " (okomprimerad)" :
       compressionLevel === "light" ? " (lättare komprimering)" : " (hårdare komprimering)";
     var couponText = compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger") + levelText;
@@ -1677,7 +1689,7 @@
     if(summaryText){
       summaryText.innerHTML =
         "<span class=\"big\">" + coreText + "</span><br>" +
-        "0,50 kr/rad antaget — bekräfta alltid på atg.se.";
+        formatKr(rowPrice) + " kr/rad för " + currentGame.type + " — bekräfta alltid på atg.se.";
     }
     if(statusEl){
       if(liveStats.rows > 0){
