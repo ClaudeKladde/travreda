@@ -59,7 +59,7 @@ att låtsas att det är bekräftat.
 Längst ner i `index.html` finns:
 
 ```html
-<span class="update-line">Vibe coded with Claude, senast uppdaterad ÅÅÅÅ-MM-DD HH:MM</span>
+<span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad ÅÅÅÅ-MM-DD HH:MM</span>
 ```
 
 Uppdatera alltid till aktuellt datum/klockslag vid varje nytt bygge.
