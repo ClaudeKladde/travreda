@@ -124,6 +124,55 @@ knappen som syskon, vilket dubblerade antalet svep per häst — rättat.
   tydlig stängknapp efter att ha svept igenom all information, istället för
   att behöva svepa bakåt till den ursprungliga knappen.
 
+### Detaljvyns tre grupper + valbara fält
+
+Den utfällda detaljvyn (tidigare ett enda sammanhängande stycke) är nu
+uppdelad i upp till fyra `<p>`-element — en `<ul>`-liknande gruppering utan
+extra ARIA, bara vanliga stycken efter varandra, byggda av
+`buildHorseGroupLines()`/`buildTrainerGroupLines()`/`buildDriverGroupLines()`/
+`buildOddsGroupLines()`:
+
+1. **Häst** — Trendprocent, säsongsstatistik, intjänade pengar, bästa
+   rekord, ålder/kön/färg, vagn (detaljraden), ägare, uppfödare, hemmabana.
+2. **Tränare**
+3. **Kusk**
+4. **Odds** (vinnarodds/platsodds), en avslutande rad för sig, inte en del
+   av häst-gruppen — placerad sist eftersom den hör till marknadsdata
+   snarare än hästens egna fakta.
+
+Ordningen häst → tränare → kusk (kusken flyttad från första till sista
+platsen) var uttryckligen efterfrågad. En grupp med tom rad-lista renderas
+inte alls (t.ex. om alla fält i en grupp är avstängda) — samma "hellre tyst
+än tomt element"-princip som resten av appen.
+
+**Två nya fält, hittade i data som redan hämtas men aldrig använts:**
+
+- **Trendprocent** (`pools[TYP].trend`, per häst) — hur spelprocenten
+  förändras just nu. **Inte dokumenterad av ATG** (hittades bara genom att
+  inspektera ett riktigt API-svar), så tolkningen av enheten (`trend × 100`
+  som procentenheter) är en rimlig gissning, inte bekräftad. Ett värde som
+  avrundar till 0,0 tappar sitt +/−-tecken (annars kunde det bli det
+  missvisande "-0,0 procentenheter").
+- **Intjänade pengar** (`horse.money`, redan i kronor — samma tal som
+  `statistics.life.earnings` fast redan delat med 100) — hästens totala
+  livstidsintjäning, formaterat med `toLocaleString("sv-SE")` för
+  tusentalsavgränsare.
+
+**Total omsättning** för hela omgången (`currentGame.pools[TYP].turnover`,
+från spelets toppnivå-`pools`-objekt — måste sparas explicit på
+`currentGame` i `loadGame()`, fanns inte där tidigare) visas i
+`#avd-progress` bredvid omgångens namn: `"V85 — Romme — 2026-08-22.
+Omsättning: 6 507 253 kr."` Avrundad till hela kronor.
+
+**Valbara fält:** en kryssrutegrupp under Inställningar
+(`DETAIL_FIELDS`, en post per rad ovan plus Tränare/Kusk/Odds som egna
+kryssrutor — tolv totalt) låter användaren stänga av enskilda rader.
+Sparas i `travreda-detail-fields` (ett objekt `{nyckel: boolean}` i
+localStorage), alla på som standard. Byggd på uttrycklig begäran istället
+för att gissa vilka av de befintliga fälten (ålder/kön/färg, ägare,
+uppfödare) som skulle tas bort för att göra plats åt de två nya — nu är
+inget borttaget, allt är valbart.
+
 ### Sticky avdelningsflikar + meny
 
 Menyknappen (`.menu-wrap`) är `position:absolute` i sticky-radens

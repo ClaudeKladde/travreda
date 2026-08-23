@@ -279,7 +279,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 14:36</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 15:15</span>
 
 </div>
 
@@ -379,6 +379,11 @@
     </div>
   </fieldset>
 
+  <fieldset>
+    <legend>Information i hästens detaljvy</legend>
+    <div id="detail-field-checkboxes"></div>
+  </fieldset>
+
   <p>Fler inställningar kommer att läggas till här senare.</p>
 
 </div>
@@ -407,6 +412,32 @@
   var liveStats = null;
   var currentRowUpdaters = [];
   var LIVE_STATS_MAX = 200000;
+
+  var DETAIL_FIELDS = [
+    { key: "trend", label: "Trendprocent" },
+    { key: "seasonStats", label: "Säsongsstatistik" },
+    { key: "money", label: "Intjänade pengar" },
+    { key: "record", label: "Bästa rekord" },
+    { key: "ageSexColor", label: "Ålder, kön och färg" },
+    { key: "sulkyDetail", label: "Vagn (i detaljvyn)" },
+    { key: "owner", label: "Ägare" },
+    { key: "breeder", label: "Uppfödare" },
+    { key: "homeTrack", label: "Hemmabana" },
+    { key: "trainerLine", label: "Tränare" },
+    { key: "driverLine", label: "Kusk" },
+    { key: "odds", label: "Odds" }
+  ];
+  var DETAIL_FIELDS_KEY = "travreda-detail-fields";
+  var detailFields = {};
+  DETAIL_FIELDS.forEach(function(f){ detailFields[f.key] = true; });
+  try {
+    var storedDetailFields = JSON.parse(localStorage.getItem(DETAIL_FIELDS_KEY));
+    if(storedDetailFields && typeof storedDetailFields === "object"){
+      DETAIL_FIELDS.forEach(function(f){
+        if(typeof storedDetailFields[f.key] === "boolean"){ detailFields[f.key] = storedDetailFields[f.key]; }
+      });
+    }
+  } catch(e){}
 
   var VILLKOR_PRESETS = [
     { id: "a2c1", label: "Minst 2 A-hästar och max 1 C-häst", rules: [{ letter: "A", min: 2 }, { letter: "C", min: 0, max: 1 }] },
@@ -512,6 +543,27 @@
         if(currentGame){ refreshLiveStatsAndUI(); }
       }
     });
+  });
+
+  var detailFieldContainer = document.getElementById("detail-field-checkboxes");
+  DETAIL_FIELDS.forEach(function(f){
+    var wrap = document.createElement("div");
+    var checkboxId = "detail-field-" + f.key;
+    var checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.id = checkboxId;
+    checkbox.checked = detailFields[f.key];
+    var label = document.createElement("label");
+    label.setAttribute("for", checkboxId);
+    label.textContent = f.label;
+    checkbox.addEventListener("change", function(){
+      detailFields[f.key] = checkbox.checked;
+      try { localStorage.setItem(DETAIL_FIELDS_KEY, JSON.stringify(detailFields)); } catch(e){}
+      if(currentGame){ renderAvdelning(); }
+    });
+    wrap.appendChild(checkbox);
+    wrap.appendChild(label);
+    detailFieldContainer.appendChild(wrap);
   });
 
   function setGlobalStatus(msg){
@@ -661,7 +713,8 @@
         date: date,
         trackId: trackId || (data.races[0].track ? data.races[0].track.id : null),
         trackName: trackName || (data.races[0].track ? data.races[0].track.name : ""),
-        races: data.races
+        races: data.races,
+        pools: data.pools
       };
       if(restoreData){
         letters = restoreData.letters || {};
@@ -780,42 +833,87 @@
       pl(placement["3"] || 0, "tredjeplats", "tredjeplatser") + ".";
   }
 
-  function buildDetailText(start){
+  function turnoverText(){
+    var pool = currentGame.pools && currentGame.pools[currentGame.type];
+    if(!pool || pool.turnover == null){ return ""; }
+    return ". Omsättning: " + Math.round(pool.turnover / 100).toLocaleString("sv-SE") + " kr";
+  }
+
+  function trendText(start, type){
+    var pool = start.pools && start.pools[type];
+    if(!pool || pool.trend == null){ return null; }
+    var rounded = Math.abs(pool.trend * 100).toFixed(1);
+    var sign = rounded === "0.0" ? "" : (pool.trend > 0 ? "+" : "-");
+    return "Trendprocent: " + sign + rounded.replace(".", ",") + " procentenheter.";
+  }
+
+  function moneyText(horse){
+    if(horse.money == null){ return null; }
+    return "Pengar: " + horse.money.toLocaleString("sv-SE") + " kr intjänat totalt.";
+  }
+
+  // Detaljvyn är uppdelad i tre grupper (häst, tränare, kusk) plus en
+  // avslutande oddsrad, en <p> per grupp — så en VoiceOver-användare kan
+  // svepa förbi en grupp i taget istället för allt i ett enda stycke.
+  function buildHorseGroupLines(start){
     var horse = start.horse;
-    var driver = start.driver;
-    var trainer = horse.trainer;
     var lines = [];
-
-    var driverPct = winStatsText(driver);
-    lines.push("Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
-      (driverPct ? ", " + driverPct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + ".");
-
-    var trainerPct = winStatsText(trainer);
-    lines.push("Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
-      (trainerPct ? ", " + trainerPct : "") + ".");
-
-    var record = recordText(horse);
-    if(record){ lines.push("Bästa rekord: " + record + "."); }
-
-    var sexText = SEX_TEXT[horse.sex] || horse.sex;
-    lines.push(horse.age + "-årig " + sexText + (horse.color ? ", " + horse.color : "") + ".");
-
-    var sulky = sulkyDetailText(horse);
-    if(sulky){ lines.push(sulky); }
-
-    if(horse.owner && horse.owner.name){ lines.push("Ägare: " + horse.owner.name + "."); }
-    if(horse.breeder && horse.breeder.name){
+    if(detailFields.trend){
+      var trend = trendText(start, currentGame.type);
+      if(trend){ lines.push(trend); }
+    }
+    if(detailFields.seasonStats){
+      var season = yearStatsText(horse, "Säsong");
+      if(season){ lines.push(season); }
+    }
+    if(detailFields.money){
+      var money = moneyText(horse);
+      if(money){ lines.push(money); }
+    }
+    if(detailFields.record){
+      var record = recordText(horse);
+      if(record){ lines.push("Bästa rekord: " + record + "."); }
+    }
+    if(detailFields.ageSexColor){
+      var sexText = SEX_TEXT[horse.sex] || horse.sex;
+      lines.push(horse.age + "-årig " + sexText + (horse.color ? ", " + horse.color : "") + ".");
+    }
+    if(detailFields.sulkyDetail){
+      var sulky = sulkyDetailText(horse);
+      if(sulky){ lines.push(sulky); }
+    }
+    if(detailFields.owner && horse.owner && horse.owner.name){
+      lines.push("Ägare: " + horse.owner.name + ".");
+    }
+    if(detailFields.breeder && horse.breeder && horse.breeder.name){
       lines.push("Uppfödare: " + horse.breeder.name + (horse.breeder.location ? " (" + horse.breeder.location + ")" : "") + ".");
     }
-    if(horse.homeTrack && horse.homeTrack.name){ lines.push("Hemmabana: " + horse.homeTrack.name + "."); }
+    if(detailFields.homeTrack && horse.homeTrack && horse.homeTrack.name){
+      lines.push("Hemmabana: " + horse.homeTrack.name + ".");
+    }
+    return lines;
+  }
 
+  function buildTrainerGroupLines(start){
+    if(!detailFields.trainerLine){ return []; }
+    var trainer = start.horse.trainer;
+    var pct = winStatsText(trainer);
+    return ["Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
+      (pct ? ", " + pct : "") + "."];
+  }
+
+  function buildDriverGroupLines(start){
+    if(!detailFields.driverLine){ return []; }
+    var driver = start.driver;
+    var pct = winStatsText(driver);
+    return ["Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
+      (pct ? ", " + pct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + "."];
+  }
+
+  function buildOddsGroupLines(start){
+    if(!detailFields.odds){ return []; }
     var odds = oddsText(start);
-    if(odds){ lines.push("Odds: " + odds); }
-
-    var horseYear = yearStatsText(horse, "Hästens säsong");
-    if(horseYear){ lines.push(horseYear); }
-
-    return lines.join(" ");
+    return odds ? [odds] : [];
   }
 
   function renderAvdTabs(){
@@ -849,7 +947,7 @@
     heading.focus();
 
     document.getElementById("avd-progress").textContent =
-      currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date;
+      currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date + turnoverText();
 
     var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
     var markedCount = Object.keys(legLetters).length;
@@ -950,9 +1048,14 @@
       detailDiv.id = detailId;
       detailDiv.className = "horse-detail";
       detailDiv.hidden = true;
-      var detailP = document.createElement("p");
-      detailP.textContent = buildDetailText(start);
-      detailDiv.appendChild(detailP);
+
+      [buildHorseGroupLines(start), buildTrainerGroupLines(start),
+        buildDriverGroupLines(start), buildOddsGroupLines(start)].forEach(function(groupLines){
+        if(groupLines.length === 0){ return; }
+        var p = document.createElement("p");
+        p.textContent = groupLines.join(" ");
+        detailDiv.appendChild(p);
+      });
 
       var minimizeBtn = document.createElement("button");
       minimizeBtn.type = "button";
