@@ -206,20 +206,18 @@ filstöd innan användaren rättade detta. `v85CouponType` finns i 1.8.6.
       <leg legno="1" marks="000000100000000" />
       <!-- ... en leg per avdelning (8 för V85/V86, 7 för V75) ... -->
     </v85Coupon>
-    <!-- en kupong per godkänd rad -->
+    <!-- en kupong per exporterad rad ELLER, vid komprimering, per bokstavsmönster
+    (flera hästar markerade i marks på en och samma leg — se "Kupongkomprimering" nedan) -->
   </betcoupons>
 </issuer>
 ```
 
-`marks` = 15 tecken, position = startnummer, `1` = markerad. `couponid` är
-löpnummer i filen (1–9999 enligt schemat).
+`marks` = 15 tecken, position = startnummer, `1` = markerad (kan vara flera
+`1`:or på en och samma leg, se komprimering nedan). `couponid` är löpnummer i
+filen (1–9999 enligt schemat).
 
-**Medvetet enkel modell för v1:** en `<coupon>` per godkänd rad (okomprimerat)
-istället för Jokersystemets kupong-komprimering (som packar tusentals rader
-till några hundra kuponger via en icke-trivial optimeringsalgoritm). Schemat
-tillåter upp till 9999 kuponger, vilket räcker gott för normala
-V85-systemstorlekar. Matematiskt identisk insats, bara mindre kompakt fil.
-Riktig komprimering kan byggas senare om filerna blir för stora.
+**v1 exporterade en `<coupon>` per godkänd rad (okomprimerat).** Riktig
+kupongkomprimering är nu byggd, se "Kupongkomprimering" nedan.
 
 **Reservhästar (r1/r2 i schemat, för stryknings-ersättning) hanteras inte i
 v1** — medvetet vald begränsning, se konversationshistorik. Kuponger är
@@ -250,6 +248,81 @@ filnamnet.
 **Fortfarande inte bekräftat:** om felmeddelandet försvinner helt med
 checksumman på plats, eller om filen faktiskt går igenom till spel utan
 fler varningar — nästa verkliga inlämningsförsök avgör det.
+
+### Kupongkomprimering (exakt, tre nivåer)
+
+Byggt efter uttrycklig begäran om att hålla ner antalet kuponger (mål:
+under 100 för ett typiskt system på 30 000–40 000 rader) **utan att någonsin
+täcka en enda rad som inte uppfyller villkoren** — användaren svarade
+uttryckligen nej på frågan om överdäckning (extra, icke-villkorsuppfyllande
+kombinationer) var acceptabelt, så alla tre nivåer är 100 % exakta.
+
+**Varför det är svårt:** en ATG-kupong kan bara uttrycka "vilken som helst
+av dessa hästar" *inom en enda avdelning* (`marks`-bitmasken är oberoende
+per `<leg>`). Den kan inte uttrycka ett villkor som gäller summan av en
+bokstav över flera avdelningar. Rader kan därför bara slås ihop till en och
+samma kupong om de delar **exakt samma bokstavsmönster** (vilken bokstav
+varje avdelning bidrar med) — annars skulle kupongen även täcka
+kombinationer som villkoren inte tillåter.
+
+- **Okomprimerad** (`compressionLevel = "none"`) — en kupong per rad, som
+  ursprungliga v1.
+- **Lättare komprimering** (`"light"`, **standard**) — `buildPatternBoxes()`
+  grupperar raderna efter bokstavsmönster via en backtracking-sökning
+  (`dfs()` i funktionen, med tidig avbrytning så fort ett villkors min/max
+  omöjligt kan uppfyllas med kvarvarande avdelningar). Bokstäver som inte
+  förekommer i något villkor (t.ex. B/D när villkoren bara gäller A/C)
+  slås ihop till en gemensam `"OTHER"`-grupp per avdelning eftersom de inte
+  påverkar om villkoren uppfylls — det är den här sammanslagningen som gör
+  att redan denna nivå ofta ger en stor kompression (antalet *mönster* är
+  ofta mycket mindre än antalet rader, särskilt när flera hästar delar
+  bokstav i en avdelning). Helt exakt: varje rad hör till exakt ett mönster
+  (dess egna bokstäver per avdelning), så mönster-kupongerna är en ren
+  partition av radmängden, aldrig en approximation.
+- **Hårdare komprimering** (`"hard"`) — efter Lättare, `compressHard()`
+  kör `mergeBoxesOnce()` upprepade gånger: hitta grupper av mönster-kuponger
+  som är identiska i **alla avdelningar utom en**, och slå ihop dem genom
+  att unionera hästarna i just den avdelningen. Matematiskt säkert (om två
+  mönster var för sig redan uppfyller villkoren oavsett den ena
+  avdelningens bokstav, gör vilken kombination som helst av de
+  sammanslagna hästarna det också) — analogt med hur Quine-McCluskey slår
+  ihop angränsande minterm i logikminimering, fast med bokstäver istället
+  för bitar och upp till 8 dimensioner. Körs till en fixpunkt (inga fler
+  sammanslagningar möjliga), begränsat av en säkerhetsspärr på
+  `legCount × 5` iterationer (rent defensivt — varje lyckad
+  sammanslagningsrunda minskar kupongantalet strikt, så en oändlig loop är
+  inte möjlig i praktiken).
+
+**Verifierat exakt** dels med en fristående Node-testfil (syntetiska
+8-avdelningssystem, jämför den fulla raduppsättningen från `generateRows()`
+mot samma uppsättning uppackad ur kupongerna — alla scenarier gav 100 %
+matchning, inklusive ett 41 118-raders system nära användarens angivna
+typiska storlek som gick från 458 kuponger (Lättare) till 80 (Hårdare)),
+dels end-to-end i en riktig webbläsare (Playwright, riktig V85-fixture):
+23 920 rader → 1 207 kuponger (Lättare) → 168 kuponger (Hårdare), export-
+XML:en parsad och uppackad tillbaka till radnivå för alla tre nivåer,
+exakt likadan raduppsättning i samtliga fall.
+
+**Priset påverkas inte** — komprimering ändrar bara hur få fysiska
+kupongrader som behövs i exportfilen, inte hur många kombinationer som
+faktiskt spelas. `liveStats.rows`/priset räknas alltid från de faktiska
+raderna (`generateRows()`), oberoende av vald komprimeringsnivå.
+`liveStats.coupons` är det separata talet som visas i sammanfattningen och
+avgör hur många `<coupon>`-element exportfilen får.
+
+**Inget nytt prestandaproblem:** mönster-sökningen jobbar med det
+*reducerade alfabetet* (antal villkorsstyrda bokstäver + 1 för "OTHER" per
+avdelning, i praktiken högst 3 med de fördefinierade presets: A, C, OTHER)
+upphöjt till antal avdelningar — några tusen noder i värsta fall, oberoende
+av hur många hästar per bokstav. Ingen koppling till `LIVE_STATS_MAX`
+(200 000, som bara gäller den råa radgenereringen).
+
+**Inställning:** en radioknappsgrupp (`compression-level`) under
+Inställningar, samma mönster som sorteringsvalet, sparad i egen
+localStorage-nyckel (`travreda-compression`, global inställning precis som
+`travreda-sort-order` — inte kopplad till en specifik omgång). Byte av nivå
+kör om `refreshLiveStatsAndUI()` direkt så sammanfattningen och sticky-
+knappen uppdateras utan att behöva trycka på "Beräkna rader".
 
 ---
 
@@ -371,13 +444,23 @@ innehåller den hästen}`). Körs automatiskt (`forceHuge=false`) efter
 inspirerad, byggd efter uttrycklig begäran) visar och läser upp
 (`aria-live="polite"` direkt på knappen) samma sammanfattning i kompakt
 form: `"{oreducerat} rader, reducerat {X} %, {reducerat} rader, pris {kr}
-kr."` — `{X}` är hur många procent som **togs bort** av villkoren
-(`100 − (reducerat/oreducerat×100)`), inte hur många som blev kvar. Ett
-tryck navigerar till Villkor-vyn (`showView("villkor")`) där samma tal
-visas mer utförligt (`#summary-text`, samma `renderLiveSummary()`-funktion
-skriver båda). Innan alla åtta avdelningar har minst en markerad häst visar
-knappen en vägledande text istället ("Markera minst en häst i varje
-avdelning …").
+kr, {N} kuponger."` — `{X}` är hur många procent som **togs bort** av
+villkoren (`100 − (reducerat/oreducerat×100)`), inte hur många som blev
+kvar. Kupongantalet utelämnas bara vid `compressionLevel === "none"`
+(redundant mot radantalet där). Ett tryck navigerar till Villkor-vyn
+(`showView("villkor")`) där samma tal visas mer utförligt (`#summary-text`,
+samma `renderLiveSummary()`-funktion skriver båda). Innan alla åtta
+avdelningar har minst en markerad häst visar knappen en vägledande text
+istället ("Markera minst en häst i varje avdelning …").
+
+**Visuell prominens (byggd efter uttrycklig begäran — knappen "syntes inte"):**
+`class="btn-primary"` (samma gula accentfärg som andra viktiga knappar,
+t.ex. "Beräkna rader") istället för den vanliga grå standardknappsstilen,
+plus egen, något större `font-size`/`padding` (`#btn-sticky-summary` i
+CSS). `.sticky-footer` fick också extra `padding-bottom` via
+`env(safe-area-inset-bottom, 0px)` (samma mönster som VO Turf List
+använder för sina sticky-knappar) så att knappen inte sitter klistrad i
+absolut skärmkant utan har lite luft nedåt.
 
 `renderLiveSummary()` är den enda platsen som skriver till
 `#btn-sticky-summary`, `#summary-text`, `#calc-status` och togglar

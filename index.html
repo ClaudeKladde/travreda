@@ -211,7 +211,7 @@
     bottom:0;
     background:var(--bg);
     border-top:1px solid var(--card-border);
-    padding:.75rem 1rem;
+    padding:.75rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
     margin:1rem -1rem 0;
     display:flex;
     justify-content:center;
@@ -220,6 +220,10 @@
     width:100%;
     max-width:28rem;
     text-align:center;
+  }
+  #btn-sticky-summary{
+    font-size:1.05rem;
+    padding:.9rem 1rem;
   }
   .status-msg{margin:.5rem 0 1rem;min-height:1.4em;}
   .status-msg.error{color:var(--danger);}
@@ -272,7 +276,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 01:06</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 12:59</span>
 
 </div>
 
@@ -299,7 +303,7 @@
   <ul class="horse-list" id="horse-list"></ul>
 
   <div class="sticky-footer">
-    <button type="button" id="btn-sticky-summary" aria-live="polite">Markera minst en häst i varje avdelning för att se antal rader.</button>
+    <button type="button" id="btn-sticky-summary" class="btn-primary" aria-live="polite">Markera minst en häst i varje avdelning för att se antal rader.</button>
   </div>
 
 </div>
@@ -353,6 +357,24 @@
     </div>
   </fieldset>
 
+  <fieldset>
+    <legend>Komprimering av exportfil</legend>
+    <p class="avd-progress">Slår ihop rader som delar bokstavsmönster till färre kupongrader
+    i exportfilen. Priset (antal rader × 0,50 kr) påverkas inte, bara antalet kupongrader.</p>
+    <div>
+      <input type="radio" name="compression-level" id="compression-none" value="none">
+      <label for="compression-none">Okomprimerad (en kupong per rad)</label>
+    </div>
+    <div>
+      <input type="radio" name="compression-level" id="compression-light" value="light">
+      <label for="compression-light">Lättare komprimering</label>
+    </div>
+    <div>
+      <input type="radio" name="compression-level" id="compression-hard" value="hard">
+      <label for="compression-hard">Hårdare komprimering</label>
+    </div>
+  </fieldset>
+
   <p>Fler inställningar kommer att läggas till här senare.</p>
 
 </div>
@@ -371,6 +393,7 @@
   var villkor = [];
   var currentAvd = 0;
   var lastCalculatedRows = null;
+  var lastCoupons = null;
   var systemMode = "abc";
   var liveStats = null;
   var currentRowUpdaters = [];
@@ -398,6 +421,15 @@
   try {
     var storedSortOrder = localStorage.getItem(SORT_ORDER_KEY);
     if(storedSortOrder === "procent" || storedSortOrder === "startnummer"){ sortOrder = storedSortOrder; }
+  } catch(e){}
+
+  var COMPRESSION_KEY = "travreda-compression";
+  var compressionLevel = "light";
+  try {
+    var storedCompression = localStorage.getItem(COMPRESSION_KEY);
+    if(storedCompression === "none" || storedCompression === "light" || storedCompression === "hard"){
+      compressionLevel = storedCompression;
+    }
   } catch(e){}
 
   var views = {
@@ -457,6 +489,18 @@
         sortOrder = radio.value;
         try { localStorage.setItem(SORT_ORDER_KEY, sortOrder); } catch(e){}
         if(currentGame){ renderAvdelning(); }
+      }
+    });
+  });
+
+  var compressionRadios = document.querySelectorAll('input[name="compression-level"]');
+  compressionRadios.forEach(function(radio){
+    radio.checked = (radio.value === compressionLevel);
+    radio.addEventListener("change", function(){
+      if(radio.checked){
+        compressionLevel = radio.value;
+        try { localStorage.setItem(COMPRESSION_KEY, compressionLevel); } catch(e){}
+        if(currentGame){ refreshLiveStatsAndUI(); }
       }
     });
   });
@@ -614,6 +658,7 @@
         currentAvd = 0;
       }
       lastCalculatedRows = null;
+      lastCoupons = null;
       document.getElementById("btn-export").disabled = true;
       setGlobalStatus(type + " — " + currentGame.trackName + (restoreData ? " återställd." : " laddad."));
       showView("avdelning");
@@ -1087,6 +1132,128 @@
     return rows;
   }
 
+  // ---------- Kupongkomprimering ----------
+  //
+  // En ATG-kupong kan bara uttrycka "vilken som helst av dessa hästar" INOM
+  // en avdelning (marks-bitmasken per <leg>) — den kan inte uttrycka ett
+  // villkor som gäller SUMMAN av bokstäver över flera avdelningar. Rader kan
+  // därför bara slås ihop till en kupong om de delar exakt samma
+  // bokstavsmönster (vilken bokstav varje avdelning bidrar med) — annars
+  // skulle kupongen även täcka kombinationer som inte finns i det
+  // villkorsfiltrerade systemet. Bokstäver som inte förekommer i något
+  // villkor grupperas ihop som "OTHER" per avdelning eftersom de inte
+  // påverkar om villkoren uppfylls (t.ex. B/D när villkoren bara gäller A/C).
+
+  function constrainedLetterSet(villkorList){
+    var set = {};
+    villkorList.forEach(function(v){ set[v.letter] = true; });
+    return set;
+  }
+
+  function buildLegGroups(candidates, constrained){
+    return candidates.map(function(legCandidates){
+      var groups = {};
+      legCandidates.forEach(function(c){
+        var key = constrained[c.letter] ? c.letter : "OTHER";
+        if(!groups[key]){ groups[key] = []; }
+        groups[key].push(c.nr);
+      });
+      return Object.keys(groups).map(function(key){ return { key: key, nrs: groups[key] }; });
+    });
+  }
+
+  function buildPatternBoxes(candidates, villkorList){
+    var constrained = constrainedLetterSet(villkorList);
+    var legGroups = buildLegGroups(candidates, constrained);
+    var n = legGroups.length;
+    if(legGroups.some(function(g){ return g.length === 0; })){ return []; }
+
+    var boxes = [];
+    var chosen = new Array(n);
+    var counts = {};
+    villkorList.forEach(function(v){ counts[v.letter] = 0; });
+
+    function remainingCanSatisfy(legIdx){
+      var remainingLegs = n - legIdx;
+      return villkorList.every(function(v){
+        var have = counts[v.letter] || 0;
+        if(have > v.max){ return false; }
+        if(have + remainingLegs < v.min){ return false; }
+        return true;
+      });
+    }
+
+    function dfs(legIdx){
+      if(!remainingCanSatisfy(legIdx)){ return; }
+      if(legIdx === n){
+        var ok = villkorList.every(function(v){
+          var have = counts[v.letter] || 0;
+          return have >= v.min && have <= v.max;
+        });
+        if(ok){ boxes.push(chosen.slice()); }
+        return;
+      }
+      legGroups[legIdx].forEach(function(group){
+        chosen[legIdx] = group;
+        var isConstrained = constrained[group.key];
+        if(isConstrained){ counts[group.key] = (counts[group.key] || 0) + 1; }
+        dfs(legIdx + 1);
+        if(isConstrained){ counts[group.key] -= 1; }
+      });
+    }
+    dfs(0);
+    return boxes;
+  }
+
+  // Slår ihop boxar som delar exakt samma grupp i alla avdelningar utom en
+  // (unionerar de hästarna i den avdelningen). Säkert och exakt: om båda
+  // boxarna redan var för sig uppfyller villkoren oavsett den avdelningens
+  // bokstav, gör vilken kombination som helst av de sammanslagna hästarna
+  // det också. Körs tills inget mer går att slå ihop.
+  function mergeBoxesOnce(boxes, legCount){
+    var changed = false;
+    for(var legIdx = 0; legIdx < legCount; legIdx++){
+      var buckets = {};
+      boxes.forEach(function(box, i){
+        var sig = box.map(function(g, idx){
+          return idx === legIdx ? "" : g.key + ":" + g.nrs.join(",");
+        }).join("|");
+        if(!buckets[sig]){ buckets[sig] = []; }
+        buckets[sig].push(i);
+      });
+      var used = {};
+      var newBoxes = [];
+      Object.keys(buckets).forEach(function(sig){
+        var idxs = buckets[sig];
+        if(idxs.length > 1){
+          changed = true;
+          var merged = boxes[idxs[0]].slice();
+          var mergedNrs = [];
+          idxs.forEach(function(bi){ mergedNrs = mergedNrs.concat(boxes[bi][legIdx].nrs); });
+          merged[legIdx] = { key: "MERGED", nrs: mergedNrs };
+          newBoxes.push(merged);
+          idxs.forEach(function(bi){ used[bi] = true; });
+        }
+      });
+      boxes.forEach(function(box, i){
+        if(!used[i]){ newBoxes.push(box); }
+      });
+      boxes = newBoxes;
+    }
+    return { boxes: boxes, changed: changed };
+  }
+
+  function compressHard(boxes, legCount){
+    var iterations = 0;
+    while(iterations < legCount * 5){
+      var out = mergeBoxesOnce(boxes, legCount);
+      boxes = out.boxes;
+      iterations++;
+      if(!out.changed){ break; }
+    }
+    return boxes;
+  }
+
   function computeLiveStats(forceHuge){
     if(!currentGame){ liveStats = null; return; }
     var candidates = buildCandidates();
@@ -1096,12 +1263,12 @@
     }
     var unreduced = countUnreduced(candidates);
     if(!forceHuge && unreduced > LIVE_STATS_MAX){
-      liveStats = { tooBig: true, unreduced: unreduced, rows: 0, perLegCounts: [] };
+      liveStats = { tooBig: true, unreduced: unreduced, rows: 0, coupons: 0, perLegCounts: [] };
       return;
     }
     if(forceHuge && unreduced > MAX_UNREDUCED_WARN){
       if(!confirm("Systemet har " + unreduced + " kombinationer innan villkor. Det kan ta en stund att beräkna. Fortsätta?")){
-        liveStats = { tooBig: true, cancelled: true, unreduced: unreduced, rows: 0, perLegCounts: [] };
+        liveStats = { tooBig: true, cancelled: true, unreduced: unreduced, rows: 0, coupons: 0, perLegCounts: [] };
         return;
       }
     }
@@ -1113,7 +1280,19 @@
         perLegCounts[legIdx][nr] = (perLegCounts[legIdx][nr] || 0) + 1;
       });
     });
-    liveStats = { tooBig: false, unreduced: unreduced, rows: rows.length, perLegCounts: perLegCounts };
+
+    var couponCount = rows.length;
+    lastCoupons = null;
+    if(compressionLevel !== "none" && rows.length > 0){
+      var boxes = buildPatternBoxes(candidates, villkor);
+      if(compressionLevel === "hard"){
+        boxes = compressHard(boxes, candidates.length);
+      }
+      lastCoupons = boxes.map(function(box){ return box.map(function(g){ return g.nrs; }); });
+      couponCount = lastCoupons.length;
+    }
+
+    liveStats = { tooBig: false, unreduced: unreduced, rows: rows.length, coupons: couponCount, perLegCounts: perLegCounts };
   }
 
   function renderLiveSummary(){
@@ -1147,12 +1326,15 @@
     var pct = liveStats.unreduced > 0 ? Math.round((liveStats.rows / liveStats.unreduced) * 100) : 0;
     var reducedPct = 100 - pct;
     var price = (liveStats.rows * 0.5).toFixed(2).replace(".", ",");
-    btn.textContent = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr.";
+    var couponText = compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger");
+    btn.textContent = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr" + couponText + ".";
 
     if(summaryText){
       summaryText.innerHTML =
         "<span class=\"big\">" + liveStats.rows + " rader</span> av " + liveStats.unreduced + " oreducerat (" + pct + " %).<br>" +
-        "Uppskattat pris: ca " + price + " kr (0,50 kr/rad antaget, bekräfta alltid på atg.se).";
+        "Uppskattat pris: ca " + price + " kr (0,50 kr/rad antaget, bekräfta alltid på atg.se).<br>" +
+        "Exportfilen får <span class=\"big\">" + pl(liveStats.coupons, "kupong", "kuponger") + "</span>" +
+        (compressionLevel === "none" ? " (okomprimerad)." : compressionLevel === "light" ? " (lättare komprimering)." : " (hårdare komprimering).");
     }
     if(statusEl){
       if(liveStats.rows > 0){
@@ -1197,10 +1379,10 @@
     }, 20);
   });
 
-  function buildMarks(nr){
+  function buildMarks(nrs){
     var marks = "";
     for(var i = 1; i <= 15; i++){
-      marks += (i === nr) ? "1" : "0";
+      marks += (nrs.indexOf(i) !== -1) ? "1" : "0";
     }
     return marks;
   }
@@ -1237,7 +1419,7 @@
     return hex2(high) + hex2(low);
   }
 
-  function generateXml(rows, game){
+  function generateXml(coupons, game){
     var couponTag = COUPON_TAG[game.type];
     var now = new Date();
     var createddate = now.getFullYear() + "-" + pad(now.getMonth() + 1) + "-" + pad(now.getDate());
@@ -1251,11 +1433,11 @@
       'schemaversion="ATG File Betting XSD ver 1.8">\n';
     xml += "  <betcoupons>\n";
 
-    rows.forEach(function(row, i){
+    coupons.forEach(function(coupon, i){
       xml += '    <' + couponTag + ' couponid="' + (i + 1) + '" date="' + game.date +
         '" trackcode="' + game.trackId + '" betmultiplier="1">\n';
-      row.forEach(function(nr, legIdx){
-        xml += '      <leg legno="' + (legIdx + 1) + '" marks="' + buildMarks(nr) + '" />\n';
+      coupon.forEach(function(nrs, legIdx){
+        xml += '      <leg legno="' + (legIdx + 1) + '" marks="' + buildMarks(nrs) + '" />\n';
       });
       xml += "    </" + couponTag + ">\n";
     });
@@ -1266,7 +1448,10 @@
 
   document.getElementById("btn-export").addEventListener("click", function(){
     if(!currentGame || !lastCalculatedRows || lastCalculatedRows.length === 0){ return; }
-    var xml = generateXml(lastCalculatedRows, currentGame);
+    var coupons = lastCoupons || lastCalculatedRows.map(function(row){
+      return row.map(function(nr){ return [nr]; });
+    });
+    var xml = generateXml(coupons, currentGame);
     var crcHex = crc16HexFromString(xml);
     var blob = new Blob([xml], { type: "application/xml" });
     var url = URL.createObjectURL(blob);
