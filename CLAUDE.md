@@ -636,6 +636,20 @@ kryssruta), `view-villkor` (villkor, sammanfattning, export),
 `view-installningar` (sorteringsval, mer kommer). Enkel vy-växling, ingen
 History API ännu (kan läggas till senare om det behövs).
 
+### Tips och instruktioner (Startsidan)
+
+Expanderbar knapp (`#btn-tips-toggle`, `aria-expanded`/`aria-controls`,
+samma öppna/stäng-mönster som meny-knappen i avdelningsvyn och hästkortens
+detaljvy) direkt efter beskrivningen på Startsidan, före "Kommande
+omgångar" — samma placering och idé som VO Turf Lists "Tips &
+instruktioner", men medvetet mycket kortare (två korta stycken, inte VO
+Turfs ~18 punkter över åtta rubriker) eftersom Travredas flöde är
+betydligt enklare. Innehåller en kort "Så fungerar det"-sammanfattning av
+hela flödet (välj omgång → bokstavsmarkera → villkor → beräkna → exportera)
+och en punktlista över de tre inställningarna som finns. En egen
+"Stäng instruktioner"-knapp längst ner i panelen, samma mönster som
+`btn-minimize` på hästkorten.
+
 ### Datamodell
 
 ```js

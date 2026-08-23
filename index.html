@@ -245,6 +245,26 @@
   <h1>Travreda</h1>
   <p class="subtitle">Ett tillgängligt verktyg för reducerade travspel.</p>
 
+  <button type="button" id="btn-tips-toggle" aria-expanded="false" aria-controls="tips-content">Tips och instruktioner</button>
+  <div id="tips-content" hidden>
+    <h3>Så fungerar det</h3>
+    <p>Välj en kommande omgång, eller ange datum, bankod och speltyp
+    manuellt. Markera varje häst i varje avdelning med en bokstav (A–D) —
+    eller kryssa i hästar direkt om du valt "Vanligt matematiskt system"
+    under Villkor. Ett villkor styr hur många hästar av en bokstav som
+    krävs i en godkänd rad. Antal rader, pris och kuponger uppdateras
+    automatiskt. Ladda ner filen och lämna in den på atg.se, eller använd
+    genvägsknappen dit.</p>
+    <h3>Inställningar</h3>
+    <ul>
+      <li>Sortering av startlistor: spelprocent eller startnummer.</li>
+      <li>Komprimering av exportfilen: färre kupongrader utan att ändra
+      priset.</li>
+      <li>Vilken information som visas i hästens detaljvy.</li>
+    </ul>
+    <button type="button" id="btn-tips-close">Stäng instruktioner</button>
+  </div>
+
   <h2 id="heading-start" tabindex="-1">Kommande omgångar</h2>
   <p id="games-list-status">Laddar…</p>
   <div id="games-list"></div>
@@ -279,7 +299,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 15:26</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 15:29</span>
 
 </div>
 
@@ -517,6 +537,21 @@
   document.getElementById("menu-installningar").addEventListener("click", function(){ showView("installningar"); });
   document.getElementById("btn-back-villkor").addEventListener("click", function(){ showView("avdelning"); });
   document.getElementById("btn-back-installningar").addEventListener("click", function(){ showView("avdelning"); });
+
+  var tipsToggle = document.getElementById("btn-tips-toggle");
+  var tipsContent = document.getElementById("tips-content");
+
+  function closeTips(){
+    tipsToggle.setAttribute("aria-expanded", "false");
+    tipsContent.hidden = true;
+  }
+
+  tipsToggle.addEventListener("click", function(){
+    var expanded = tipsToggle.getAttribute("aria-expanded") === "true";
+    tipsToggle.setAttribute("aria-expanded", String(!expanded));
+    tipsContent.hidden = expanded;
+  });
+  document.getElementById("btn-tips-close").addEventListener("click", closeTips);
 
   var sortRadios = document.querySelectorAll('input[name="sort-order"]');
   sortRadios.forEach(function(radio){
