@@ -299,7 +299,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 17:51</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 17:56</span>
 
 </div>
 
@@ -958,9 +958,20 @@
     turnoverEl.textContent = turnover || "";
 
     var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
-    var markedCount = Object.keys(legLetters).length;
-    document.getElementById("avd-marked-count").textContent =
-      markedCount + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
+
+    function buildMarkedCountText(){
+      var counts = { A: 0, B: 0, C: 0, D: 0 };
+      Object.keys(legLetters).forEach(function(nr){
+        var l = legLetters[nr];
+        if(counts[l] != null){ counts[l]++; }
+      });
+      var letterParts = ["A", "B", "C", "D"].filter(function(l){ return counts[l] > 0; })
+        .map(function(l){ return pl(counts[l], l.toLowerCase() + "-häst", l.toLowerCase() + "-hästar"); });
+      var text = Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen";
+      return letterParts.length ? text + ", " + letterParts.join(", ") + "." : text + ".";
+    }
+
+    document.getElementById("avd-marked-count").textContent = buildMarkedCountText();
 
     var list = document.getElementById("horse-list");
     list.innerHTML = "";
@@ -1093,8 +1104,7 @@
       letterWrap.className = "horse-letter";
 
       function markChanged(){
-        document.getElementById("avd-marked-count").textContent =
-          Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade i den här avdelningen.";
+        document.getElementById("avd-marked-count").textContent = buildMarkedCountText();
         renderAvdTabs();
         refreshLiveStatsAndUI();
         saveState();
@@ -1104,12 +1114,16 @@
         var checkboxId = "include-" + currentAvd + "-" + start.number;
         var checkLabel = document.createElement("label");
         checkLabel.setAttribute("for", checkboxId);
-        checkLabel.textContent = "Ta med " + horse.name;
         letterWrap.appendChild(checkLabel);
 
         var checkbox = document.createElement("input");
         checkbox.type = "checkbox";
         checkbox.id = checkboxId;
+
+        function updateCheckLabel(){
+          checkLabel.textContent = (checkbox.checked ? "Vald " : "Ej vald ") + horse.name;
+        }
+
         if(scratched){
           delete legLetters[start.number];
           checkbox.checked = false;
@@ -1117,6 +1131,7 @@
         } else {
           checkbox.checked = !!legLetters[start.number];
         }
+        updateCheckLabel();
         checkbox.addEventListener("change", function(){
           if(checkbox.checked){
             legLetters[start.number] = "A";
@@ -1125,6 +1140,7 @@
             delete legLetters[start.number];
             li.classList.remove("marked");
           }
+          updateCheckLabel();
           markChanged();
         });
         if(checkbox.checked){ li.classList.add("marked"); }

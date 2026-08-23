@@ -551,18 +551,30 @@ avdelningar), t.ex. "8 A-hästar, 0 B-hästar, 0 C-hästar, 0 D-hästar." —
 räknar bara markerade hästar, oberoende av om något villkor faktiskt är
 aktivt.
 
-### Vanligt matematiskt system (utan bokstäver)
+**Motsvarande bokstavsuppdelning per avdelning** (`buildMarkedCountText()`,
+delad mellan den initiala renderingen och `markChanged()` för att inte
+duplicera logiken) läggs till på `#avd-marked-count` i huvudvyn, t.ex.
+"5 av 12 hästar markerade i den här avdelningen, 1 a-häst, 2 b-hästar,
+2 c-hästar." Medvetet annorlunda från `#letter-tally` ovan på två sätt,
+efter användarens egna exempel: gemener (`a-häst` inte `A-häst`) och
+**bokstäver med noll hästar utelämnas helt** (visar inte "0 d-hästar") —
+den globala sammanställningen visar även nollor, men den här kortare
+per-avdelningsraden ska bara nämna bokstäver som faktiskt används där.
 
 `systemMode` (`"abc"` | `"plain"`, sparas per omgång i `saveState()`) styr
 vilken kontroll som visas per häst i avdelningsvyn:
 
 - `"abc"` (normalläge): `<select>` Ej vald/A/B/C/D, som förut.
-- `"plain"`: en enkel `<input type="checkbox">` ("Ta med {namn}") — internt
-  sätts bokstaven `"A"` när ikryssad, precis som om hästen manuellt valts
-  som A i vanligt läge. Eftersom villkor samtidigt töms (`rules: []`) blir
-  resultatet hela korsprodukten av ikryssade hästar, utan reducering —
-  ingen ändring behövdes i `buildCandidates()`/`generateRows()`/export,
-  de bryr sig bara om att en bokstav finns satt, inte vilken.
+- `"plain"`: en enkel `<input type="checkbox">` — internt sätts bokstaven
+  `"A"` när ikryssad, precis som om hästen manuellt valts som A i vanligt
+  läge. Eftersom villkor samtidigt töms (`rules: []`) blir resultatet hela
+  korsprodukten av ikryssade hästar, utan reducering — ingen ändring
+  behövdes i `buildCandidates()`/`generateRows()`/export, de bryr sig bara
+  om att en bokstav finns satt, inte vilken. Kryssrutans egen `<label>` var
+  tidigare statisk ("Ta med {namn}") — nu dynamisk och uppdateras vid varje
+  ändring (`updateCheckLabel()`), på uttrycklig begäran: `"Vald {namn}"`
+  ikryssad, `"Ej vald {namn}"` avkryssad — samma "Ej vald"-ord som redan
+  fanns som alternativ i `<select>`:n för normalläget, nu återanvänt här.
 - Byter man till ett riktigt villkor (rullistan eller "Lägg till eget
   villkor") växlar `systemMode` automatiskt tillbaka till `"abc"` och
   hästlistan ritas om med bokstavsväljare — redan ikryssade hästar (bokstav
