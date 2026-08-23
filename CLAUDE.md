@@ -177,6 +177,19 @@ datum + bankod + speltyp, appen provar spel-id med startavdelning 1–12 mot
 den öppna `/games/{id}`-endpointen tills rätt omgång hittas — ren
 klientsidig lösning, inget nytt serveranrop behövs.
 
+**Egna rubriker per speltyp på Startsidan** (byggt efter uttrycklig
+begäran) — `loadGamesList()` grupperar inte längre alla hämtade omgångar i
+en enda lista, utan bygger en `<h3>{TYP}</h3>` + egen `<ul class="game-list">`
+per speltyp, i en fast ordning (`GAME_TYPE_ORDER`): **V85, V86, V75, GS75,
+V64, V5**. En speltyp utan några kommande omgångar får ingen rubrik alls
+(döljs helt, inte en tom sektion) — samma "hellre tyst än onödigt
+pratig"-princip som resten av appen. `#games-list` är numera en `<div>`
+istället för en `<ul>` (måste kunna innehålla `<h3>`+`<ul>`-par, en ren
+`<ul>` kan bara ha `<li>` som direkta barn). Knapptexten under varje rubrik
+upprepar inte längre speltypen (`"Romme — 2026-08-22 kl 18:00"`, inte
+`"V85 — Romme — …"`) eftersom rubriken redan säger det — samma
+uppläsningsprincip som annars i appen, inget dubbelt sagt.
+
 ### Spelformer — V85, V75, V86, GS75, V64, V5
 
 Utökat från de ursprungliga V85/V75/V86 efter uttrycklig begäran. Verifierat
