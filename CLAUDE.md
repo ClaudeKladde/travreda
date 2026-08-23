@@ -148,11 +148,13 @@ grupperad i fyra stycken) är nu uppdelad i **en `<p>` per rad** — en
 Varje rad motsvarar exakt en kryssruta under Inställningar (`DETAIL_FIELDS`,
 se nedan), på uttrycklig begäran: "detta blir tydligare enligt kryssrutorna
 i inställningarna" — en VoiceOver-användare svepar alltså förbi en rad i
-taget, inte en hel grupp. Ordningen är, i tur och ordning: Trendprocent,
-säsongsstatistik, intjänade pengar, rekord, hemmabana, Tränare, Kusk, Odds
-(häst → tränare → kusk var uttryckligen efterfrågad tidigare, oförändrat).
-En rad utan data eller vars kryssruta är avstängd renderas inte alls —
-samma "hellre tyst än tomt element"-princip som resten av appen.
+taget, inte en hel grupp. Grundordningen är, i tur och ordning: Trendprocent,
+säsongsstatistik, intjänade pengar, startpoäng, rekord, hemmabana, Tränare,
+Kusk, Odds (häst → tränare → kusk var uttryckligen efterfrågad tidigare,
+oförändrat) — men ordningen är numera **omsorterbar**, se "Ordning på
+raderna" nedan. En rad utan data eller vars kryssruta är avstängd renderas
+inte alls — samma "hellre tyst än tomt element"-princip som resten av
+appen.
 
 **Förkortad text, på uttrycklig begäran** ("ta bort en del överflödiga
 ord"): `"Trendprocent: +2,2 procentenheter."` → `"Trend +2,2%."`,
@@ -182,6 +184,12 @@ användes av de borttagna raderna.
   livstidsintjäning, formaterat med `toLocaleString("sv-SE")` för
   tusentalsavgränsare.
 
+**Ett tredje fält, tillagt senare** efter en direkt fråga om det fanns —
+**Startpoäng** (`horse.statistics.life.startPoints`, ett heltal, t.ex.
+`4750`) — verifierat i riktig data, ingen extra hämtning behövs. Visas som
+`"Startpoäng: 4750."`, i grundordningen direkt efter Pengar-raden (på
+uttrycklig begäran).
+
 **Total omsättning** för hela omgången (`currentGame.pools[TYP].turnover`,
 från spelets toppnivå-`pools`-objekt — måste sparas explicit på
 `currentGame` i `loadGame()`, fanns inte där tidigare) visas i en egen rad,
@@ -192,9 +200,36 @@ kronor: `"Omsättning: 6 507 253 kr."`
 
 **Valbara fält:** en kryssrutegrupp under Inställningar (`DETAIL_FIELDS`,
 en post per kvarvarande rad ovan plus Tränare/Kusk/Odds som egna
-kryssrutor — åtta totalt) låter användaren stänga av enskilda rader.
+kryssrutor — nio totalt) låter användaren stänga av enskilda rader.
 Sparas i `travreda-detail-fields` (ett objekt `{nyckel: boolean}` i
 localStorage), alla på som standard.
+
+**Ordning på raderna:** varje rad under Inställningar har numera två
+knappar, **"Flytta upp"/"Flytta ner"** (`aria-label` med fältnamnet
+inbakat, t.ex. "Flytta upp Startpoäng", eftersom "Flytta upp" upprepat på
+flera rader annars är tvetydigt för en skärmläsare) — byggt efter
+uttrycklig begäran, valt istället för drag-and-drop som är svårare att
+använda med VoiceOver. Första radens "Flytta upp" och sista radens "Flytta
+ner" är **inaktiverade, inte dolda** (`disabled`, inte `hidden`) eftersom
+det inte finns någonstans att flytta till.
+
+Ordningen ligger i en egen array, `detailFieldOrder`, separat från
+`detailFields` (som bara styr av/på) och sparas i en egen
+localStorage-nyckel, `travreda-detail-field-order`. **`buildDetailLines()`**
+byggdes om från en hårdkodad if-kedja i fast ordning till att loopa genom
+`detailFieldOrder` och slå upp varje fälts textbyggare i en ny
+`DETAIL_FIELD_BUILDERS`-tabell (en funktion per fältnyckel, samma logik som
+innan — bara flyttad in i tabellen) — så att den ordning som faktiskt
+byggs och läses upp alltid matchar exakt vad Inställningar visar, med noll
+risk att de två divergerar.
+
+**Migrering:** en sparad ordning läses bara in om den är en giltig
+**permutation** av alla kända fältnycklar (samma antal, inga dubbletter,
+inga saknade) — annars faller den tillbaka på grundordningen. Detta löser
+automatiskt introduktionen av det nya Startpoäng-fältet: en användare med
+en gammal sparad ordning (från innan fältet fanns) får grundordningen
+igen (som redan har Startpoäng på rätt plats) istället för att fältet
+saknas eller kraschar något.
 
 ### Sticky avdelningsflikar + meny
 
@@ -222,11 +257,44 @@ nedan) → `avd-marked-count` → hästlistan.
 **`#avd-terms`** (direkt efter lopprubriken `avd-heading`) visar loppets
 deltagandevillkor — ålder, kön, intjänandegränser, körsvenskrav — direkt
 från ATG:s egen `race.terms`-array (redan hämtad, inga extra anrop),
-sammanslagen till en löpande text. Verifierat mot ett riktigt API-svar:
-fältet finns och är redan färdigformulerad, läsbar svensk text (t.ex.
-"3-åriga och äldre ston 300.001 - 1.950.000 kr. Körsvenskrav kat. 1.
-Körsvenner födda 080822 eller tidigare."), så ingen egen formatering
-eller tolkning behövs. Döljs helt om loppet saknar `terms`.
+sammanslagen till en löpande text (`formatTermsText()`).
+
+**Hela lopprubriken är knappen** (byggd efter uttrycklig begäran, samma
+mönster som hästkortens `<h3><button>...</button></h3>` — en `<h2>` som
+bara omsluter en enda knapp, `id="avd-heading"`) — ett tryck
+visar/döljer `#avd-terms` (`aria-expanded`/`aria-controls`, samma
+öppna/stäng-princip som "Tips och instruktioner"-knappen på Startsidan).
+Innehållet är dolt som standard och **återställs till dolt varje gång**
+`renderAvdelning()` körs (byte av avdelningsflik, ny omgång) — inte
+kvarhållet expanderat mellan olika lopp. Klick-hanteraren sätts upp en
+enda gång vid sidladdning (inte inuti `renderAvdelning()`, som körs vid
+varje flikbyte — annars hade lyssnare staplats på varandra); saknar loppet
+`terms` gör ett klick ingenting (`avdTermsEl.textContent` är tomt).
+`class="horse-toggle"` återanvänds för utseendet (samma fullbredds-knapp
+utan extra CSS behövs).
+
+**`formatTermsText()`** skriver om två saker i ATG:s annars redan
+färdigformulerade text, verifierat mot riktiga API-svar (Romme 2026-08-22
+och en GS75-omgång), efter uttrycklig begäran om tydligare uppläsning:
+
+- **Datum:** ATG skriver födelsedatum som en rå sexsiffrig sträng utan
+  separatorer (`"Körsvenner födda 080822 eller tidigare."`,
+  DDMMÅÅ) — en talsyntes läser lätt detta som ett stort tal istället för
+  ett datum. `expandCompactDate()` skriver om till `"8 augusti 2022"`.
+  Samma mönster förekommer även efter `"fr.o.m."` i vissa lopp (t.ex.
+  B-träningsvillkor) — båda hanteras av samma regex
+  (`/(födda|fr\.o\.m\.) (\d{6})/g`). **Antar 2000-talet** för det
+  tvåsiffriga året (`2000 + åå`) — inte verifierat mot ett fall där detta
+  skulle vara fel, men rimligt så länge ATG:s texter bara handlar om
+  nutida datum.
+- **Beloppsintervall:** bindestrecket i `"300.001 - 1.950.000 kr"` skrivs
+  om till `"300.001 till 1.950.000 kr"` — ett fristående bindestreck
+  riskerar att läsas som "minus" eller hoppas över helt av en skärmläsare.
+  Träffar bara siffra-mellanslag-bindestreck-mellanslag-siffra-kr
+  (`/(\d[\d.]*)\s-\s(\d[\d.]*\s*kr)/g`), inte t.ex. `"3-åriga"` (inget
+  mellanslag runt bindestrecket där).
+
+Döljs helt om loppet saknar `terms`.
 
 ---
 

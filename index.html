@@ -197,6 +197,14 @@
     margin-top:.6rem;
   }
   .horse-letter{margin-top:.5rem;}
+  .detail-field-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:.5rem;
+    margin-bottom:.4rem;
+  }
+  .detail-field-row label{margin-right:auto;}
   .avd-progress{color:var(--muted);margin-top:0;}
   .summary-box{
     border:1px solid var(--card-border);
@@ -299,7 +307,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:41</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 21:52</span>
 
 </div>
 
@@ -321,7 +329,7 @@
     <div class="avd-tabs" id="avd-tabs"></div>
   </div>
 
-  <h2 id="avd-heading" tabindex="-1">Avdelning</h2>
+  <h2><button type="button" id="avd-heading" class="horse-toggle" aria-expanded="false" aria-controls="avd-terms">Avdelning</button></h2>
   <p class="avd-progress" id="avd-terms" hidden></p>
   <p class="avd-progress" id="avd-marked-count"></p>
 
@@ -446,6 +454,7 @@
     { key: "trend", label: "Trendprocent" },
     { key: "seasonStats", label: "Säsongsstatistik" },
     { key: "money", label: "Intjänade pengar" },
+    { key: "startPoints", label: "Startpoäng" },
     { key: "record", label: "Bästa rekord" },
     { key: "homeTrack", label: "Hemmabana" },
     { key: "trainerLine", label: "Tränare" },
@@ -461,6 +470,25 @@
       DETAIL_FIELDS.forEach(function(f){
         if(typeof storedDetailFields[f.key] === "boolean"){ detailFields[f.key] = storedDetailFields[f.key]; }
       });
+    }
+  } catch(e){}
+
+  // Ordningen på raderna i hästens detaljvy — separat från detailFields
+  // (som bara styr av/på) eftersom användaren ska kunna sortera om raderna
+  // oberoende av vilka som är ikryssade. Sparas bara om den sparade listan
+  // är en giltig permutation av alla kända nycklar — annars (t.ex. en
+  // gammal sparning från innan "startPoints" fanns) faller den tillbaka på
+  // grundordningen ovan, som redan har det nya fältet på rätt plats.
+  var DETAIL_FIELD_ORDER_KEY = "travreda-detail-field-order";
+  var detailFieldOrder = DETAIL_FIELDS.map(function(f){ return f.key; });
+  try {
+    var storedOrder = JSON.parse(localStorage.getItem(DETAIL_FIELD_ORDER_KEY));
+    if(Array.isArray(storedOrder)){
+      var knownKeys = DETAIL_FIELDS.map(function(f){ return f.key; });
+      var isValidPermutation = storedOrder.length === knownKeys.length &&
+        storedOrder.every(function(k){ return knownKeys.indexOf(k) !== -1; }) &&
+        knownKeys.every(function(k){ return storedOrder.indexOf(k) !== -1; });
+      if(isValidPermutation){ detailFieldOrder = storedOrder; }
     }
   } catch(e){}
 
@@ -561,6 +589,15 @@
   });
   document.getElementById("btn-tips-close").addEventListener("click", closeTips);
 
+  var avdHeadingToggle = document.getElementById("avd-heading");
+  var avdTermsEl = document.getElementById("avd-terms");
+  avdHeadingToggle.addEventListener("click", function(){
+    if(!avdTermsEl.textContent){ return; }
+    var expanded = avdHeadingToggle.getAttribute("aria-expanded") === "true";
+    avdHeadingToggle.setAttribute("aria-expanded", String(!expanded));
+    avdTermsEl.hidden = expanded;
+  });
+
   var sortRadios = document.querySelectorAll('input[name="sort-order"]');
   sortRadios.forEach(function(radio){
     radio.checked = (radio.value === sortOrder);
@@ -585,26 +622,66 @@
     });
   });
 
+  function detailFieldLabel(key){
+    var f = DETAIL_FIELDS.filter(function(x){ return x.key === key; })[0];
+    return f ? f.label : key;
+  }
+
+  function moveDetailField(key, direction){
+    var idx = detailFieldOrder.indexOf(key);
+    var newIdx = idx + direction;
+    if(newIdx < 0 || newIdx >= detailFieldOrder.length){ return; }
+    var tmp = detailFieldOrder[idx];
+    detailFieldOrder[idx] = detailFieldOrder[newIdx];
+    detailFieldOrder[newIdx] = tmp;
+    try { localStorage.setItem(DETAIL_FIELD_ORDER_KEY, JSON.stringify(detailFieldOrder)); } catch(e){}
+    renderDetailFieldSettings();
+    if(currentGame){ renderAvdelning(); }
+  }
+
   var detailFieldContainer = document.getElementById("detail-field-checkboxes");
-  DETAIL_FIELDS.forEach(function(f){
-    var wrap = document.createElement("div");
-    var checkboxId = "detail-field-" + f.key;
-    var checkbox = document.createElement("input");
-    checkbox.type = "checkbox";
-    checkbox.id = checkboxId;
-    checkbox.checked = detailFields[f.key];
-    var label = document.createElement("label");
-    label.setAttribute("for", checkboxId);
-    label.textContent = f.label;
-    checkbox.addEventListener("change", function(){
-      detailFields[f.key] = checkbox.checked;
-      try { localStorage.setItem(DETAIL_FIELDS_KEY, JSON.stringify(detailFields)); } catch(e){}
-      if(currentGame){ renderAvdelning(); }
+
+  function renderDetailFieldSettings(){
+    detailFieldContainer.innerHTML = "";
+    detailFieldOrder.forEach(function(key, idx){
+      var wrap = document.createElement("div");
+      wrap.className = "detail-field-row";
+      var checkboxId = "detail-field-" + key;
+      var checkbox = document.createElement("input");
+      checkbox.type = "checkbox";
+      checkbox.id = checkboxId;
+      checkbox.checked = detailFields[key];
+      var label = document.createElement("label");
+      label.setAttribute("for", checkboxId);
+      label.textContent = detailFieldLabel(key);
+      checkbox.addEventListener("change", function(){
+        detailFields[key] = checkbox.checked;
+        try { localStorage.setItem(DETAIL_FIELDS_KEY, JSON.stringify(detailFields)); } catch(e){}
+        if(currentGame){ renderAvdelning(); }
+      });
+
+      var upBtn = document.createElement("button");
+      upBtn.type = "button";
+      upBtn.textContent = "Flytta upp";
+      upBtn.setAttribute("aria-label", "Flytta upp " + detailFieldLabel(key));
+      upBtn.disabled = idx === 0;
+      upBtn.addEventListener("click", function(){ moveDetailField(key, -1); });
+
+      var downBtn = document.createElement("button");
+      downBtn.type = "button";
+      downBtn.textContent = "Flytta ner";
+      downBtn.setAttribute("aria-label", "Flytta ner " + detailFieldLabel(key));
+      downBtn.disabled = idx === detailFieldOrder.length - 1;
+      downBtn.addEventListener("click", function(){ moveDetailField(key, 1); });
+
+      wrap.appendChild(checkbox);
+      wrap.appendChild(label);
+      wrap.appendChild(upBtn);
+      wrap.appendChild(downBtn);
+      detailFieldContainer.appendChild(wrap);
     });
-    wrap.appendChild(checkbox);
-    wrap.appendChild(label);
-    detailFieldContainer.appendChild(wrap);
-  });
+  }
+  renderDetailFieldSettings();
 
   function setGlobalStatus(msg){
     document.getElementById("global-status").textContent = msg || "";
@@ -913,48 +990,84 @@
     return "Pengar: " + horse.money.toLocaleString("sv-SE") + " kr.";
   }
 
+  function startPointsText(horse){
+    var pts = horse.statistics && horse.statistics.life && horse.statistics.life.startPoints;
+    if(pts == null){ return null; }
+    return "Startpoäng: " + pts + ".";
+  }
+
+  // En textbyggare per fält i DETAIL_FIELDS — nyckeln till att ordningen
+  // (detailFieldOrder, redigerbar via Flytta upp/ner i Inställningar) kan
+  // styra i vilken följd raderna faktiskt byggs, istället för en hårdkodad
+  // if-kedja i fast ordning.
+  var DETAIL_FIELD_BUILDERS = {
+    trend: function(start, horse){ return trendText(start, currentGame.type); },
+    seasonStats: function(start, horse){ return yearStatsText(horse, "Säsong"); },
+    money: function(start, horse){ return moneyText(horse); },
+    startPoints: function(start, horse){ return startPointsText(horse); },
+    record: function(start, horse){
+      var record = recordText(horse);
+      return record ? ("Rekord: " + record + ".") : null;
+    },
+    homeTrack: function(start, horse){
+      return (horse.homeTrack && horse.homeTrack.name) ? ("Hemmabana: " + horse.homeTrack.name + ".") : null;
+    },
+    trainerLine: function(start, horse){
+      var trainer = horse.trainer;
+      var trainerPct = winStatsText(trainer);
+      return "Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
+        (trainerPct ? ", " + trainerPct : "") + ".";
+    },
+    driverLine: function(start, horse){
+      var driver = start.driver;
+      var driverPct = winStatsText(driver);
+      return "Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
+        (driverPct ? ", " + driverPct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + ".";
+    },
+    odds: function(start, horse){ return oddsText(start); }
+  };
+
   // Varje rad i detaljvyn motsvarar exakt en kryssruta under Inställningar
   // (DETAIL_FIELDS) och blir sitt eget <p> — en VoiceOver-användare svepar
   // alltså förbi en rad i taget istället för allt i ett enda stycke.
   function buildDetailLines(start){
     var horse = start.horse;
     var lines = [];
-    if(detailFields.trend){
-      var trend = trendText(start, currentGame.type);
-      if(trend){ lines.push(trend); }
-    }
-    if(detailFields.seasonStats){
-      var season = yearStatsText(horse, "Säsong");
-      if(season){ lines.push(season); }
-    }
-    if(detailFields.money){
-      var money = moneyText(horse);
-      if(money){ lines.push(money); }
-    }
-    if(detailFields.record){
-      var record = recordText(horse);
-      if(record){ lines.push("Rekord: " + record + "."); }
-    }
-    if(detailFields.homeTrack && horse.homeTrack && horse.homeTrack.name){
-      lines.push("Hemmabana: " + horse.homeTrack.name + ".");
-    }
-    if(detailFields.trainerLine){
-      var trainer = horse.trainer;
-      var trainerPct = winStatsText(trainer);
-      lines.push("Tränare: " + (trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd") +
-        (trainerPct ? ", " + trainerPct : "") + ".");
-    }
-    if(detailFields.driverLine){
-      var driver = start.driver;
-      var driverPct = winStatsText(driver);
-      lines.push("Kusk: " + (driver ? (driver.firstName + " " + driver.lastName) : "okänd") +
-        (driverPct ? ", " + driverPct : "") + (driver && driver.license ? " (" + driver.license + ")" : "") + ".");
-    }
-    if(detailFields.odds){
-      var odds = oddsText(start);
-      if(odds){ lines.push(odds); }
-    }
+    detailFieldOrder.forEach(function(key){
+      if(!detailFields[key]){ return; }
+      var builder = DETAIL_FIELD_BUILDERS[key];
+      var text = builder ? builder(start, horse) : null;
+      if(text){ lines.push(text); }
+    });
     return lines;
+  }
+
+  var MONTH_NAMES_SV = ["januari", "februari", "mars", "april", "maj", "juni",
+    "juli", "augusti", "september", "oktober", "november", "december"];
+
+  // ATG:s egna loppvillkortexter skriver ut datum som en rå sexsiffrig
+  // sträng (DDMMÅÅ, t.ex. "080822"), vilket en talsyntes lätt läser fel
+  // (som ett stort tal snarare än ett datum). Skrivs om till "8 augusti
+  // 2022" istället. Antar 2000-talet för tvåsiffriga år — säkert så länge
+  // ATG:s egna texter bara handlar om nutida datum.
+  function expandCompactDate(ddmmyy){
+    var day = parseInt(ddmmyy.slice(0, 2), 10);
+    var month = parseInt(ddmmyy.slice(2, 4), 10);
+    var year = 2000 + parseInt(ddmmyy.slice(4, 6), 10);
+    return day + " " + MONTH_NAMES_SV[month - 1] + " " + year;
+  }
+
+  // Skriver även om bindestrecket i beloppsintervall ("300.001 - 1.950.000
+  // kr") till "till", eftersom ett fristående bindestreck lätt läses som
+  // "minus" eller hoppas över av en skärmläsare.
+  function formatTermsText(terms){
+    if(!terms || !terms.length){ return ""; }
+    var text = terms.join(" ");
+    text = text.replace(/(födda|fr\.o\.m\.) (\d{6})/g, function(match, prefix, digits){
+      return prefix + " " + expandCompactDate(digits);
+    });
+    text = text.replace(/(\d[\d.]*)\s-\s(\d[\d.]*\s*kr)/g, "$1 till $2");
+    return text;
   }
 
   function renderAvdTabs(){
@@ -985,11 +1098,12 @@
     var heading = document.getElementById("avd-heading");
     heading.textContent = "Avd " + (currentAvd + 1) + ": " + race.name + ", " + race.distance + " m " +
       race.startMethod + ", kl " + race.startTime.slice(11, 16);
+    heading.setAttribute("aria-expanded", "false");
     heading.focus();
 
     var termsEl = document.getElementById("avd-terms");
-    var termsText = (race.terms && race.terms.length) ? race.terms.join(" ") : "";
-    termsEl.hidden = !termsText;
+    var termsText = formatTermsText(race.terms);
+    termsEl.hidden = true;
     termsEl.textContent = termsText;
 
     document.getElementById("avd-progress").textContent =
