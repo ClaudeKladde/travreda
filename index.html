@@ -197,6 +197,14 @@
     margin-top:.6rem;
   }
   .horse-letter{margin-top:.5rem;}
+  .letter-stepper{
+    display:flex;
+    gap:.5rem;
+  }
+  .letter-stepper button{
+    flex:1 1 0;
+    text-align:center;
+  }
   .detail-field-row{
     display:flex;
     align-items:center;
@@ -307,7 +315,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 22:01</span>
+  <span class="update-line">Vibe coded with Claude, senast uppdaterad 2026-08-23 22:43</span>
 
 </div>
 
@@ -388,6 +396,19 @@
   <h2 id="installningar-heading" tabindex="-1">Inställningar</h2>
 
   <fieldset>
+    <legend>Bokstavsval</legend>
+    <p class="avd-progress">Hur du markerar hästar med A–D i avdelningsvyn.</p>
+    <div>
+      <input type="radio" name="letter-input-mode" id="letter-input-buttons" value="buttons">
+      <label for="letter-input-buttons">Knappar</label>
+    </div>
+    <div>
+      <input type="radio" name="letter-input-mode" id="letter-input-menu" value="menu">
+      <label for="letter-input-menu">Meny</label>
+    </div>
+  </fieldset>
+
+  <fieldset>
     <legend>Sortering av startlistor</legend>
     <div>
       <input type="radio" name="sort-order" id="sort-procent" value="procent">
@@ -443,6 +464,8 @@
   // enda antaget värde för alla spelformer. V85 och V75 delar samma pris
   // (V85 efterträdde V75 som ATG:s flaggskeppsspel).
   var ROW_PRICE = { V85: 0.5, V75: 0.5, V86: 0.25, GS75: 1, V64: 1, V5: 1 };
+  // Kedjan bokstavsvals-steppern (knappläget) rör sig igenom, "" = Ej vald.
+  var LETTER_SEQUENCE = ["", "A", "B", "C", "D"];
   var GAME_TYPE_ORDER = ["V85", "V86", "V75", "GS75", "V64", "V5"];
   var MAX_UNREDUCED_WARN = 3000000;
 
@@ -529,6 +552,15 @@
     var storedCompression = localStorage.getItem(COMPRESSION_KEY);
     if(storedCompression === "none" || storedCompression === "light" || storedCompression === "hard"){
       compressionLevel = storedCompression;
+    }
+  } catch(e){}
+
+  var LETTER_INPUT_MODE_KEY = "travreda-letter-input-mode";
+  var letterInputMode = "buttons";
+  try {
+    var storedLetterInputMode = localStorage.getItem(LETTER_INPUT_MODE_KEY);
+    if(storedLetterInputMode === "buttons" || storedLetterInputMode === "menu"){
+      letterInputMode = storedLetterInputMode;
     }
   } catch(e){}
 
@@ -625,6 +657,18 @@
         compressionLevel = radio.value;
         try { localStorage.setItem(COMPRESSION_KEY, compressionLevel); } catch(e){}
         if(currentGame){ refreshLiveStatsAndUI(); }
+      }
+    });
+  });
+
+  var letterInputRadios = document.querySelectorAll('input[name="letter-input-mode"]');
+  letterInputRadios.forEach(function(radio){
+    radio.checked = (radio.value === letterInputMode);
+    radio.addEventListener("change", function(){
+      if(radio.checked){
+        letterInputMode = radio.value;
+        try { localStorage.setItem(LETTER_INPUT_MODE_KEY, letterInputMode); } catch(e){}
+        if(currentGame){ renderAvdelning(); }
       }
     });
   });
@@ -1313,7 +1357,7 @@
         });
         if(checkbox.checked){ li.classList.add("marked"); }
         letterWrap.appendChild(checkbox);
-      } else {
+      } else if(letterInputMode === "menu"){
         var label = document.createElement("label");
         var selectId = "letter-" + currentAvd + "-" + start.number;
         label.setAttribute("for", selectId);
@@ -1347,6 +1391,59 @@
         });
         if(select.value){ li.classList.add("marked"); }
         letterWrap.appendChild(select);
+      } else {
+        // Stegvis bokstavsval: 1–2 knappar (bakåt/framåt i kedjan Ej vald↔A↔B↔C↔D)
+        // istället för en <select>-meny, på uttrycklig begäran — VoiceOver-
+        // användaren upplevde menyns fokus-/svephantering som krånglig. Ingen
+        // egen värdetext behövs; statusetiketten på hästkortet visar redan
+        // aktuellt läge.
+        var stepperWrap = document.createElement("div");
+        stepperWrap.className = "letter-stepper";
+        letterWrap.appendChild(stepperWrap);
+
+        function letterIndex(){
+          return LETTER_SEQUENCE.indexOf(legLetters[start.number] || "");
+        }
+
+        function setLetterValue(value){
+          if(value){
+            legLetters[start.number] = value;
+            li.classList.add("marked");
+          } else {
+            delete legLetters[start.number];
+            li.classList.remove("marked");
+          }
+          renderStepper();
+          markChanged();
+        }
+
+        function renderStepper(){
+          stepperWrap.innerHTML = "";
+          if(scratched){ return; }
+          var idx = letterIndex();
+          if(idx > 0){
+            var backValue = LETTER_SEQUENCE[idx - 1];
+            var backBtn = document.createElement("button");
+            backBtn.type = "button";
+            backBtn.textContent = backValue || "Ej vald";
+            backBtn.setAttribute("aria-label", backValue ? ("Byt till " + backValue) : "Ta bort bokstav");
+            backBtn.addEventListener("click", function(){ setLetterValue(backValue); });
+            stepperWrap.appendChild(backBtn);
+          }
+          if(idx < LETTER_SEQUENCE.length - 1){
+            var fwdValue = LETTER_SEQUENCE[idx + 1];
+            var fwdBtn = document.createElement("button");
+            fwdBtn.type = "button";
+            fwdBtn.textContent = fwdValue;
+            fwdBtn.setAttribute("aria-label", "Byt till " + fwdValue);
+            fwdBtn.addEventListener("click", function(){ setLetterValue(fwdValue); });
+            stepperWrap.appendChild(fwdBtn);
+          }
+        }
+
+        if(scratched){ delete legLetters[start.number]; }
+        if(legLetters[start.number]){ li.classList.add("marked"); }
+        renderStepper();
       }
 
       li.appendChild(letterWrap);

@@ -95,9 +95,10 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
 - **Fokushantering:** flytta fokus till avdelningens rubrik
   (`tabindex="-1"`) när man byter avdelning, så VoiceOver-användare inte
   tappar sammanhanget.
-- **Standardkontroller:** `<select>` för bokstavsval (Ej vald/A/B/C/D) i
-  normalläge, `<input type="checkbox">` i "Vanligt system"-läget, istället
-  för egenbyggda widgets — robust med VoiceOver utan extra ARIA.
+- **Standardkontroller:** `<select>` eller stegvisa knappar för bokstavsval
+  (Ej vald/A/B/C/D) i normalläge (valbart, se "Bokstavsval: knappar eller
+  meny" i avsnitt 7), `<input type="checkbox">` i "Vanligt system"-läget,
+  istället för egenbyggda widgets — robust med VoiceOver utan extra ARIA.
 - **Mörkt läge som standard**, tydliga kontraster, gul färg (`--accent`) för
   visuellt markerade/valda hästar.
 - Inga emoji i gränssnittet.
@@ -612,8 +613,10 @@ systemet — se konversationshistorik för ett verkligt exempel). Användaren
 valde uttryckligen bokstäver istället, trots att det egna Jokersystemet-
 exemplet faktiskt visade poängmodellen.
 
-- Varje häst i varje avdelning får **Ej vald / A / B / C / D** via ett
-  `<select>`. "Ej vald" = hästen är inte en kandidat alls i systemet.
+- Varje häst i varje avdelning får **Ej vald / A / B / C / D**, antingen
+  via en `<select>` eller via stegvisa knappar (se "Bokstavsval:
+  knappar eller meny" nedan). "Ej vald" = hästen är inte en kandidat alls
+  i systemet.
 - **Villkor** (valfria, adderande, en per bokstav): "Bokstav X: minst N,
   högst M" räknat över **hela systemet** (alla avdelningar tillsammans) —
   t.ex. minst 2 A-hästar rätt. Utan villkor blir systemet hela
@@ -623,6 +626,37 @@ exemplet faktiskt visade poängmodellen.
   den oreducerade korsprodukten är väldigt stor (>3 miljoner kombinationer,
   `MAX_UNREDUCED_WARN`) innan en tvingad beräkning faktiskt körs — annars
   kan webbläsaren hänga sig.
+
+### Bokstavsval: knappar eller meny
+
+**Bakgrund:** användaren upplevde `<select>`-menyns fokus-/svephantering
+som krånglig med VoiceOver ("lite trassel med fokus och när man sveper
+runt"). En ny inställning under Inställningar, **"Bokstavsval"**
+(`letterInputMode`, `"buttons"` | `"menu"`, sparas i
+`travreda-letter-input-mode`), låter användaren välja mellan de två —
+**knappar är standard**.
+
+- **Knappläget** ersätter menyn med 1–2 knappar som stegar igenom kedjan
+  `Ej vald ↔ A ↔ B ↔ C ↔ D` (`LETTER_SEQUENCE`). Vid ändpunkterna
+  (Ej vald, D) visas bara en knapp — antalet knappar växlar alltså mellan
+  1 och 2, på uttrycklig begäran (inte en alltid-synlig men inaktiverad
+  knapp, till skillnad från t.ex. Flytta upp/ner-knapparna för
+  detaljradernas ordning). Knapparnas synliga text **är** destinationen
+  (t.ex. "B" eller "Ej vald") — ingen separat värdetext behövs eftersom
+  statusetiketten på hästkortet (`updateSelectionLabel()`, "Vald B 65%,")
+  redan visar aktuellt läge. `aria-label` är kort och konsekvent
+  ("Byt till B" / "Ta bort bokstav") — hästens namn behöver inte upprepas
+  i varje knapptryck eftersom VoiceOver redan läst upp det via hästkortets
+  egen knapp precis innan.
+- **Menyläget** är den ursprungliga `<select>`:n, oförändrad.
+- Struken häst visar **inga** knappar alls i knappläget (samma "hellre
+  tyst"-princip som resten av appen) — motsvarar den inaktiverade,
+  fortfarande synliga `<select>`:n i menyläget, bara utan en overksam
+  kvarliggande kontroll.
+- Bytet mellan lägena är rent visuellt — påverkar inte `legLetters`-datan,
+  villkorslogiken eller exporten. Verifierat med Playwright: bokstaven som
+  redan var vald i knappläget (t.ex. D) fanns kvar oförändrad efter byte
+  till menyläget, och tvärtom.
 
 ### Fördefinierade villkor
 
