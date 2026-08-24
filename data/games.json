@@ -1,11 +1,11 @@
 {
-  "updated": "2026-08-24T06:30:29Z",
+  "updated": "2026-08-24T12:20:07Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-08-24_83_6",
       "date": "2026-08-24",
-      "startTime": "2026-08-24T14:15:00",
+      "startTime": "2026-08-24T14:20:00",
       "status": "bettable",
       "trackId": 83,
       "trackName": "Orkla"
