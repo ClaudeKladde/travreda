@@ -1,5 +1,5 @@
 {
-  "updated": "2026-08-24T00:28:55Z",
+  "updated": "2026-08-24T06:30:29Z",
   "games": [
     {
       "type": "V5",
@@ -177,7 +177,7 @@
       "id": "V85_2026-08-29_9_5",
       "date": "2026-08-29",
       "startTime": "2026-08-29T16:10:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -186,7 +186,7 @@
       "id": "V5_2026-08-29_9_8",
       "date": "2026-08-29",
       "startTime": "2026-08-29T17:16:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
     }
