@@ -1,51 +1,6 @@
 {
-  "updated": "2026-08-23T18:10:22Z",
+  "updated": "2026-08-24T00:28:55Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-23_5_4",
-      "date": "2026-08-23",
-      "startTime": "2026-08-23T12:16:46",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-23_55_2",
-      "date": "2026-08-23",
-      "startTime": "2026-08-23T13:20:50",
-      "status": "results",
-      "trackId": 55,
-      "trackName": "Charlottenlund"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-23_17_4",
-      "date": "2026-08-23",
-      "startTime": "2026-08-23T13:31:29",
-      "status": "results",
-      "trackId": 17,
-      "trackName": "Hagmyren"
-    },
-    {
-      "type": "GS75",
-      "id": "GS75_2026-08-23_46_4",
-      "date": "2026-08-23",
-      "startTime": "2026-08-23T15:03:25",
-      "status": "results",
-      "trackId": 46,
-      "trackName": "Tingsryd"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-23_77_4",
-      "date": "2026-08-23",
-      "startTime": "2026-08-23T19:30:03",
-      "status": "ongoing",
-      "trackId": 77,
-      "trackName": "Bergen"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-24_83_6",
