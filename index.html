@@ -6,17 +6,63 @@
 <title>Travreda — Ett tillgängligt verktyg för reducerade travspel</title>
 <style>
   :root{
+    /* Mörkt tema (grundläge) — Växjö Lakers-inspirerad palett: orange
+       accentfärg, marinblå sekundärfärg (ljusare ton här för att synas mot
+       den mörka bakgrunden — se "Färgpalett" i CLAUDE.md). */
     --bg:#121212;
     --fg:#f2f2f2;
     --muted:#b7b7b7;
     --card:#1e1e1e;
     --card-border:#5c6773;
-    --accent:#ffd60a;
-    --accent-fg:#1a1500;
+    --input-bg:#242424;
+    --badge-bg:#2a2a2a;
+    --detail-bg:#191919;
+    --marked-bg:#2e1a08;
+    --accent:#F37835;
+    --accent-fg:#1a0f00;
+    --accent-text:#F37835;
     --link:#6aa8e0;
-    --brand-blue:#0e63ba;
+    --brand-blue:#2568b5;
     --danger:#ff8080;
-    --focus:#ffd60a;
+    --focus:#F37835;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --bg:#f5f5f2;
+      --fg:#141414;
+      --muted:#4a4a4a;
+      --card:#ffffff;
+      --card-border:#7d8794;
+      --input-bg:#eef0f2;
+      --badge-bg:#e8e8e5;
+      --detail-bg:#eeeeeb;
+      --marked-bg:#ffe6d5;
+      --accent:#F37835;
+      --accent-fg:#1a0f00;
+      --accent-text:#9c4a17;
+      --link:#0a5cae;
+      --brand-blue:#013A80;
+      --danger:#a4161a;
+      --focus:#9c4a17;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f5f5f2;
+    --fg:#141414;
+    --muted:#4a4a4a;
+    --card:#ffffff;
+    --card-border:#7d8794;
+    --input-bg:#eef0f2;
+    --badge-bg:#e8e8e5;
+    --detail-bg:#eeeeeb;
+    --marked-bg:#ffe6d5;
+    --accent:#F37835;
+    --accent-fg:#1a0f00;
+    --accent-text:#9c4a17;
+    --link:#0a5cae;
+    --brand-blue:#013A80;
+    --danger:#a4161a;
+    --focus:#9c4a17;
   }
   *{box-sizing:border-box;}
   html,body{background:var(--bg);color:var(--fg);}
@@ -47,7 +93,6 @@
     display:flex;
     gap:.3rem;
     flex-wrap:wrap;
-    padding-right:3.6rem;
   }
   .avd-tab{
     min-width:1.9rem;
@@ -62,7 +107,7 @@
     color:var(--accent-fg);
     border-color:var(--accent);
   }
-  .menu-wrap{position:absolute;top:.6rem;right:1rem;}
+  .menu-wrap{position:relative;display:flex;justify-content:flex-end;margin-bottom:.5rem;}
   #main-menu{
     position:absolute;
     right:0;
@@ -82,26 +127,26 @@
   button, select, input[type="number"], input[type="text"], input[type="date"]{
     font-size:1rem;
     padding:.5rem .7rem;
-    background:#242424;
     color:var(--fg);
     border:1px solid var(--card-border);
     border-radius:8px;
   }
-  button{cursor:pointer;}
-  button:hover{border-color:var(--accent);}
-  button.btn-primary{
-    background:var(--accent);
-    color:var(--accent-fg);
-    font-weight:700;
-    border-color:var(--accent);
+  select, input[type="number"], input[type="text"], input[type="date"]{
+    background:var(--input-bg);
   }
-  #btn-open-atg{
+  button{
+    cursor:pointer;
     background:var(--brand-blue);
     color:#fff;
     font-weight:700;
     border-color:var(--brand-blue);
   }
-  #btn-open-atg:hover{border-color:#4f9eff;}
+  button:hover{border-color:var(--accent-text);}
+  button.btn-primary{
+    background:var(--accent);
+    color:var(--accent-fg);
+    border-color:var(--accent);
+  }
   button:disabled{opacity:.5;cursor:not-allowed;}
   fieldset{border:1px solid var(--card-border);border-radius:10px;margin:0 0 1rem;padding:.75rem 1rem 1rem;}
   legend{padding:0 .4rem;color:var(--muted);}
@@ -120,9 +165,9 @@
     background:var(--card);
   }
   .horse-row.marked{
-    border-color:var(--accent);
-    background:#2a2410;
-    box-shadow:0 0 0 2px var(--accent) inset;
+    border-color:var(--accent-text);
+    background:var(--marked-bg);
+    box-shadow:0 0 0 2px var(--accent-text) inset;
   }
   .horse-row.new-barefoot{
     border-left:6px solid var(--danger);
@@ -147,7 +192,7 @@
   }
   .selected-label{
     display:block;
-    color:var(--accent);
+    color:var(--accent-text);
     font-weight:700;
     margin-bottom:.25rem;
   }
@@ -171,7 +216,7 @@
     height:1.8rem;
     padding:0 .3rem;
     border-radius:50%;
-    background:#2a2a2a;
+    background:var(--badge-bg);
     border:1px solid var(--card-border);
     font-weight:700;
     flex-shrink:0;
@@ -199,7 +244,7 @@
     margin:.5rem 0;
     padding:.6rem .75rem;
     border-left:3px solid var(--card-border);
-    background:#191919;
+    background:var(--detail-bg);
   }
   .btn-minimize{
     margin-top:.6rem;
@@ -259,6 +304,16 @@
   }
   .update-line{display:block;color:var(--muted);font-size:.8rem;margin-top:3rem;}
 </style>
+<script>
+  // Sätter temat innan sidan hinner rita ut något, annars blinkar det till
+  // fel tema en bråkdel av en sekund vid en explicit (icke-Auto) inställning.
+  try {
+    var storedTheme = localStorage.getItem("travreda-theme");
+    if(storedTheme === "light" || storedTheme === "dark"){
+      document.documentElement.setAttribute("data-theme", storedTheme);
+    }
+  } catch(e){}
+</script>
 </head>
 <body>
 
@@ -282,6 +337,7 @@
     genvägsknappen dit.</p>
     <h3>Inställningar</h3>
     <ul>
+      <li>Tema: ljust, mörkt eller följ systemets inställning.</li>
       <li>Sortering av startlistor: spelprocent eller startnummer.</li>
       <li>Komprimering av exportfilen: färre kupongrader utan att ändra
       priset.</li>
@@ -324,25 +380,26 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 11:17</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 12:17</span>
 
 </div>
 
 <!-- ===== VY: AVDELNING (HUVUDSIDA) ===== -->
 <div id="view-avdelning" hidden>
 
+  <div class="menu-wrap">
+    <button type="button" id="btn-menu-toggle" aria-expanded="false" aria-controls="main-menu">Meny</button>
+    <ul id="main-menu" hidden>
+      <li><button type="button" id="menu-startsida">Gå till startsidan</button></li>
+      <li><button type="button" id="menu-villkor">Villkor och export</button></li>
+      <li><button type="button" id="menu-installningar">Inställningar</button></li>
+    </ul>
+  </div>
+
   <p class="avd-progress" id="avd-progress"></p>
   <p class="avd-progress" id="avd-turnover" hidden></p>
 
   <div class="topbar">
-    <div class="menu-wrap">
-      <button type="button" id="btn-menu-toggle" aria-expanded="false" aria-controls="main-menu">Meny</button>
-      <ul id="main-menu" hidden>
-        <li><button type="button" id="menu-startsida">Gå till startsidan</button></li>
-        <li><button type="button" id="menu-villkor">Villkor och export</button></li>
-        <li><button type="button" id="menu-installningar">Inställningar</button></li>
-      </ul>
-    </div>
     <div class="avd-tabs" id="avd-tabs"></div>
   </div>
 
@@ -407,6 +464,23 @@
 
   <button type="button" id="btn-back-installningar">Tillbaka till avdelningar</button>
   <h2 id="installningar-heading" tabindex="-1">Inställningar</h2>
+
+  <fieldset>
+    <legend>Tema</legend>
+    <p class="avd-progress">Ljust eller mörkt utseende för hela verktyget.</p>
+    <div>
+      <input type="radio" name="theme-mode" id="theme-auto" value="auto">
+      <label for="theme-auto">Följ systemets inställning</label>
+    </div>
+    <div>
+      <input type="radio" name="theme-mode" id="theme-light" value="light">
+      <label for="theme-light">Ljust</label>
+    </div>
+    <div>
+      <input type="radio" name="theme-mode" id="theme-dark" value="dark">
+      <label for="theme-dark">Mörkt</label>
+    </div>
+  </fieldset>
 
   <fieldset>
     <legend>Bokstavsval</legend>
@@ -577,6 +651,27 @@
     }
   } catch(e){}
 
+  // Temat sätts redan en gång, synkront, i <head> (innan sidan ritas, för att
+  // undvika att det blinkar till fel tema) — den här kopian styr bara
+  // Inställningar-radioknapparna och tillämpar ändringar efter sidladdning.
+  var THEME_KEY = "travreda-theme";
+  var themeMode = "auto";
+  try {
+    var storedTheme = localStorage.getItem(THEME_KEY);
+    if(storedTheme === "auto" || storedTheme === "light" || storedTheme === "dark"){
+      themeMode = storedTheme;
+    }
+  } catch(e){}
+
+  function applyTheme(){
+    if(themeMode === "auto"){
+      document.documentElement.removeAttribute("data-theme");
+    } else {
+      document.documentElement.setAttribute("data-theme", themeMode);
+    }
+  }
+  applyTheme();
+
   var views = {
     start: document.getElementById("view-start"),
     avdelning: document.getElementById("view-avdelning"),
@@ -682,6 +777,18 @@
         letterInputMode = radio.value;
         try { localStorage.setItem(LETTER_INPUT_MODE_KEY, letterInputMode); } catch(e){}
         if(currentGame){ renderAvdelning(); }
+      }
+    });
+  });
+
+  var themeRadios = document.querySelectorAll('input[name="theme-mode"]');
+  themeRadios.forEach(function(radio){
+    radio.checked = (radio.value === themeMode);
+    radio.addEventListener("change", function(){
+      if(radio.checked){
+        themeMode = radio.value;
+        try { localStorage.setItem(THEME_KEY, themeMode); } catch(e){}
+        applyTheme();
       }
     });
   });

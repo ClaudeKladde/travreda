@@ -107,48 +107,104 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
   gul färg (`--accent`) för visuellt markerade/valda hästar.
 - Inga emoji i gränssnittet.
 
-### Färgpalett — kontrastförstärkt, ATG-inspirerad
+### Färgpalett — Växjö Lakers-inspirerad, ljust + mörkt tema
 
-Byggd efter uttrycklig begäran om högre kontrast, en mer visuellt tilltalande
-design och ATG:s egna profilfärger. **ATG:s riktiga färger hämtades och
-analyserades direkt från deras produktions-CSS** (`atg.se`s huvudstilmall),
-inte gissade: primär blå `#004f9f`/ljusare `#006db6` (knappar, aktiva
-menyval, fokusringar) och en primär handlingsgrön `#22ac07` — plus separata
-accentfärger per spelform (t.ex. orange för V64, röd för V65) som inte är
-relevanta för en generell palett.
+**Ersatte en tidigare ATG-inspirerad palett** (blå/gul) på uttrycklig
+begäran — användaren ville istället ha sitt favoritlags (Växjö Lakers HC)
+profilfärger: mörkblå och orange. **Färgerna hämtades och verifierades
+mot en oberoende källa** (teamcolorcodes.com, vanligt citerad referens för
+lagfärger), inte gissade: `#013A80` (mörkblå) och `#F37835` (orange).
+Ersatte den tidigare gula CTA-färgen helt — inte ett tillägg vid sidan av,
+utan en fullständig omfärgning av hela paletten, på uttrycklig begäran
+("ersätt helt med Lakers-färger").
 
-Samtliga kontrastvärden nedan är beräknade med WCAG:s egen
-relativ-luminans-formel (inte uppskattade). Nuvarande textkontraster var
-redan mycket goda (7,7–16,7:1) — det tydligaste svaga stället var
-`--card-border` mot bakgrunden, bara **1,65:1**, vilket gjorde kortkanter
-och avdelare svåra att uppfatta.
+**Två teman, inte ett** — byggd efter uttrycklig begäran om ett ljust läge
+som komplement till det mörka. Alla färgtokens är CSS custom properties på
+`:root`, satta om under två villkor:
 
-- **`--card-border`:** `#3a3a3a` → `#5c6773` (3,25:1 mot bakgrunden,
-  uppfyller WCAG 1.4.11:s 3:1-krav för UI-gränser som inte är text).
-- **`--link`:** `#8ab4ff` → `#6aa8e0`, tonad mer åt ATG:s blå medan
-  kontrasten hålls hög (7,4:1).
-- **Ny `--brand-blue` (`#0e63ba`):** ATG-inspirerad sekundäraccent, används
-  **bara som bakgrundsfyllnad** (aldrig som liten text på mörk bakgrund —
-  bara 3,1:1 där, otillräckligt för text). Vit text ovanpå ger 6:1.
-  Appliceras på: `#btn-open-atg` ("Öppna ATG:s filinlämning" — passande
-  eftersom knappen bokstavligen leder till ATG), en `border-bottom` under
-  alla `<h2>` för tydligare visuell hierarki, och en vänsterkant på
-  `.summary-box` (sammanfattningsrutan i Villkor-vyn) för att markera den
-  som en framhävd ruta.
-- **`--accent`/`--accent-fg` (gula knappar) oförändrade:** `--accent-fg`
-  (`#1a1500`) gav redan 12,9:1 kontrast mot den gula bakgrunden — visuellt
-  oskiljbart från ren svart. Kontrollerat med användaren, som valde att
-  behålla det nästan-svarta värdet istället för att byta till bokstavligt
-  `#000000` (marginell skillnad, 13,0 mot 12,9).
-- **`--danger`** (röd, struken/fel) oförändrad — redan 7,7:1.
+```css
+:root{ /* mörkt tema, grundläge */ }
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ /* ljust tema, om systemet föredrar ljust
+    OCH inget manuellt val tvingar mörkt */ }
+}
+:root[data-theme="light"]{ /* ljust tema, manuellt tvingat */ }
+```
 
-**Skalning/zoom:** hela stilmallen gicks igenom rad för rad. Praktiskt
-taget allt är redan `rem`-baserat (typsnittsstorlekar, padding, marginaler,
-gap) — enda `px`-förekomsterna är hårlinje-kantlinjer/`border-radius`
-(som inte behöver skala enligt WCAG) och den avsiktliga 1×1px-tekniken i
-`.visually-hidden` (måste vara exakt 1px, inte `rem`, annars fungerar inte
-dölj-tricket). `viewport`-taggen saknar `maximum-scale`/`user-scalable=no`,
-så pinch-zoom är aldrig blockerad. Inga ändringar behövdes.
+`data-theme`-attributet sätts av `applyTheme()` baserat på `themeMode`
+(`"auto"`/`"light"`/`"dark"`, sparas i `travreda-theme`) — **Auto** tar
+bort attributet helt (då avgör `prefers-color-scheme` via media queryn),
+**Ljust**/**Mörkt** sätter attributet explicit och vinner alltid över
+systeminställningen. **En liten synkron `<script>`-snutt i `<head>`**
+(före `<style>` stängs, före `<body>` ritas) läser `travreda-theme` och
+sätter `data-theme` innan sidan hinner måla ut något — annars hade ett
+manuellt valt tema (som skiljer sig från systemets) blinkat till fel färg
+en bråkdel av en sekund vid varje sidladdning. Den stora `<script>`-blocket
+längst ner i `<body>` har sin egen kopia av samma logik (`applyTheme()`)
+som bara styr Inställningar-radioknapparna och tillämpar ändringar efter
+sidladdning — de två skriptblocken gör alltså delvis samma sak medvetet,
+av just det skälet.
+
+**Kontrastvärden** (WCAG:s relativ-luminans-formel, inte uppskattade) och
+varför två separata "orange"-tokens behövs:
+
+- **`--accent` (`#F37835`, ren Lakers-orange):** används **bara som
+  bakgrundsfyllnad** ihop med `--accent-fg` (nästan svart, `#1a0f00`) —
+  t.ex. `.btn-primary`, aktiv avdelningsflik. Fungerar utmärkt som fyllnad
+  i båda teman eftersom den då aldrig jämförs mot sidans bakgrund, bara
+  mot sin egen ihopparade textfärg (7,6:1).
+- **`--accent-text`:** en **separat, temaanpassad** ton för när orange
+  behövs som text/kant direkt mot sidans bakgrund (t.ex. `.selected-label`,
+  `.horse-row.marked`s kant). Ren `--accent` mot en ljus bakgrund ger bara
+  2,5:1 — otillräckligt (WCAG kräver 4,5:1 för text, 3:1 för UI-kanter).
+  Mörkt tema: samma klara orange (`#F37835`, 6,7:1). Ljust tema: en mörkare
+  bränd orange (`#9c4a17`, 5,7:1) — samma nyans i grunden, bara mörkad för
+  att fungera mot en ljus bakgrund.
+- **`--brand-blue`** (marinblå, sekundäraccent — knappar, `<h2>`-kant,
+  `.summary-box`-kant): mörkt tema använder en **ljusare** ton (`#2568b5`,
+  3,3:1 mot den mörka bakgrunden — den äkta Lakers-marinblå `#013A80` hade
+  bara gett 1,7:1 och nästan försvunnit mot en mörk sida). Ljust tema
+  använder den äkta, mörkare `#013A80` rakt av (10:1 mot den ljusa
+  bakgrunden, ingen ljusning behövs där). Vit text ovanpå ger utmärkt
+  kontrast i båda teman (6,4/11:1).
+- **`--danger`** (röd, struken/fel): mörkt tema oförändrad (`#ff8080`,
+  7,7:1). Ljust tema egen, mörkare röd (`#a4161a`, 7,1:1) — den ljusa
+  rosaröda hade varit näst intill oläslig mot en ljus bakgrund.
+- **`--input-bg`/`--badge-bg`/`--detail-bg`/`--marked-bg`:** fyra
+  ytterligare tokens som ersatte tidigare hårdkodade hex-värden (`#242424`,
+  `#2a2a2a`, `#191919`, `#2a2410`) som bara fanns definierade för det mörka
+  temat — måste bli temavariabler för att ljusa temat inte skulle ärva
+  mörka, ologiska ytor. `--marked-bg` (bakgrunden på en bokstavsmärkt
+  hästrad) är dessutom omfärgad från en gul till en orange ton för att
+  matcha den nya accentfärgen.
+
+**Alla knappar fick en tydlig bakgrundsfärg** (`--brand-blue`, vit text),
+på uttrycklig begäran — tidigare hade bara `.btn-primary`
+(gul/nu-orange) och några enstaka knappar en färgad bakgrund, resten var
+platt mörkgrå. Formulärfält (`select`/`input`) fick en egen
+`--input-bg`-ton istället, så de inte ser ut som knappar.
+`#btn-open-atg`s tidigare egna specialstyling (från ATG-paletten) togs
+bort som överflödig — alla knappar är redan marinblå nu.
+
+**Menyknappen flyttad till allra överst på sidan** (`.menu-wrap`, nu
+första elementet i `#view-avdelning`, före `#avd-progress`), på uttrycklig
+begäran ("flytta upp menyknappen längre upp i det högra hörnet") — var
+tidigare `position:absolute` inuti den sticky menyraden tillsammans med
+avdelningsflikarna. `.avd-tabs`s `padding-right:3.6rem` (som reserverade
+plats åt den gamla positioneringen) togs bort som överflödig.
+
+**Skalning/zoom:** hela stilmallen gicks igenom rad för rad (samma
+genomgång som tidigare, fortfarande giltig efter omfärgningen). Praktiskt
+taget allt är redan `rem`-baserat — enda `px`-förekomsterna är
+hårlinje-kantlinjer/`border-radius` (som inte behöver skala enligt WCAG)
+och den avsiktliga 1×1px-tekniken i `.visually-hidden`. `viewport`-taggen
+saknar `maximum-scale`/`user-scalable=no`, så pinch-zoom är aldrig
+blockerad.
+
+**Ny inställning "Tema"** (`themeMode`) under Inställningar, tre
+radioknappar (Följ systemets inställning/Ljust/Mörkt), samma mönster som
+Sortering/Komprimering/Bokstavsval. "Följ systemets inställning" är
+förvalt.
 
 ### Hästkortens struktur (avdelningsvyn)
 
@@ -281,26 +337,24 @@ saknas eller kraschar något.
 
 ### Sticky avdelningsflikar + meny
 
-Menyknappen (`.menu-wrap`) är `position:absolute` i sticky-radens
-övre högra hörn, medvetet borttagen ur flikradens flex-flöde (`.avd-tabs`
-har `padding-right` som reserverar plats åt den) — annars konkurrerar
-menyknappens bredd med flikarna om utrymmet och tvingar den sista fliken
-att radbryta för sig själv. Flikstorleken (`.avd-tab`, ~1,9 rem) är avpassad
-för att rymma alla 8 avdelningar på en rad även på en smal mobilskärm.
+Flikstorleken (`.avd-tab`, ~1,9 rem) är avpassad för att rymma alla 8
+avdelningar på en rad även på en smal mobilskärm.
 
-**Tabbordning:** `.menu-wrap` ligger nu **före** `.avd-tabs` i DOM:en (på
-användarens begäran, för att nå menyn utan att först behöva svepa/tabba
-förbi alla avdelningsknapparna) — påverkar bara läsordning/tabbordning,
-inte det visuella utseendet, eftersom `.menu-wrap` redan var absolut
-positionerad och alltså opåverkad av var den ligger i flödet.
+**Menyknappen är flyttad ur den sticky menyraden helt** (på uttrycklig
+begäran, "flytta upp menyknappen längre upp i det högra hörnet") — ligger
+nu som **allra första elementet** i `#view-avdelning`, före `#avd-progress`.
+`.menu-wrap` gick från `position:absolute` (förankrad i den sticky radens
+positioneringskontext) till ett vanligt block-element (`position:relative`,
+`display:flex;justify-content:flex-end`) som själv utgör
+positioneringskontexten för `#main-menu`-dropdownen. `.avd-tabs`s gamla
+`padding-right:3.6rem` (som reserverade plats åt menyknappen i den
+tidigare positioneringen) togs bort som överflödig.
 
-**Sidhuvudets ordning på huvudsidan** (`view-avdelning`): `#avd-progress`
-(omgångens namn: "V85 — Romme — 2026-08-22") och `#avd-turnover`
-(omsättning) ligger nu **högst upp på sidan**, före den sticky menyraden
-— på användarens begäran, så att omgångens sammanhang läses innan man når
-avdelningsflikarna/menyn. Ordningen är: `avd-progress` → `avd-turnover` →
-`.topbar` (meny + flikar) → `avd-heading` (lopprubrik) → `avd-terms` (se
-nedan) → `avd-marked-count` → hästlistan.
+**Sidhuvudets ordning på huvudsidan** (`view-avdelning`): `.menu-wrap` →
+`#avd-progress` (omgångens namn: "V85 — Romme — 2026-08-22") →
+`#avd-turnover` (omsättning) → `.topbar` (nu bara avdelningsflikarna,
+fortfarande sticky) → `avd-heading` (lopprubrik) → `avd-terms` (se nedan)
+→ `avd-marked-count` → hästlistan.
 
 **`#avd-terms`** (direkt efter lopprubriken `avd-heading`) visar loppets
 deltagandevillkor — ålder, kön, intjänandegränser, körsvenskrav — direkt
