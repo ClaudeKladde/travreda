@@ -101,10 +101,12 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
   tappar sammanhanget.
 - **Standardkontroller:** `<select>` eller stegvisa knappar för bokstavsval
   (Ej vald/A/B/C/D) i normalläge (valbart, se "Bokstavsval: knappar eller
-  meny" i avsnitt 7), `<input type="checkbox">` i "Vanligt system"-läget,
-  istället för egenbyggda widgets — robust med VoiceOver utan extra ARIA.
-- **Mörkt läge som standard**, tydliga kontraster (se "Färgpalett" nedan),
-  gul färg (`--accent`) för visuellt markerade/valda hästar.
+  meny" i avsnitt 7), en togg-knapp (`aria-pressed`) i "Vanligt
+  system"-läget — robust med VoiceOver utan extra ARIA utöver
+  `aria-pressed`.
+- **Mörkt och ljust läge**, tydliga kontraster (se "Färgpalett" nedan),
+  orange accentfärg för visuellt markerade/valda hästar samt för
+  vagnbyten/skobyte/barfota i hästkortens textrad.
 - Inga emoji i gränssnittet.
 
 ### Färgpalett — Växjö Lakers-inspirerad, ljust + mörkt tema
@@ -177,6 +179,12 @@ varför två separata "orange"-tokens behövs:
   mörka, ologiska ytor. `--marked-bg` (bakgrunden på en bokstavsmärkt
   hästrad) är dessutom omfärgad från en gul till en orange ton för att
   matcha den nya accentfärgen.
+- **`--stepper-bg`** (`#a34d1a`, samma värde i båda teman): en egen,
+  mörkare orange ton för bokstavsstegrarens knappar (se "Bokstavsval:
+  knappar eller meny" i avsnitt 7) — skild från både `--accent` (ljusare,
+  CTA-knappar) och `--brand-blue` (marinblå, standardknappar), på
+  uttrycklig begäran om att de ska synas tydligare bredvid hästkortets
+  egen knapp. Vit text ger 5,8:1, gott och väl över 4,5:1.
 
 **Alla knappar fick en tydlig bakgrundsfärg** (`--brand-blue`, vit text),
 på uttrycklig begäran — tidigare hade bara `.btn-primary`
@@ -236,9 +244,23 @@ knappen som syskon, vilket dubblerade antalet svep per häst — rättat.
   vagnbyte."` respektive en parentetisk `"(barfota för första gången)"` sist
   i meningen — båda flyttade till ett prefix istället, konsekvent med
   varandra: `"Vagnbyte Amerikansk vagn"` / `"Skobyte Barfota runt om"`.
-  `sulkyMainRowText()`/`shoesInfo()` returnerar numera texten utan eget
-  avslutande skiljetecken (huvudradens `subParts`-array lägger till rätt
-  tecken beroende på position).
+  `sulkyMainInfo()`/`shoesInfo()` returnerar numera `{text, highlight}`
+  istället för en ren sträng — huvudradens `subParts`-array lägger till
+  rätt avslutande skiljetecken beroende på position, precis som förut.
+- **Färgmarkering av vagnbyten/skoinfo** (`--accent-text`, samma
+  orange-ton som resten av accentfärgen), på uttrycklig begäran om
+  tydligare visuell indikering. `highlight` är sant för vagn bara vid ett
+  faktiskt byte (`s.type.changed`) — en oförändrad "Vanlig vagn" är inte
+  märkvärdig nog att markera. För skor är `highlight` sant både vid byte
+  **och** vid barfota (även utan byte) — barfota i sig är relevant
+  spelinformation, inte bara själva bytet. Byggs med egna `<span
+  class="changed-info">`-element runt bara den delen av raden istället för
+  `addSub()`s enda textnod, eftersom bara en del av `.horse-sub` ska få
+  färgen.
+- **Minimera-knapp:** när detaljvyn expanderas läggs en "Minimera
+  {namn}"-knapp till sist i detaljinnehållet, så att man landar på en
+  tydlig stängknapp efter att ha svept igenom all information, istället för
+  att behöva svepa bakåt till den ursprungliga knappen.
 - **Minimera-knapp:** när detaljvyn expanderas läggs en "Minimera
   {namn}"-knapp till sist i detaljinnehållet, så att man landar på en
   tydlig stängknapp efter att ha svept igenom all information, istället för
@@ -348,7 +370,10 @@ positioneringskontext) till ett vanligt block-element (`position:relative`,
 `display:flex;justify-content:flex-end`) som själv utgör
 positioneringskontexten för `#main-menu`-dropdownen. `.avd-tabs`s gamla
 `padding-right:3.6rem` (som reserverade plats åt menyknappen i den
-tidigare positioneringen) togs bort som överflödig.
+tidigare positioneringen) togs bort som överflödig. **`#btn-menu-toggle`**
+fick dessutom en egen orange bakgrund (`--accent`/`--accent-fg`, samma
+par som `.btn-primary`) istället för standardknapparnas marinblå, på
+uttrycklig begäran om att den ska synas ännu bättre.
 
 **Sidhuvudets ordning på huvudsidan** (`view-avdelning`): `.menu-wrap` →
 `#avd-progress` (omgångens namn: "V85 — Romme — 2026-08-22") →
@@ -745,10 +770,18 @@ runt"). En ny inställning under Inställningar, **"Bokstavsval"**
   detaljradernas ordning). Knapparnas synliga text **är** destinationen
   (t.ex. "B" eller "Ej vald") — ingen separat värdetext behövs eftersom
   statusetiketten på hästkortet (`updateSelectionLabel()`, "Vald B 65%,")
-  redan visar aktuellt läge. `aria-label` är kort och konsekvent
-  ("Byt till B" / "Ta bort bokstav") — hästens namn behöver inte upprepas
-  i varje knapptryck eftersom VoiceOver redan läst upp det via hästkortets
-  egen knapp precis innan.
+  redan visar aktuellt läge. `aria-label` är kort och konsekvent för byte
+  mellan redan valda bokstäver ("Byt till B" / "Ta bort bokstav") — hästens
+  namn behöver inte upprepas där eftersom VoiceOver redan läst upp det via
+  hästkortets egen knapp precis innan. **Undantag, på uttrycklig begäran:**
+  knappen som väljer hästen första gången (från "Ej vald", alltid till "A")
+  heter istället `"Välj {nummer} {namn}"` — den handlingen är den egentliga
+  urvalshandlingen (bokstaven är ändå alltid "A" härifrån), så numret/namnet
+  är mer relevant att läsa upp än bokstaven.
+- **Egen bakgrundsfärg** (`--stepper-bg`, en mörkorange ton skild från både
+  den ljusare CTA-orangen och den marinblå standardknappsfärgen) på
+  uttrycklig begäran, så knapparna syns tydligare bredvid hästkortets egen
+  (marinblå) knapp.
 - **Menyläget** är den ursprungliga `<select>`:n, oförändrad.
 - Struken häst visar **inga** knappar alls i knappläget (samma "hellre
   tyst"-princip som resten av appen) — motsvarar den inaktiverade,
@@ -791,12 +824,19 @@ helt borttaget på användarens begäran ("dom behövs inte längre"). Rullistan
 med fördefinierade villkor är nu det enda sättet att sätta/ändra villkor —
 `villkor`-arrayen finns fortfarande internt (`presetToVillkor()` bygger
 den), men det finns inget UI för att se eller finjustera den rad för rad.
-Istället visas en enkel, skrivskyddad sammanfattning direkt under
-rullistan: **`#letter-tally`** (`renderLetterTally()`) räknar hur många
-hästar som är märkta med respektive bokstav över hela systemet (alla
-avdelningar), t.ex. "8 A-hästar, 0 B-hästar, 0 C-hästar, 0 D-hästar." —
-räknar bara markerade hästar, oberoende av om något villkor faktiskt är
-aktivt.
+Istället visas en enkel, skrivskyddad sammanfattning: **`#letter-tally`**
+(`renderLetterTally()`) räknar hur många hästar som är märkta med
+respektive bokstav över hela systemet (alla avdelningar), t.ex.
+"8 A-hästar, 0 B-hästar, 0 C-hästar, 0 D-hästar." — räknar bara markerade
+hästar, oberoende av om något villkor faktiskt är aktivt. Ligger **direkt
+under** `<h2>Systemöversikt</h2>` (flyttad dit från platsen direkt under
+rullistan, på uttrycklig begäran) och är **duplicerad** på samma sätt som
+resten av Systemöversikt (se nedan) — `#avd-letter-tally` visar samma text
+direkt under motsvarande rubrik i avdelningsvyn. `renderLetterTally()`
+skriver till båda elementen i samma anrop, och anropas nu även från
+`refreshLiveStatsAndUI()` (inte bara `renderVillkor()`) så att
+avdelningsvyns kopia uppdateras live vid varje ändring, inte bara när man
+navigerar till Villkor-vyn.
 
 **Motsvarande bokstavsuppdelning per avdelning** (`buildMarkedCountText()`,
 delad mellan den initiala renderingen och `markChanged()` för att inte
@@ -811,17 +851,24 @@ per-avdelningsraden ska bara nämna bokstäver som faktiskt används där.
 `systemMode` (`"abc"` | `"plain"`, sparas per omgång i `saveState()`) styr
 vilken kontroll som visas per häst i avdelningsvyn:
 
-- `"abc"` (normalläge): `<select>` Ej vald/A/B/C/D, som förut.
-- `"plain"`: en enkel `<input type="checkbox">` — internt sätts bokstaven
-  `"A"` när ikryssad, precis som om hästen manuellt valts som A i vanligt
-  läge. Eftersom villkor samtidigt töms (`rules: []`) blir resultatet hela
-  korsprodukten av ikryssade hästar, utan reducering — ingen ändring
-  behövdes i `buildCandidates()`/`generateRows()`/export, de bryr sig bara
-  om att en bokstav finns satt, inte vilken. Kryssrutans egen `<label>` var
-  tidigare statisk ("Ta med {namn}") — nu dynamisk och uppdateras vid varje
-  ändring (`updateCheckLabel()`), på uttrycklig begäran: `"Vald {namn}"`
-  ikryssad, `"Ej vald {namn}"` avkryssad — samma "Ej vald"-ord som redan
-  fanns som alternativ i `<select>`:n för normalläget, nu återanvänt här.
+- `"abc"` (normalläge): `<select>` eller stegvisa knappar, se ovan.
+- `"plain"`: internt sätts bokstaven `"A"` när hästen är vald, precis som om
+  hästen manuellt valts som A i vanligt läge. Eftersom villkor samtidigt
+  töms (`rules: []`) blir resultatet hela korsprodukten av valda hästar,
+  utan reducering — ingen ändring behövdes i
+  `buildCandidates()`/`generateRows()`/export, de bryr sig bara om att en
+  bokstav finns satt, inte vilken.
+  **Var ursprungligen en `<input type="checkbox">` + `<label>`, nu en enda
+  togg-knapp** (`aria-pressed`, samma mönster som bokstavsstegraren ovan) —
+  ändrat efter en rapporterad VoiceOver-upplevelse av två svep per häst
+  (hästkortets egen knapp, sedan kryssrutan). Ett riktigt "ett enda svep"
+  hade krävt att slå ihop namn-knappen och valkontrollen till samma
+  element, vilket hade tagit bort den separata "visa detaljer"-funktionen
+  — den här lösningen gör istället kontrollen konsekvent med ABC-lägets
+  knappar och undviker kryssrutans ibland mer utförliga uppläsning. Samma
+  text som förut: `"Vald"` intryckt, `"Ej vald"` ej intryckt — `aria-label`
+  stavar ut handlingen med nummer och namn (`"Välj 6 Princess Diamond"` /
+  `"Ta bort 6 Princess Diamond"`).
 - Byter man till ett riktigt villkor (rullistan eller "Lägg till eget
   villkor") växlar `systemMode` automatiskt tillbaka till `"abc"` och
   hästlistan ritas om med bokstavsväljare — redan ikryssade hästar (bokstav

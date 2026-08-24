@@ -21,6 +21,7 @@
     --accent:#F37835;
     --accent-fg:#1a0f00;
     --accent-text:#F37835;
+    --stepper-bg:#a34d1a;
     --link:#6aa8e0;
     --brand-blue:#2568b5;
     --danger:#ff8080;
@@ -40,6 +41,7 @@
       --accent:#F37835;
       --accent-fg:#1a0f00;
       --accent-text:#9c4a17;
+      --stepper-bg:#a34d1a;
       --link:#0a5cae;
       --brand-blue:#013A80;
       --danger:#a4161a;
@@ -59,6 +61,7 @@
     --accent:#F37835;
     --accent-fg:#1a0f00;
     --accent-text:#9c4a17;
+    --stepper-bg:#a34d1a;
     --link:#0a5cae;
     --brand-blue:#013A80;
     --danger:#a4161a;
@@ -240,6 +243,10 @@
     display:block;
     color:var(--muted);
   }
+  .horse-sub .changed-info{
+    color:var(--accent-text);
+    font-weight:700;
+  }
   .horse-detail{
     margin:.5rem 0;
     padding:.6rem .75rem;
@@ -257,6 +264,14 @@
   .letter-stepper button{
     flex:1 1 0;
     text-align:center;
+    background:var(--stepper-bg);
+    border-color:var(--stepper-bg);
+    color:#fff;
+  }
+  #btn-menu-toggle{
+    background:var(--accent);
+    color:var(--accent-fg);
+    border-color:var(--accent);
   }
   .detail-field-row{
     display:flex;
@@ -380,7 +395,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 12:17</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 14:03</span>
 
 </div>
 
@@ -410,6 +425,7 @@
   <ul class="horse-list" id="horse-list"></ul>
 
   <h2 id="avd-system-overview-heading">Systemöversikt</h2>
+  <p id="avd-letter-tally" class="avd-progress"></p>
   <p id="avd-system-overview-unreduced" class="avd-progress" hidden></p>
   <div id="avd-system-overview"></div>
 
@@ -435,9 +451,8 @@
 
   <button type="button" id="btn-clear-system">Rensa system</button>
 
-  <p id="letter-tally" class="avd-progress"></p>
-
   <h2 id="systemoversikt-heading">Systemöversikt</h2>
+  <p id="letter-tally" class="avd-progress"></p>
   <p id="system-overview-unreduced" class="avd-progress" hidden></p>
   <div id="system-overview"></div>
 
@@ -1087,7 +1102,7 @@
 
   function shoesInfo(horse){
     var s = horse.shoes;
-    if(!s || !s.reported){ return { text: "", isNew: false }; }
+    if(!s || !s.reported){ return { text: "", isNew: false, highlight: false }; }
     var frontBare = s.front && s.front.hasShoe === false;
     var backBare = s.back && s.back.hasShoe === false;
     var changed = !!((s.front && s.front.changed) || (s.back && s.back.changed));
@@ -1097,7 +1112,10 @@
     else if(backBare){ base = "Barfota bak"; }
     else { base = "Skor på"; }
     var isNew = changed && (frontBare || backBare);
-    return { text: (changed ? "Skobyte " : "") + base, isNew: isNew };
+    // Färgmarkeras (samma princip som Vagnbyte) om skorna bytts, eller om
+    // hästen går barfota — båda är information värd att sticka ut visuellt.
+    var highlight = changed || frontBare || backBare;
+    return { text: (changed ? "Skobyte " : "") + base, isNew: isNew, highlight: highlight };
   }
 
   function percentText(start, type){
@@ -1106,10 +1124,13 @@
     return (pool.betDistribution / 100).toFixed(1) + "%,";
   }
 
-  function sulkyMainRowText(horse){
+  function sulkyMainInfo(horse){
     var s = horse.sulky;
-    if(!s || !s.type){ return ""; }
-    return (s.type.changed ? "Vagnbyte " : "") + s.type.text + " vagn";
+    if(!s || !s.type){ return { text: "", highlight: false }; }
+    return {
+      text: (s.type.changed ? "Vagnbyte " : "") + s.type.text + " vagn",
+      highlight: !!s.type.changed
+    };
   }
 
   function recordText(horse){
@@ -1385,16 +1406,34 @@
       updateSelectionLabel();
 
       var subParts = [
-        driver ? (driver.firstName + " " + driver.lastName) : "okänd",
-        trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd"
+        { text: driver ? (driver.firstName + " " + driver.lastName) : "okänd" },
+        { text: trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd" }
       ];
-      var sulkyMain = sulkyMainRowText(horse);
-      if(sulkyMain){ subParts.push(sulkyMain); }
+      var sulky = sulkyMainInfo(horse);
+      if(sulky.text){ subParts.push(sulky); }
       var shoes = shoesInfo(horse);
-      if(shoes.text){ subParts.push(shoes.text); }
-      addSub(detailToggle, "horse-sub", subParts.map(function(part, i){
-        return part + (i === subParts.length - 1 ? "." : ",");
-      }).join(" "));
+      if(shoes.text){ subParts.push(shoes); }
+
+      // Vagnbyte/skobyte (och barfota) färgmarkeras (--accent-text) direkt i
+      // raden istället för att bara synas i den vanliga dova textfärgen —
+      // på uttrycklig begäran om tydligare färgindikering för den här
+      // informationen, byggd med egna <span> istället för addSub()s enda
+      // textnod eftersom bara en del av raden ska få färgen.
+      var subSpan = document.createElement("span");
+      subSpan.className = "horse-sub";
+      subParts.forEach(function(part, i){
+        var partText = part.text + (i === subParts.length - 1 ? "." : ",");
+        if(part.highlight){
+          var mark = document.createElement("span");
+          mark.className = "changed-info";
+          mark.textContent = partText;
+          subSpan.appendChild(mark);
+        } else {
+          subSpan.appendChild(document.createTextNode(partText));
+        }
+        subSpan.appendChild(document.createTextNode(" "));
+      });
+      detailToggle.appendChild(subSpan);
       if(shoes.isNew){ li.classList.add("new-barefoot"); }
 
       var detailDiv = document.createElement("div");
@@ -1443,40 +1482,43 @@
       }
 
       if(systemMode === "plain"){
-        var checkboxId = "include-" + currentAvd + "-" + start.number;
-        var checkLabel = document.createElement("label");
-        checkLabel.setAttribute("for", checkboxId);
-        letterWrap.appendChild(checkLabel);
+        // Var tidigare en <input type="checkbox"> + <label> — bytt till en
+        // enda togg-knapp (samma mönster som bokstavsstegraren i ABC-läge),
+        // på uttrycklig begäran efter en rapporterad VoiceOver-upplevelse av
+        // två svep per häst. Ett riktigt "ett enda svep" hade krävt att slå
+        // ihop namn-knappen och valkontrollen till samma element, vilket
+        // hade tagit bort den separata "visa detaljer"-funktionen — den här
+        // lösningen gör istället kontrollen konsekvent med ABC-lägets
+        // knappar och undviker kryssrutans ibland mer utförliga uppläsning.
+        var includeBtn = document.createElement("button");
+        includeBtn.type = "button";
 
-        var checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.id = checkboxId;
-
-        function updateCheckLabel(){
-          checkLabel.textContent = (checkbox.checked ? "Vald " : "Ej vald ") + horse.name;
+        function updateIncludeBtn(){
+          var checked = !!legLetters[start.number];
+          includeBtn.textContent = checked ? "Vald" : "Ej vald";
+          includeBtn.setAttribute("aria-pressed", String(checked));
+          includeBtn.setAttribute("aria-label",
+            (checked ? "Ta bort " : "Välj ") + start.number + " " + horse.name);
         }
 
         if(scratched){
           delete legLetters[start.number];
-          checkbox.checked = false;
-          checkbox.disabled = true;
-        } else {
-          checkbox.checked = !!legLetters[start.number];
+          includeBtn.disabled = true;
         }
-        updateCheckLabel();
-        checkbox.addEventListener("change", function(){
-          if(checkbox.checked){
-            legLetters[start.number] = "A";
-            li.classList.add("marked");
-          } else {
+        updateIncludeBtn();
+        includeBtn.addEventListener("click", function(){
+          if(legLetters[start.number]){
             delete legLetters[start.number];
             li.classList.remove("marked");
+          } else {
+            legLetters[start.number] = "A";
+            li.classList.add("marked");
           }
-          updateCheckLabel();
+          updateIncludeBtn();
           markChanged();
         });
-        if(checkbox.checked){ li.classList.add("marked"); }
-        letterWrap.appendChild(checkbox);
+        if(legLetters[start.number]){ li.classList.add("marked"); }
+        letterWrap.appendChild(includeBtn);
       } else if(letterInputMode === "menu"){
         var label = document.createElement("label");
         var selectId = "letter-" + currentAvd + "-" + start.number;
@@ -1555,7 +1597,13 @@
             var fwdBtn = document.createElement("button");
             fwdBtn.type = "button";
             fwdBtn.textContent = fwdValue;
-            fwdBtn.setAttribute("aria-label", "Byt till " + fwdValue);
+            // Från "Ej vald" är detta den första, egentliga valhandlingen för
+            // hästen — namnger den efter häst istället för bokstav (bokstaven
+            // är ändå alltid "A" härifrån), på uttrycklig begäran. Byte
+            // mellan redan valda bokstäver (B, C, D) behåller "Byt till X".
+            fwdBtn.setAttribute("aria-label", idx === 0 ?
+              ("Välj " + start.number + " " + horse.name) :
+              ("Byt till " + fwdValue));
             fwdBtn.addEventListener("click", function(){ setLetterValue(fwdValue); });
             stepperWrap.appendChild(fwdBtn);
           }
@@ -1595,6 +1643,7 @@
       return pl(counts[l], l + "-häst", l + "-hästar");
     }).join(", ") + ".";
     document.getElementById("letter-tally").textContent = text;
+    document.getElementById("avd-letter-tally").textContent = text;
   }
 
   // Byggs in i två platser i DOM:en — Villkor-vyn (#system-overview, ursprunget)
@@ -1937,6 +1986,7 @@
     computeLiveStats(false);
     renderLiveSummary();
     renderSystemOverview();
+    renderLetterTally();
     currentRowUpdaters.forEach(function(fn){ fn(); });
   }
 
