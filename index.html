@@ -24,6 +24,9 @@
     --stepper-bg:#a34d1a;
     --link:#6aa8e0;
     --brand-blue:#2568b5;
+    --horse-btn-bg:#012a5e;
+    --horse-btn-border:#cddcee;
+    --tab-bg:#7d6836;
     --danger:#ff8080;
     --focus:#F37835;
   }
@@ -44,6 +47,9 @@
       --stepper-bg:#a34d1a;
       --link:#0a5cae;
       --brand-blue:#013A80;
+      --horse-btn-bg:#012a5e;
+      --horse-btn-border:#cddcee;
+      --tab-bg:#7d6836;
       --danger:#a4161a;
       --focus:#9c4a17;
     }
@@ -64,6 +70,9 @@
     --stepper-bg:#a34d1a;
     --link:#0a5cae;
     --brand-blue:#013A80;
+    --horse-btn-bg:#012a5e;
+    --horse-btn-border:#cddcee;
+    --tab-bg:#7d6836;
     --danger:#a4161a;
     --focus:#9c4a17;
   }
@@ -104,6 +113,9 @@
     border-radius:50%;
     font-weight:700;
     font-size:.85rem;
+    background:var(--tab-bg);
+    border-color:var(--tab-bg);
+    color:#fff;
   }
   .avd-tab.active{
     background:var(--accent);
@@ -187,6 +199,11 @@
     white-space:normal;
     line-height:1.4;
   }
+  .horse-row .horse-toggle{
+    background:var(--horse-btn-bg);
+    border:2px solid var(--horse-btn-border);
+    color:#fff;
+  }
   .scratched-label{
     display:block;
     color:var(--danger);
@@ -264,6 +281,11 @@
   .letter-stepper button{
     flex:1 1 0;
     text-align:center;
+    background:var(--stepper-bg);
+    border-color:var(--stepper-bg);
+    color:#fff;
+  }
+  .toggle-select-btn{
     background:var(--stepper-bg);
     border-color:var(--stepper-bg);
     color:#fff;
@@ -395,7 +417,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 14:03</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 14:54</span>
 
 </div>
 
@@ -1492,6 +1514,7 @@
         // knappar och undviker kryssrutans ibland mer utförliga uppläsning.
         var includeBtn = document.createElement("button");
         includeBtn.type = "button";
+        includeBtn.className = "toggle-select-btn";
 
         function updateIncludeBtn(){
           var checked = !!legLetters[start.number];

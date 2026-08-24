@@ -184,7 +184,33 @@ varför två separata "orange"-tokens behövs:
   knappar eller meny" i avsnitt 7) — skild från både `--accent` (ljusare,
   CTA-knappar) och `--brand-blue` (marinblå, standardknappar), på
   uttrycklig begäran om att de ska synas tydligare bredvid hästkortets
-  egen knapp. Vit text ger 5,8:1, gott och väl över 4,5:1.
+  egen knapp. Vit text ger 5,8:1, gott och väl över 4,5:1. Återanvänds även
+  på togg-knappen i Vanligt matematiskt system-läge ("Vald"/"Ej vald",
+  `.toggle-select-btn`), på uttrycklig begäran — samma handling
+  (välja/avmarkera en häst) som bokstavsstegrarens förstagångsval, så
+  samma färg.
+
+**Ytterligare knappdifferentiering** (på uttrycklig begäran, "större
+skillnad mellan olika knappar"), två nya tokens, samma värden i båda
+teman (medvetet inte temaanpassade som `--brand-blue` — dessa är rena
+kontrastknappar mot sin egen kant/fyllnad, inte mot sidans bakgrund):
+
+- **`--horse-btn-bg`** (`#012a5e`, en mörkare marinblå än standard-
+  knapparnas `--brand-blue`) + **`--horse-btn-border`** (`#cddcee`, en
+  ljus blåton) på `.horse-row .horse-toggle` — bara hästkortens egna
+  knappar, inte t.ex. `#avd-heading` som återanvänder samma `.horse-toggle`-
+  klass för sitt utseende (skiljs åt med `.horse-row`-föräldraselektorn).
+  Fyllnaden själv ger bara 1,7:1 mot den mörka bakgrunden i mörkt tema —
+  otillräckligt på egen hand, men den tydliga ljusa kanten (7,9:1 mot
+  fyllnaden) är det som faktiskt avgränsar knappen visuellt, inte fyllnaden
+  mot sidan. Vit text ger 14:1.
+- **`--tab-bg`** (`#7d6836`, en mörkad, Lakers-inspirerad "tan"-ton — det
+  fjärde färgen i lagets profil utöver marinblå/orange/vitt, tidigare
+  oanvänd) på avdelningsflikarna (`.avd-tab`, ej vald), skild från både
+  hästknapparnas marinblå och den aktiva flikens orange. Den rena,
+  ljusare Lakers-tan (`#B39759`) gav bara 2,6:1 mot ljusa temats bakgrund
+  och 2,8:1 för vit text — mörkad för att fungera som knappfyllnad i båda
+  teman (vit text 5,4:1, 3,5–4,9:1 mot bakgrunden i respektive tema).
 
 **Alla knappar fick en tydlig bakgrundsfärg** (`--brand-blue`, vit text),
 på uttrycklig begäran — tidigare hade bara `.btn-primary`
