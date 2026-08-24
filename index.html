@@ -10,10 +10,11 @@
     --fg:#f2f2f2;
     --muted:#b7b7b7;
     --card:#1e1e1e;
-    --card-border:#3a3a3a;
+    --card-border:#5c6773;
     --accent:#ffd60a;
     --accent-fg:#1a1500;
-    --link:#8ab4ff;
+    --link:#6aa8e0;
+    --brand-blue:#0e63ba;
     --danger:#ff8080;
     --focus:#ffd60a;
   }
@@ -27,7 +28,7 @@
     padding:0 1rem 4rem;
   }
   h1{font-size:1.5rem;margin:1rem 0 .25rem;}
-  h2{font-size:1.25rem;margin:1.5rem 0 .5rem;}
+  h2{font-size:1.25rem;margin:1.5rem 0 .5rem;padding-bottom:.3rem;border-bottom:3px solid var(--brand-blue);}
   h3{font-size:1.05rem;margin:0 0 .35rem;}
   p{margin:.35rem 0;}
   a{color:var(--link);}
@@ -94,6 +95,13 @@
     font-weight:700;
     border-color:var(--accent);
   }
+  #btn-open-atg{
+    background:var(--brand-blue);
+    color:#fff;
+    font-weight:700;
+    border-color:var(--brand-blue);
+  }
+  #btn-open-atg:hover{border-color:#4f9eff;}
   button:disabled{opacity:.5;cursor:not-allowed;}
   fieldset{border:1px solid var(--card-border);border-radius:10px;margin:0 0 1rem;padding:.75rem 1rem 1rem;}
   legend{padding:0 .4rem;color:var(--muted);}
@@ -216,6 +224,7 @@
   .avd-progress{color:var(--muted);margin-top:0;}
   .summary-box{
     border:1px solid var(--card-border);
+    border-left:4px solid var(--brand-blue);
     border-radius:10px;
     padding:1rem;
     background:var(--card);
@@ -315,7 +324,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-23 23:27</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 11:17</span>
 
 </div>
 
@@ -342,6 +351,10 @@
   <p class="avd-progress" id="avd-marked-count"></p>
 
   <ul class="horse-list" id="horse-list"></ul>
+
+  <h2 id="avd-system-overview-heading">Systemöversikt</h2>
+  <p id="avd-system-overview-unreduced" class="avd-progress" hidden></p>
+  <div id="avd-system-overview"></div>
 
   <p class="avd-progress" id="autosave-status"></p>
 
@@ -1477,9 +1490,11 @@
     document.getElementById("letter-tally").textContent = text;
   }
 
-  function renderSystemOverview(){
-    var container = document.getElementById("system-overview");
-    var unreducedEl = document.getElementById("system-overview-unreduced");
+  // Byggs in i två platser i DOM:en — Villkor-vyn (#system-overview, ursprunget)
+  // och längst ner i avdelningsvyn (#avd-system-overview, på uttrycklig begäran
+  // om att alltid kunna följa valda hästar utan att navigera bort) — samma
+  // innehåll på båda ställena, byggt av samma funktion så de aldrig kan divergera.
+  function buildSystemOverviewInto(container, unreducedEl){
     if(!currentGame){ container.innerHTML = ""; unreducedEl.hidden = true; return; }
 
     if(liveStats && !liveStats.tooBig){
@@ -1511,6 +1526,17 @@
         });
       }
     });
+  }
+
+  function renderSystemOverview(){
+    buildSystemOverviewInto(
+      document.getElementById("system-overview"),
+      document.getElementById("system-overview-unreduced")
+    );
+    buildSystemOverviewInto(
+      document.getElementById("avd-system-overview"),
+      document.getElementById("avd-system-overview-unreduced")
+    );
   }
 
   var presetSelect = document.getElementById("villkor-preset");

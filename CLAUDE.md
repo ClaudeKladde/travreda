@@ -103,9 +103,52 @@ Detta är en app för skärmläsaranvändare. Samma lärdomar gäller rakt av:
   (Ej vald/A/B/C/D) i normalläge (valbart, se "Bokstavsval: knappar eller
   meny" i avsnitt 7), `<input type="checkbox">` i "Vanligt system"-läget,
   istället för egenbyggda widgets — robust med VoiceOver utan extra ARIA.
-- **Mörkt läge som standard**, tydliga kontraster, gul färg (`--accent`) för
-  visuellt markerade/valda hästar.
+- **Mörkt läge som standard**, tydliga kontraster (se "Färgpalett" nedan),
+  gul färg (`--accent`) för visuellt markerade/valda hästar.
 - Inga emoji i gränssnittet.
+
+### Färgpalett — kontrastförstärkt, ATG-inspirerad
+
+Byggd efter uttrycklig begäran om högre kontrast, en mer visuellt tilltalande
+design och ATG:s egna profilfärger. **ATG:s riktiga färger hämtades och
+analyserades direkt från deras produktions-CSS** (`atg.se`s huvudstilmall),
+inte gissade: primär blå `#004f9f`/ljusare `#006db6` (knappar, aktiva
+menyval, fokusringar) och en primär handlingsgrön `#22ac07` — plus separata
+accentfärger per spelform (t.ex. orange för V64, röd för V65) som inte är
+relevanta för en generell palett.
+
+Samtliga kontrastvärden nedan är beräknade med WCAG:s egen
+relativ-luminans-formel (inte uppskattade). Nuvarande textkontraster var
+redan mycket goda (7,7–16,7:1) — det tydligaste svaga stället var
+`--card-border` mot bakgrunden, bara **1,65:1**, vilket gjorde kortkanter
+och avdelare svåra att uppfatta.
+
+- **`--card-border`:** `#3a3a3a` → `#5c6773` (3,25:1 mot bakgrunden,
+  uppfyller WCAG 1.4.11:s 3:1-krav för UI-gränser som inte är text).
+- **`--link`:** `#8ab4ff` → `#6aa8e0`, tonad mer åt ATG:s blå medan
+  kontrasten hålls hög (7,4:1).
+- **Ny `--brand-blue` (`#0e63ba`):** ATG-inspirerad sekundäraccent, används
+  **bara som bakgrundsfyllnad** (aldrig som liten text på mörk bakgrund —
+  bara 3,1:1 där, otillräckligt för text). Vit text ovanpå ger 6:1.
+  Appliceras på: `#btn-open-atg` ("Öppna ATG:s filinlämning" — passande
+  eftersom knappen bokstavligen leder till ATG), en `border-bottom` under
+  alla `<h2>` för tydligare visuell hierarki, och en vänsterkant på
+  `.summary-box` (sammanfattningsrutan i Villkor-vyn) för att markera den
+  som en framhävd ruta.
+- **`--accent`/`--accent-fg` (gula knappar) oförändrade:** `--accent-fg`
+  (`#1a1500`) gav redan 12,9:1 kontrast mot den gula bakgrunden — visuellt
+  oskiljbart från ren svart. Kontrollerat med användaren, som valde att
+  behålla det nästan-svarta värdet istället för att byta till bokstavligt
+  `#000000` (marginell skillnad, 13,0 mot 12,9).
+- **`--danger`** (röd, struken/fel) oförändrad — redan 7,7:1.
+
+**Skalning/zoom:** hela stilmallen gicks igenom rad för rad. Praktiskt
+taget allt är redan `rem`-baserat (typsnittsstorlekar, padding, marginaler,
+gap) — enda `px`-förekomsterna är hårlinje-kantlinjer/`border-radius`
+(som inte behöver skala enligt WCAG) och den avsiktliga 1×1px-tekniken i
+`.visually-hidden` (måste vara exakt 1px, inte `rem`, annars fungerar inte
+dölj-tricket). `viewport`-taggen saknar `maximum-scale`/`user-scalable=no`,
+så pinch-zoom är aldrig blockerad. Inga ändringar behövdes.
 
 ### Hästkortens struktur (avdelningsvyn)
 
@@ -837,6 +880,17 @@ avdelningsvyn), samma dubbla anropsmönster som `renderLiveSummary()`.
   bokstavsuppdelning behövs eftersom alla ikryssade hästar internt är
   bokstaven "A", på uttrycklig begäran ("kan varje avdelning presenteras
   på samma rad").
+
+**Duplicerad längst ner i avdelningsvyn** (`#avd-system-overview`/
+`#avd-system-overview-unreduced`, egen `<h2>`), på uttrycklig begäran om
+att alltid kunna följa vilka hästar man valt utan att navigera bort från
+startlistan. Samma innehåll visas på **båda** ställena (bekräftat: inte
+en flytt, en riktig duplicering) — `renderSystemOverview()` byggdes om
+till en tunn wrapper som anropar en delad `buildSystemOverviewInto(container,
+unreducedEl)` två gånger, en gång per plats, så de aldrig kan divergera.
+Placerad direkt under `#horse-list`, före `#autosave-status`. Verifierat
+med Playwright att båda ställena renderar exakt identisk HTML vid varje
+ändring.
 
 ---
 
