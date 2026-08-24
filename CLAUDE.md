@@ -393,8 +393,18 @@ saknas eller kraschar något.
 
 ### Sticky avdelningsflikar + meny
 
-Flikstorleken (`.avd-tab`, ~1,9 rem) är avpassad för att rymma alla 8
-avdelningar på en rad även på en smal mobilskärm.
+Flikstorleken (`.avd-tab`, `2,2 rem` + `.45rem` mellanrum — höjd från
+`1,9rem`/`.3rem` på uttrycklig begäran om "något större och med mera luft
+mellan") är avpassad för att rymma alla 8 avdelningar på en rad ner till
+~375px skärmbredd (iPhone SE och uppåt). Vid det ovanligare, smalare
+320px-läget (äldre iPhone SE 1:a gen) radbryts flikarna till två rader
+istället — `flex-wrap:wrap` hanterar detta automatiskt utan att något
+går sönder, en medveten avvägning eftersom 320px är ett allt ovanligare
+skärmbredd. **Den aktiva fliken** har en egen, mer mättad orange ton
+(`--tab-active-bg`, `#e8590c`) istället för den delade `--accent`
+(`#F37835`, används av CTA-knappar/menyknappen) — på uttrycklig begäran
+om "starkare färg", för att den markerade avdelningen ska sticka ut
+ännu tydligare bland de andra flikarna.
 
 **Menyknappen är flyttad ur den sticky menyraden helt** (på uttrycklig
 begäran, "flytta upp menyknappen längre upp i det högra hörnet") — ligger

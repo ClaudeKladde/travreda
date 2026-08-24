@@ -28,6 +28,7 @@
     --horse-btn-border:#cddcee;
     --horse-btn-fg:#ffffff;
     --tab-bg:#7d6836;
+    --tab-active-bg:#e8590c;
     --danger:#ff8080;
     --focus:#F37835;
   }
@@ -52,6 +53,7 @@
       --horse-btn-border:#013A80;
       --horse-btn-fg:#012a5e;
       --tab-bg:#7d6836;
+      --tab-active-bg:#e8590c;
       --danger:#a4161a;
       --focus:#9c4a17;
     }
@@ -76,6 +78,7 @@
     --horse-btn-border:#013A80;
     --horse-btn-fg:#012a5e;
     --tab-bg:#7d6836;
+    --tab-active-bg:#e8590c;
     --danger:#a4161a;
     --focus:#9c4a17;
   }
@@ -106,24 +109,24 @@
   }
   .avd-tabs{
     display:flex;
-    gap:.3rem;
+    gap:.45rem;
     flex-wrap:wrap;
   }
   .avd-tab{
-    min-width:1.9rem;
-    height:1.9rem;
+    min-width:2.2rem;
+    height:2.2rem;
     padding:0;
     border-radius:50%;
     font-weight:700;
-    font-size:.85rem;
+    font-size:.95rem;
     background:var(--tab-bg);
     border-color:var(--tab-bg);
     color:#fff;
   }
   .avd-tab.active{
-    background:var(--accent);
+    background:var(--tab-active-bg);
     color:var(--accent-fg);
-    border-color:var(--accent);
+    border-color:var(--tab-active-bg);
   }
   .menu-wrap{position:relative;display:flex;justify-content:flex-end;margin-bottom:.5rem;}
   #main-menu{
@@ -420,7 +423,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 15:03</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 15:15</span>
 
 </div>
 
