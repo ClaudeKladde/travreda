@@ -195,15 +195,23 @@ skillnad mellan olika knappar"), två nya tokens, samma värden i båda
 teman (medvetet inte temaanpassade som `--brand-blue` — dessa är rena
 kontrastknappar mot sin egen kant/fyllnad, inte mot sidans bakgrund):
 
-- **`--horse-btn-bg`** (`#012a5e`, en mörkare marinblå än standard-
-  knapparnas `--brand-blue`) + **`--horse-btn-border`** (`#cddcee`, en
-  ljus blåton) på `.horse-row .horse-toggle` — bara hästkortens egna
-  knappar, inte t.ex. `#avd-heading` som återanvänder samma `.horse-toggle`-
-  klass för sitt utseende (skiljs åt med `.horse-row`-föräldraselektorn).
-  Fyllnaden själv ger bara 1,7:1 mot den mörka bakgrunden i mörkt tema —
-  otillräckligt på egen hand, men den tydliga ljusa kanten (7,9:1 mot
-  fyllnaden) är det som faktiskt avgränsar knappen visuellt, inte fyllnaden
-  mot sidan. Vit text ger 14:1.
+- **`--horse-btn-bg`/`--horse-btn-border`/`--horse-btn-fg`** på
+  `.horse-row .horse-toggle` — bara hästkortens egna knappar, inte t.ex.
+  `#avd-heading` som återanvänder samma `.horse-toggle`-klass för sitt
+  utseende (skiljs åt med `.horse-row`-föräldraselektorn). **Mörkt tema:**
+  mörk marinblå fyllnad (`#012a5e`, mörkare än standardknapparnas
+  `--brand-blue`) + ljus blå kant (`#cddcee`) + vit text. Fyllnaden själv
+  ger bara 1,7:1 mot den mörka sidbakgrunden — otillräckligt på egen hand,
+  men den tydliga ljusa kanten (7,9:1 mot fyllnaden) är det som faktiskt
+  avgränsar knappen visuellt, inte fyllnaden mot sidan.
+  **Ljust tema — omvänt schema, fixad bugg:** samma mörka marinblå
+  fyllnad som mörkt tema visade sig upplevas som "alldeles för mörk" mot
+  den ljusa sidbakgrunden. Bytt till ljus blåton (`#d6e3f5`) + mörk
+  marinblå kant (`#013A80`, samma ton som ljusa temats `--brand-blue`) +
+  mörk marinblå text (`#012a5e`, 10,8:1) — samma idé som mörkt tema fast
+  spegelvänd (ljus fyllnad, mörk kant/text istället för mörk fyllnad, ljus
+  kant/text). Alla underelement (muted text 6,8:1, `--accent-text` 4,8:1,
+  `--danger` 6:1) verifierade läsbara mot den nya ljusa fyllnaden.
 - **`--tab-bg`** (`#7d6836`, en mörkad, Lakers-inspirerad "tan"-ton — det
   fjärde färgen i lagets profil utöver marinblå/orange/vitt, tidigare
   oanvänd) på avdelningsflikarna (`.avd-tab`, ej vald), skild från både
