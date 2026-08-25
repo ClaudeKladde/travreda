@@ -1,51 +1,6 @@
 {
-  "updated": "2026-08-24T18:20:41Z",
+  "updated": "2026-08-25T00:28:42Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-24_83_6",
-      "date": "2026-08-24",
-      "startTime": "2026-08-24T14:20:58",
-      "status": "results",
-      "trackId": 83,
-      "trackName": "Orkla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-24_54_2",
-      "date": "2026-08-24",
-      "startTime": "2026-08-24T18:20:37",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Skive"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-24_15_3",
-      "date": "2026-08-24",
-      "startTime": "2026-08-24T18:25:17",
-      "status": "ongoing",
-      "trackId": 15,
-      "trackName": "Färjestad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-24_14_3",
-      "date": "2026-08-24",
-      "startTime": "2026-08-24T18:30:56",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-08-24_18_4",
-      "date": "2026-08-24",
-      "startTime": "2026-08-24T19:30:12",
-      "status": "ongoing",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-25_28_5",
@@ -81,6 +36,114 @@
       "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-26_13_4",
+      "date": "2026-08-26",
+      "startTime": "2026-08-26T13:26:00",
+      "status": "bettable",
+      "trackId": 13,
+      "trackName": "Dannero"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-26_5_2",
+      "date": "2026-08-26",
+      "startTime": "2026-08-26T18:39:00",
+      "status": "bettable",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-26_6_1",
+      "date": "2026-08-26",
+      "startTime": "2026-08-26T18:50:00",
+      "status": "bettable",
+      "trackId": 6,
+      "trackName": "Åby"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-08-26_40_1",
+      "date": "2026-08-26",
+      "startTime": "2026-08-26T20:30:00",
+      "status": "bettable",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-27_32_5",
+      "date": "2026-08-27",
+      "startTime": "2026-08-27T13:47:00",
+      "status": "bettable",
+      "trackId": 32,
+      "trackName": "Örebro"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-27_16_3",
+      "date": "2026-08-27",
+      "startTime": "2026-08-27T18:25:00",
+      "status": "bettable",
+      "trackId": 16,
+      "trackName": "Gävle"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-27_7_3",
+      "date": "2026-08-27",
+      "startTime": "2026-08-27T18:30:00",
+      "status": "bettable",
+      "trackId": 7,
+      "trackName": "Jägersro"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-08-27_11_4",
+      "date": "2026-08-27",
+      "startTime": "2026-08-27T19:30:00",
+      "status": "bettable",
+      "trackId": 11,
+      "trackName": "Boden"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-27_78_5",
+      "date": "2026-08-27",
+      "startTime": "2026-08-27T20:05:00",
+      "status": "bettable",
+      "trackId": 78,
+      "trackName": "Bjerke"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-28_23_3",
+      "date": "2026-08-28",
+      "startTime": "2026-08-28T16:30:00",
+      "status": "upcoming",
+      "trackId": 23,
+      "trackName": "Romme"
+    },
+    {
+      "type": "GS75",
+      "id": "GS75_2026-08-28_9_4",
+      "date": "2026-08-28",
+      "startTime": "2026-08-28T19:30:00",
+      "status": "upcoming",
+      "trackId": 9,
+      "trackName": "Bergsåker"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-28_78_6",
+      "date": "2026-08-28",
+      "startTime": "2026-08-28T20:05:00",
+      "status": "bettable",
+      "trackId": 78,
+      "trackName": "Bjerke"
     },
     {
       "type": "V85",
