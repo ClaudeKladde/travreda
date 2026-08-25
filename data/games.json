@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-25T06:22:06Z",
+  "updated": "2026-08-25T12:20:51Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-08-25_28_5",
       "date": "2026-08-25",
-      "startTime": "2026-08-25T13:47:00",
-      "status": "bettable",
+      "startTime": "2026-08-25T13:49:29",
+      "status": "ongoing",
       "trackId": 28,
       "trackName": "Visby"
     },
@@ -123,7 +123,7 @@
       "id": "V5_2026-08-28_23_3",
       "date": "2026-08-28",
       "startTime": "2026-08-28T16:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -132,7 +132,7 @@
       "id": "GS75_2026-08-28_9_4",
       "date": "2026-08-28",
       "startTime": "2026-08-28T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -144,6 +144,15 @@
       "status": "bettable",
       "trackId": 78,
       "trackName": "Bjerke"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-29_55_4",
+      "date": "2026-08-29",
+      "startTime": "2026-08-29T14:06:00",
+      "status": "upcoming",
+      "trackId": 55,
+      "trackName": "Charlottenlund"
     },
     {
       "type": "V85",
@@ -168,7 +177,7 @@
       "id": "V5_2026-08-30_29_3",
       "date": "2026-08-30",
       "startTime": "2026-08-30T12:54:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 29,
       "trackName": "Åmål"
     },
@@ -177,7 +186,7 @@
       "id": "V5_2026-08-30_25_3",
       "date": "2026-08-30",
       "startTime": "2026-08-30T14:45:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 25,
       "trackName": "Skellefteå"
     },
@@ -186,7 +195,7 @@
       "id": "V85_2026-08-30_55_5",
       "date": "2026-08-30",
       "startTime": "2026-08-30T15:10:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 55,
       "trackName": "Charlottenlund"
     },
@@ -195,7 +204,7 @@
       "id": "V5_2026-08-30_55_8",
       "date": "2026-08-30",
       "startTime": "2026-08-30T16:16:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 55,
       "trackName": "Charlottenlund"
     }
