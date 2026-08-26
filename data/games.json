@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-26T12:21:57Z",
+  "updated": "2026-08-26T19:06:54Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-08-26_13_4",
       "date": "2026-08-26",
       "startTime": "2026-08-26T13:27:18",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 13,
       "trackName": "Dannero"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-08-26_5_2",
       "date": "2026-08-26",
-      "startTime": "2026-08-26T18:39:00",
-      "status": "bettable",
+      "startTime": "2026-08-26T18:39:21",
+      "status": "results",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-08-26_6_1",
       "date": "2026-08-26",
-      "startTime": "2026-08-26T18:50:00",
-      "status": "bettable",
+      "startTime": "2026-08-26T19:02:38",
+      "status": "results",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -32,10 +32,10 @@
       "type": "V86",
       "id": "V86_2026-08-26_40_1",
       "date": "2026-08-26",
-      "startTime": "2026-08-26T20:30:00",
-      "status": "bettable",
-      "trackId": 5,
-      "trackName": "Solvalla"
+      "startTime": "2026-08-26T20:30:08",
+      "status": "ongoing",
+      "trackId": null,
+      "trackName": "Flera banor"
     },
     {
       "type": "V5",
@@ -216,6 +216,15 @@
       "status": "bettable",
       "trackId": 15,
       "trackName": "Färjestad"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-01_14_4",
+      "date": "2026-09-01",
+      "startTime": "2026-09-01T19:30:00",
+      "status": "upcoming",
+      "trackId": 14,
+      "trackName": "Eskilstuna"
     }
   ]
 }
