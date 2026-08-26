@@ -528,6 +528,42 @@ mot riktig, levande data för `V86_2026-08-26_40_1`: bankoden i den
 exporterade XML-filen blev `6` (Åby, korrekt) istället för den
 ursprungliga felaktiga `5` (Solvalla).
 
+**Andra, separata bugg-rapport med samma ATG-felmeddelande:** en efterföljande
+inlämning (samma omgång, `V86_2026-08-26_40_1`, den här gången med **korrekt**
+bankod `6` efter fixen ovan) avvisades ändå med exakt samma
+"Angivet spel är inte tillgängligt". Verifierat via `curl` direkt mot
+`/games/V86_2026-08-26_40_1` vid tidpunkten för felet: omgångens
+`status`-fält (toppnivå i svaret) hade gått från `"bettable"` till
+`"ongoing"` — de flesta avdelningarna visade redan `race.status:"results"`.
+Orsaken var alltså helt orelaterad till bankodsbuggen: filen lämnades in
+efter att omgången redan startat (avdelning 1:s starttid var 20:30, båda
+inlämningsförsöken skedde efter det), och ATG accepterar bara filer för
+omgångar som fortfarande är `"bettable"`.
+
+**Fix — proaktiv kontroll i appen** (direkt uppföljning av användarens
+ursprungliga begäran om att "bygga in en kontroll i verktyget"):
+`loadGame()` sparar numera även `data.status` på `currentGame`. En ny
+`GAME_STATUS_TEXT`-tabell (`bettable`/`ongoing`/`results`) mappar det till
+en läsbar svensk fras. `renderAvdelning()` visar, precis som
+flerbane-varningen, en egen röd varningsrad
+(**`#avd-not-bettable-warning`**, direkt före `#avd-multitrack-warning`)
+så fort `currentGame.status` finns och inte är `"bettable"` — texten
+förklarar rakt av att en inlämning kommer avvisas. `renderLiveSummary()`
+sätter dessutom `exportBtn.disabled=true` (och skriver över
+`#calc-status` med en hänvisning till varningen högst upp) så fort
+omgången inte är `bettable`, oavsett hur många rader systemet annars har
+— **exportknappen ska aldrig gå att trycka på** för en omgång som inte
+längre går att lämna in en fil för. Detta är ett rent klientsidigt,
+tidsstämpelfritt tillståndstest (bara `currentGame.status` vid senaste
+hämtning) — appen pollar inte kontinuerligt, så en omgång som startar
+**medan** man sitter och fyller i systemet upptäcks först vid nästa
+uppdatering/omladdning, inte i realtid.
+
+Verifierat med Playwright mot en riktig, levande hämtning av samma
+omgång efter att den gått till `"ongoing"`: varningsraden visade korrekt
+"Omgången pågår redan hos ATG …", och exportknappen förblev inaktiverad
+även efter att alla åtta avdelningar fått en markerad häst.
+
 **Hastighetsgräns:** okänd exakt gräns för denna endpoint (till skillnad från
 Turfs dokumenterade "1 anrop/sekund") — `index.html` gör bara ett anrop per
 vald omgång, ingen polling, så det har inte varit ett problem hittills.
@@ -1225,6 +1261,12 @@ lämna Villkor-vyn.
   tillgängligt") på grund av flerbanespels-bankodsbuggen, se avsnitt 6 —
   fixad, men ett nytt lyckat inlämningsförsök efter fixen är inte
   bekräftat än.
+- **Ett andra verkligt inlämningsförsök (samma V86-omgång, korrekt
+  bankod) avvisades med samma felmeddelande** eftersom omgången redan
+  hunnit starta (statusen hade gått från `bettable` till `ongoing`) —
+  orelaterat till bankodsbuggen. En proaktiv varning + export-spärr för
+  detta är byggd och verifierad med Playwright, se avsnitt 6, men ännu
+  inte bekräftad mot ett nytt, riktigt inlämningsförsök i det läget.
 - Ingen engelsk översättning (bara svenska, till skillnad från VO Turf List).
 
 ---

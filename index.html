@@ -423,7 +423,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-26 21:05</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-26 21:55</span>
 
 </div>
 
@@ -441,6 +441,7 @@
 
   <p class="avd-progress" id="avd-progress"></p>
   <p class="avd-progress" id="avd-turnover" hidden></p>
+  <p class="status-msg error" id="avd-not-bettable-warning" hidden></p>
   <p class="status-msg error" id="avd-multitrack-warning" hidden></p>
 
   <div class="topbar">
@@ -1085,7 +1086,8 @@
         trackId: (firstLegTrack ? firstLegTrack.id : null) || trackId,
         trackName: (firstLegTrack ? firstLegTrack.name : null) || trackName || "",
         races: data.races,
-        pools: data.pools
+        pools: data.pools,
+        status: data.status
       };
       if(restoreData){
         letters = restoreData.letters || {};
@@ -1124,6 +1126,14 @@
   }
 
   var START_METHOD_TEXT = { volte: "voltstart", auto: "autostart" };
+  // ATG:s spelstatus för hela omgången (data.status i /games/{id}-svaret).
+  // Bara "bettable" går att lämna in — övriga (t.ex. "ongoing" när första
+  // avdelningen redan startat, "results" när allt är klart) avvisas av ATG
+  // med "Angivet spel är inte tillgängligt", precis som ett fel bankod gör.
+  // Rapporterad bugg: en användare fick samma felmeddelande som
+  // bankods-buggen (se avsnitt 6) trots korrekt bankod — orsaken var att
+  // omgången redan hade startat när filen lämnades in.
+  var GAME_STATUS_TEXT = { bettable: "öppen för spel", ongoing: "pågår redan", results: "är avgjord" };
   var DISTANCE_TEXT = { short: "kort distans", medium: "medeldistans", long: "lång distans" };
 
   function winStatsText(entity){
@@ -1347,6 +1357,16 @@
     var turnover = turnoverText();
     turnoverEl.hidden = !turnover;
     turnoverEl.textContent = turnover || "";
+
+    var notBettableEl = document.getElementById("avd-not-bettable-warning");
+    if(currentGame.status && currentGame.status !== "bettable"){
+      var statusText = GAME_STATUS_TEXT[currentGame.status] || currentGame.status;
+      notBettableEl.hidden = false;
+      notBettableEl.textContent = "Omgången " + statusText + " hos ATG och går inte längre att " +
+        "lämna in en fil för — en inlämning avvisas med \"Angivet spel är inte tillgängligt\".";
+    } else {
+      notBettableEl.hidden = true;
+    }
 
     var warningEl = document.getElementById("avd-multitrack-warning");
     var otherTracks = {};
@@ -1987,6 +2007,10 @@
     var summaryText = document.getElementById("summary-text");
     var statusEl = document.getElementById("calc-status");
     var exportBtn = document.getElementById("btn-export");
+    // Extra skydd utöver varningen i avdelningsvyn — exportknappen ska
+    // aldrig gå att trycka på för en omgång som inte längre går att lämna
+    // in en fil för, oavsett vilken av funktionens tre "vägar ut" som tas.
+    var gameNotBettable = currentGame && currentGame.status && currentGame.status !== "bettable";
 
     if(!currentGame || !liveStats){
       btn.textContent = "Markera minst en häst i varje avdelning för att se antal rader.";
@@ -2026,7 +2050,10 @@
         formatKr(rowPrice) + " kr/rad för " + currentGame.type + " — bekräfta alltid på atg.se.";
     }
     if(statusEl){
-      if(liveStats.rows > 0){
+      if(gameNotBettable){
+        statusEl.className = "status-msg error";
+        statusEl.textContent = "Omgången går inte längre att lämna in en fil för — se meddelandet högst upp på avdelningssidan.";
+      } else if(liveStats.rows > 0){
         statusEl.className = "status-msg";
         statusEl.textContent = "Klart.";
       } else {
@@ -2034,7 +2061,7 @@
         statusEl.textContent = "Inga rader klarar villkoren. Justera villkoren eller bokstavsvalen.";
       }
     }
-    exportBtn.disabled = liveStats.rows === 0;
+    exportBtn.disabled = liveStats.rows === 0 || gameNotBettable;
   }
 
   function refreshLiveStatsAndUI(){
