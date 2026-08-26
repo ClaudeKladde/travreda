@@ -1,42 +1,6 @@
 {
-  "updated": "2026-08-25T18:19:50Z",
+  "updated": "2026-08-26T00:29:53Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-25_28_5",
-      "date": "2026-08-25",
-      "startTime": "2026-08-25T13:49:29",
-      "status": "results",
-      "trackId": 28,
-      "trackName": "Visby"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-25_8_3",
-      "date": "2026-08-25",
-      "startTime": "2026-08-25T18:30:37",
-      "status": "results",
-      "trackId": 8,
-      "trackName": "Axevalla"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-08-25_7_5",
-      "date": "2026-08-25",
-      "startTime": "2026-08-25T19:10:12",
-      "status": "ongoing",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-25_7_8",
-      "date": "2026-08-25",
-      "startTime": "2026-08-25T20:16:13",
-      "status": "starting",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-26_13_4",
