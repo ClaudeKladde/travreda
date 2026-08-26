@@ -484,6 +484,50 @@ t.ex. `V85_2026-08-22_23_5` (Romme = bankod 23). Bankoden och avdelningarnas
 loppnummer finns redan i `/games/{id}`-svaret (`race.track.id`/`.name`), så
 ingen separat hårdkodad bankodstabell behövs när vi väl har ett spel-id.
 
+**Fixad bugg — fel bankod i exportfilen gav "Angivet spel är inte
+tillgängligt" hos ATG:** rapporterad av användaren efter en avvisad
+V86-inlämning. Grundorsak, verifierad mot riktig, levande ATG-data:
+**V86 kan gå på två olika banor samma omgång** (flerbanespel) — det
+inlämnade exemplet (`V86_2026-08-26_40_1`) växlade mellan Åby (avdelning
+1, 3, 5, 7) och Solvalla (avdelning 2, 4, 6, 8). `scripts/fetch_games.py`
+hämtar bara den lätta `/calendar/day/{datum}`-listan (inte hela
+`/games/{id}` per omgång, för dyrt att göra för varje rad i listan) —
+den listans `game.tracks`-array är bara sorterad på bankod (`[5, 6]`),
+inte i avdelningsordning, så `tracks[0]` (bankod 5, Solvalla) råkade peka
+på fel bana — avdelning 1 körs faktiskt på Åby (bankod 6). Den felaktiga
+bankoden 5 skrevs sedan rakt in i exportfilens `trackcode`-attribut
+istället för den korrekta 6, vilket fick ATG att inte hitta något
+matchande spel alls.
+
+**Fix, i två delar:**
+
+1. **`loadGame()`** litar nu **alltid** på den bankod/banenamn som
+   faktiskt kommer med det just hämtade `/games/{id}`-svaret
+   (`data.races[0].track`, dvs. avdelning 1:s bana) — inte på det
+   `trackId`/`trackName` som skickas in från anroparen (games.json-listan
+   eller en localStorage-återställning). Ordningen vändes:
+   `(data.races[0].track.id) || trackId` istället för tvärtom. Detta gör
+   att `currentGame.trackId` (och därmed exportfilens `trackcode`) alltid
+   blir korrekt så fort en riktig omgång faktiskt laddats, oavsett vad en
+   tidigare gissning påstod.
+2. **`scripts/fetch_games.py`** påstår inte längre en specifik (möjligen
+   fel) bana när en omgång har fler än en bana i kalenderns `tracks`-lista
+   — visar `"Flera banor"` och `trackId: null` istället, ärligt om att det
+   inte går att avgöra rätt bana utan att hämta hela `/games/{id}` (vilket
+   `loadGame()` ändå gör och rättar till automatiskt så fort omgången
+   faktiskt öppnas).
+
+**Ny varning i appen** (`#avd-multitrack-warning`, i `renderAvdelning()`):
+jämför varje avdelnings `race.track.id` mot `currentGame.trackId`
+(avdelning 1:s bana). Skiljer de sig åt visas en tydlig, röd varningstext
+direkt under omsättningsraden: vilka banor omgången spänner över, och att
+exportfilens bankod sätts efter avdelning 1:s bana — så att en användare
+som stöter på ett flerbanespel förstår situationen istället för att bara
+se ett obegripligt ATG-felmeddelande efteråt. Verifierat med Playwright
+mot riktig, levande data för `V86_2026-08-26_40_1`: bankoden i den
+exporterade XML-filen blev `6` (Åby, korrekt) istället för den
+ursprungliga felaktiga `5` (Solvalla).
+
 **Hastighetsgräns:** okänd exakt gräns för denna endpoint (till skillnad från
 Turfs dokumenterade "1 anrop/sekund") — `index.html` gör bara ett anrop per
 vald omgång, ingen polling, så det har inte varit ett problem hittills.
@@ -1177,7 +1221,10 @@ lämna Villkor-vyn.
   exempel (bara V85 är bekräftat så, via Jokersystemet-PDF:en).
 - Spel-id-upptäckt (GitHub Action) ej körd/verifierad över flera dagar än —
   bör observeras några dagar för att bekräfta att den håller sig uppdaterad.
-- Ej testat mot en riktig filinlämning på atg.se.
+- **Ett verkligt inlämningsförsök (V86) avvisades** ("Angivet spel är inte
+  tillgängligt") på grund av flerbanespels-bankodsbuggen, se avsnitt 6 —
+  fixad, men ett nytt lyckat inlämningsförsök efter fixen är inte
+  bekräftat än.
 - Ingen engelsk översättning (bara svenska, till skillnad från VO Turf List).
 
 ---

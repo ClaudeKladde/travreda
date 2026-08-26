@@ -423,7 +423,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-24 15:15</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-26 21:05</span>
 
 </div>
 
@@ -441,6 +441,7 @@
 
   <p class="avd-progress" id="avd-progress"></p>
   <p class="avd-progress" id="avd-turnover" hidden></p>
+  <p class="status-msg error" id="avd-multitrack-warning" hidden></p>
 
   <div class="topbar">
     <div class="avd-tabs" id="avd-tabs"></div>
@@ -1068,12 +1069,21 @@
   function loadGame(type, id, date, trackId, trackName, restoreData){
     setGlobalStatus("Hämtar " + type + " …");
     fetchJson(API_BASE + "/games/" + id).then(function(data){
+      // Bankoden för filbetting MÅSTE komma från den just hämtade, riktiga
+      // lopp-datan (avdelning 1:s bana) — inte från den uppskattade trackId
+      // som skickas in (t.ex. från games.json/kalender-API:t). Vid
+      // flerbanespel (V86 kan gå på två olika banor samma omgång) listar
+      // kalendern banorna i en ordning som inte nödvändigtvis matchar vilken
+      // bana avdelning 1 faktiskt körs på — att lita på den gissningen gav
+      // en riktig, rapporterad bugg: "Angivet spel är inte tillgängligt" vid
+      // filinlämning, eftersom fel bankod skickades till ATG.
+      var firstLegTrack = data.races[0].track;
       currentGame = {
         type: type,
         id: id,
         date: date,
-        trackId: trackId || (data.races[0].track ? data.races[0].track.id : null),
-        trackName: trackName || (data.races[0].track ? data.races[0].track.name : ""),
+        trackId: (firstLegTrack ? firstLegTrack.id : null) || trackId,
+        trackName: (firstLegTrack ? firstLegTrack.name : null) || trackName || "",
         races: data.races,
         pools: data.pools
       };
@@ -1337,6 +1347,22 @@
     var turnover = turnoverText();
     turnoverEl.hidden = !turnover;
     turnoverEl.textContent = turnover || "";
+
+    var warningEl = document.getElementById("avd-multitrack-warning");
+    var otherTracks = {};
+    currentGame.races.forEach(function(r){
+      if(r.track && r.track.id !== currentGame.trackId){ otherTracks[r.track.id] = r.track.name; }
+    });
+    var otherTrackNames = Object.keys(otherTracks).map(function(id){ return otherTracks[id]; });
+    if(otherTrackNames.length){
+      warningEl.hidden = false;
+      warningEl.textContent = "Flerbanespel: avdelningarna körs på flera olika banor (" +
+        currentGame.trackName + " + " + otherTrackNames.join(", ") + "). Bankoden i exportfilen " +
+        "sätts efter avdelning 1:s bana (" + currentGame.trackName + ") — dubbelkolla alltid på " +
+        "atg.se innan du lämnar in.";
+    } else {
+      warningEl.hidden = true;
+    }
 
     var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
 
