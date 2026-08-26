@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-26T06:24:04Z",
+  "updated": "2026-08-26T12:21:57Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-08-26_13_4",
       "date": "2026-08-26",
-      "startTime": "2026-08-26T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-08-26T13:27:18",
+      "status": "ongoing",
       "trackId": 13,
       "trackName": "Dannero"
     },
@@ -180,6 +180,15 @@
       "status": "bettable",
       "trackId": 55,
       "trackName": "Charlottenlund"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-08-30_81_4",
+      "date": "2026-08-30",
+      "startTime": "2026-08-30T20:05:00",
+      "status": "upcoming",
+      "trackId": 81,
+      "trackName": "Forus"
     },
     {
       "type": "V5",
