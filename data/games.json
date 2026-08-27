@@ -1,42 +1,6 @@
 {
-  "updated": "2026-08-26T19:27:51Z",
+  "updated": "2026-08-27T05:14:19Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-26_13_4",
-      "date": "2026-08-26",
-      "startTime": "2026-08-26T13:27:18",
-      "status": "results",
-      "trackId": 13,
-      "trackName": "Dannero"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-26_5_2",
-      "date": "2026-08-26",
-      "startTime": "2026-08-26T18:39:21",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-26_6_1",
-      "date": "2026-08-26",
-      "startTime": "2026-08-26T19:02:38",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-08-26_40_1",
-      "date": "2026-08-26",
-      "startTime": "2026-08-26T20:30:08",
-      "status": "ongoing",
-      "trackId": null,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-27_32_5",
