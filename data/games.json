@@ -1,32 +1,32 @@
 {
-  "updated": "2026-08-27T05:14:19Z",
+  "updated": "2026-08-27T16:54:38Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-08-27_32_5",
       "date": "2026-08-27",
-      "startTime": "2026-08-27T13:47:00",
-      "status": "bettable",
+      "startTime": "2026-08-27T13:48:19",
+      "status": "results",
       "trackId": 32,
       "trackName": "Örebro"
     },
     {
       "type": "V5",
-      "id": "V5_2026-08-27_16_3",
+      "id": "V5_2026-08-27_7_3",
       "date": "2026-08-27",
-      "startTime": "2026-08-27T18:25:00",
-      "status": "bettable",
-      "trackId": 16,
-      "trackName": "Gävle"
+      "startTime": "2026-08-27T18:30:40",
+      "status": "ongoing",
+      "trackId": 7,
+      "trackName": "Jägersro"
     },
     {
       "type": "V5",
-      "id": "V5_2026-08-27_7_3",
+      "id": "V5_2026-08-27_16_3",
       "date": "2026-08-27",
-      "startTime": "2026-08-27T18:30:00",
-      "status": "bettable",
-      "trackId": 7,
-      "trackName": "Jägersro"
+      "startTime": "2026-08-27T18:40:28",
+      "status": "ongoing",
+      "trackId": 16,
+      "trackName": "Gävle"
     },
     {
       "type": "V64",
@@ -150,7 +150,7 @@
       "id": "V5_2026-08-30_81_4",
       "date": "2026-08-30",
       "startTime": "2026-08-30T20:05:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 81,
       "trackName": "Forus"
     },
@@ -182,13 +182,58 @@
       "trackName": "Färjestad"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-09-01_17_4",
+      "date": "2026-09-01",
+      "startTime": "2026-09-01T13:26:00",
+      "status": "upcoming",
+      "trackId": 17,
+      "trackName": "Hagmyren"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-01_54_2",
+      "date": "2026-09-01",
+      "startTime": "2026-09-01T18:20:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Bornholm"
+    },
+    {
       "type": "V64",
       "id": "V64_2026-09-01_14_4",
       "date": "2026-09-01",
       "startTime": "2026-09-01T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-02_8_2",
+      "date": "2026-09-02",
+      "startTime": "2026-09-02T18:51:00",
+      "status": "upcoming",
+      "trackId": 8,
+      "trackName": "Axevalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-02_5_2",
+      "date": "2026-09-02",
+      "startTime": "2026-09-02T19:03:00",
+      "status": "upcoming",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-09-02_40_1",
+      "date": "2026-09-02",
+      "startTime": "2026-09-02T20:30:00",
+      "status": "upcoming",
+      "trackId": null,
+      "trackName": "Flera banor"
     }
   ]
 }
