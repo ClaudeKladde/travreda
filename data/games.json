@@ -1,51 +1,6 @@
 {
-  "updated": "2026-08-27T16:54:38Z",
+  "updated": "2026-08-28T01:48:49Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-27_32_5",
-      "date": "2026-08-27",
-      "startTime": "2026-08-27T13:48:19",
-      "status": "results",
-      "trackId": 32,
-      "trackName": "Örebro"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-27_7_3",
-      "date": "2026-08-27",
-      "startTime": "2026-08-27T18:30:40",
-      "status": "ongoing",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-27_16_3",
-      "date": "2026-08-27",
-      "startTime": "2026-08-27T18:40:28",
-      "status": "ongoing",
-      "trackId": 16,
-      "trackName": "Gävle"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-08-27_11_4",
-      "date": "2026-08-27",
-      "startTime": "2026-08-27T19:30:00",
-      "status": "bettable",
-      "trackId": 11,
-      "trackName": "Boden"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-27_78_5",
-      "date": "2026-08-27",
-      "startTime": "2026-08-27T20:05:00",
-      "status": "bettable",
-      "trackId": 78,
-      "trackName": "Bjerke"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-28_23_3",
