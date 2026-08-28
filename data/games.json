@@ -1,12 +1,12 @@
 {
-  "updated": "2026-08-28T01:48:49Z",
+  "updated": "2026-08-28T17:45:32Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-08-28_23_3",
       "date": "2026-08-28",
-      "startTime": "2026-08-28T16:30:00",
-      "status": "bettable",
+      "startTime": "2026-08-28T16:30:17",
+      "status": "results",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -14,8 +14,8 @@
       "type": "GS75",
       "id": "GS75_2026-08-28_9_4",
       "date": "2026-08-28",
-      "startTime": "2026-08-28T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-08-28T19:30:48",
+      "status": "ongoing",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -141,7 +141,7 @@
       "id": "V5_2026-09-01_17_4",
       "date": "2026-09-01",
       "startTime": "2026-09-01T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -150,7 +150,7 @@
       "id": "V5_2026-09-01_54_2",
       "date": "2026-09-01",
       "startTime": "2026-09-01T18:20:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Bornholm"
     },
@@ -168,7 +168,7 @@
       "id": "V5_2026-09-02_8_2",
       "date": "2026-09-02",
       "startTime": "2026-09-02T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -177,7 +177,7 @@
       "id": "V5_2026-09-02_5_2",
       "date": "2026-09-02",
       "startTime": "2026-09-02T19:03:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -186,9 +186,36 @@
       "id": "V86_2026-09-02_40_1",
       "date": "2026-09-02",
       "startTime": "2026-09-02T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": null,
       "trackName": "Flera banor"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-03_12_5",
+      "date": "2026-09-03",
+      "startTime": "2026-09-03T13:47:00",
+      "status": "upcoming",
+      "trackId": 12,
+      "trackName": "Bollnäs"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-03_32_2",
+      "date": "2026-09-03",
+      "startTime": "2026-09-03T18:53:00",
+      "status": "upcoming",
+      "trackId": 32,
+      "trackName": "Örebro"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-03_6_4",
+      "date": "2026-09-03",
+      "startTime": "2026-09-03T19:30:00",
+      "status": "upcoming",
+      "trackId": 6,
+      "trackName": "Åby"
     }
   ]
 }
