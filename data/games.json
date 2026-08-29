@@ -1,33 +1,6 @@
 {
-  "updated": "2026-08-28T17:45:32Z",
+  "updated": "2026-08-29T01:12:27Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-28_23_3",
-      "date": "2026-08-28",
-      "startTime": "2026-08-28T16:30:17",
-      "status": "results",
-      "trackId": 23,
-      "trackName": "Romme"
-    },
-    {
-      "type": "GS75",
-      "id": "GS75_2026-08-28_9_4",
-      "date": "2026-08-28",
-      "startTime": "2026-08-28T19:30:48",
-      "status": "ongoing",
-      "trackId": 9,
-      "trackName": "Bergsåker"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-28_78_6",
-      "date": "2026-08-28",
-      "startTime": "2026-08-28T20:05:00",
-      "status": "bettable",
-      "trackId": 78,
-      "trackName": "Bjerke"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-29_18_4",
