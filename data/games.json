@@ -1,51 +1,6 @@
 {
-  "updated": "2026-08-30T20:08:41Z",
+  "updated": "2026-08-31T01:48:19Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-30_29_3",
-      "date": "2026-08-30",
-      "startTime": "2026-08-30T12:54:37",
-      "status": "results",
-      "trackId": 29,
-      "trackName": "Åmål"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-30_25_3",
-      "date": "2026-08-30",
-      "startTime": "2026-08-30T14:45:43",
-      "status": "results",
-      "trackId": 25,
-      "trackName": "Skellefteå"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-08-30_55_5",
-      "date": "2026-08-30",
-      "startTime": "2026-08-30T15:11:27",
-      "status": "results",
-      "trackId": 55,
-      "trackName": "Charlottenlund"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-30_55_8",
-      "date": "2026-08-30",
-      "startTime": "2026-08-30T16:18:47",
-      "status": "results",
-      "trackId": 55,
-      "trackName": "Charlottenlund"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-30_81_4",
-      "date": "2026-08-30",
-      "startTime": "2026-08-30T20:05:53",
-      "status": "results",
-      "trackId": 81,
-      "trackName": "Forus"
-    },
     {
       "type": "V5",
       "id": "V5_2026-08-31_5_4",
