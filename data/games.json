@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-01T02:11:23Z",
+  "updated": "2026-09-01T10:35:46Z",
   "games": [
     {
       "type": "V5",
@@ -66,6 +66,15 @@
     },
     {
       "type": "V5",
+      "id": "V5_2026-09-03_54_3",
+      "date": "2026-09-03",
+      "startTime": "2026-09-03T17:36:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Nyköbing"
+    },
+    {
+      "type": "V5",
       "id": "V5_2026-09-03_32_2",
       "date": "2026-09-03",
       "startTime": "2026-09-03T18:53:00",
@@ -83,22 +92,49 @@
       "trackName": "Åby"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-09-04_54_2",
+      "date": "2026-09-04",
+      "startTime": "2026-09-04T16:07:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Skive"
+    },
+    {
       "type": "V64",
       "id": "V64_2026-09-04_23_4",
       "date": "2026-09-04",
       "startTime": "2026-09-04T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 23,
       "trackName": "Romme"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-04_82_4",
+      "date": "2026-09-04",
+      "startTime": "2026-09-04T20:05:00",
+      "status": "upcoming",
+      "trackId": 82,
+      "trackName": "Jarlsberg"
     },
     {
       "type": "V5",
       "id": "V5_2026-09-05_31_4",
       "date": "2026-09-05",
       "startTime": "2026-09-05T13:20:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 31,
       "trackName": "Årjäng"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-05_54_2",
+      "date": "2026-09-05",
+      "startTime": "2026-09-05T13:21:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Ålborg"
     },
     {
       "type": "V85",
@@ -123,7 +159,7 @@
       "id": "V5_2026-09-06_13_5",
       "date": "2026-09-06",
       "startTime": "2026-09-06T13:37:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 13,
       "trackName": "Dannero"
     },
@@ -132,7 +168,7 @@
       "id": "V85_2026-09-06_7_5",
       "date": "2026-09-06",
       "startTime": "2026-09-06T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -141,7 +177,7 @@
       "id": "V5_2026-09-06_7_8",
       "date": "2026-09-06",
       "startTime": "2026-09-06T16:06:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
     }
