@@ -1,33 +1,6 @@
 {
-  "updated": "2026-08-31T18:18:36Z",
+  "updated": "2026-09-01T02:11:23Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-08-31_5_4",
-      "date": "2026-08-31",
-      "startTime": "2026-08-31T13:26:19",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-08-31_24_3",
-      "date": "2026-08-31",
-      "startTime": "2026-08-31T18:33:18",
-      "status": "results",
-      "trackId": 24,
-      "trackName": "Rättvik"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-08-31_15_4",
-      "date": "2026-08-31",
-      "startTime": "2026-08-31T19:30:34",
-      "status": "ongoing",
-      "trackId": 15,
-      "trackName": "Färjestad"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-01_17_4",
