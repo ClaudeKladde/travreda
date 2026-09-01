@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-01T10:35:46Z",
+  "updated": "2026-09-01T15:37:12Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-01_17_4",
       "date": "2026-09-01",
-      "startTime": "2026-09-01T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-09-01T13:27:08",
+      "status": "results",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -156,6 +156,15 @@
     },
     {
       "type": "V5",
+      "id": "V5_2026-09-06_21_4",
+      "date": "2026-09-06",
+      "startTime": "2026-09-06T12:16:00",
+      "status": "upcoming",
+      "trackId": 21,
+      "trackName": "Lindesberg"
+    },
+    {
+      "type": "V5",
       "id": "V5_2026-09-06_13_5",
       "date": "2026-09-06",
       "startTime": "2026-09-06T13:37:00",
@@ -180,6 +189,42 @@
       "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-06_96_5",
+      "date": "2026-09-06",
+      "startTime": "2026-09-06T20:00:00",
+      "status": "upcoming",
+      "trackId": 96,
+      "trackName": "Biri"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-07_9_3",
+      "date": "2026-09-07",
+      "startTime": "2026-09-07T18:30:00",
+      "status": "upcoming",
+      "trackId": 9,
+      "trackName": "Bergsåker"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-07_15_2",
+      "date": "2026-09-07",
+      "startTime": "2026-09-07T18:48:00",
+      "status": "upcoming",
+      "trackId": 15,
+      "trackName": "Färjestad"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-07_22_4",
+      "date": "2026-09-07",
+      "startTime": "2026-09-07T19:30:00",
+      "status": "upcoming",
+      "trackId": 22,
+      "trackName": "Mantorp"
     }
   ]
 }
