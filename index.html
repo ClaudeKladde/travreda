@@ -422,7 +422,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-09-02 21:30</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-09-02 22:28</span>
 
 </div>
 
@@ -434,6 +434,7 @@
     <ul id="main-menu" hidden>
       <li><button type="button" id="menu-startsida">Gå till startsidan</button></li>
       <li><button type="button" id="menu-villkor">Villkor och export</button></li>
+      <li><button type="button" id="menu-rattning">Rätta system</button></li>
       <li><button type="button" id="menu-installningar">Inställningar</button></li>
     </ul>
   </div>
@@ -578,6 +579,30 @@
 
 </div>
 
+<!-- ===== VY: RÄTTA SYSTEM ===== -->
+<div id="view-rattning" hidden>
+
+  <button type="button" id="btn-back-rattning">Tillbaka till avdelningar</button>
+  <h2 id="rattning-heading" tabindex="-1">Rätta system</h2>
+  <p>Ladda upp samma fil som du lämnade in hos ATG för att se vinnande häst
+  i varje avdelning, hur många av dina rader som är rätta, och utdelningen
+  per antal rätt. Fristående från vilken omgång som eventuellt är laddad
+  just nu — appen hittar rätt omgång själv utifrån filens innehåll.</p>
+
+  <label for="rattning-file">Välj ATG-fil (.xml)</label>
+  <input type="file" id="rattning-file" accept=".xml,application/xml,text/xml">
+
+  <div id="rattning-bankod-wrap" hidden>
+    <label for="rattning-bankod">Bankod (den här spelformen har ingen bankod i filen)</label>
+    <input type="number" id="rattning-bankod" min="1" max="99" inputmode="numeric" style="width:6rem">
+    <button type="button" id="btn-rattning-bankod">Sök omgång</button>
+  </div>
+
+  <p id="rattning-status" class="status-msg" role="status"></p>
+  <div id="rattning-result"></div>
+
+</div>
+
 <script>
 (function(){
   "use strict";
@@ -719,13 +744,15 @@
     start: document.getElementById("view-start"),
     avdelning: document.getElementById("view-avdelning"),
     villkor: document.getElementById("view-villkor"),
-    installningar: document.getElementById("view-installningar")
+    installningar: document.getElementById("view-installningar"),
+    rattning: document.getElementById("view-rattning")
   };
   var viewHeadings = {
     start: document.getElementById("heading-start"),
     avdelning: document.getElementById("avd-heading"),
     villkor: document.getElementById("villkor-heading"),
-    installningar: document.getElementById("installningar-heading")
+    installningar: document.getElementById("installningar-heading"),
+    rattning: document.getElementById("rattning-heading")
   };
 
   function showView(name){
@@ -740,6 +767,8 @@
       viewHeadings.villkor.focus();
     } else if(name === "installningar"){
       viewHeadings.installningar.focus();
+    } else if(name === "rattning"){
+      viewHeadings.rattning.focus();
     } else if(name === "start"){
       viewHeadings.start.focus();
     }
@@ -760,9 +789,11 @@
   });
   document.getElementById("menu-startsida").addEventListener("click", function(){ showView("start"); });
   document.getElementById("menu-villkor").addEventListener("click", function(){ showView("villkor"); });
+  document.getElementById("menu-rattning").addEventListener("click", function(){ showView("rattning"); });
   document.getElementById("menu-installningar").addEventListener("click", function(){ showView("installningar"); });
   document.getElementById("btn-back-villkor").addEventListener("click", function(){ showView("avdelning"); });
   document.getElementById("btn-back-installningar").addEventListener("click", function(){ showView("avdelning"); });
+  document.getElementById("btn-back-rattning").addEventListener("click", function(){ showView("avdelning"); });
 
   var tipsToggle = document.getElementById("btn-tips-toggle");
   var tipsContent = document.getElementById("tips-content");
@@ -995,6 +1026,283 @@
     };
     return attempt(1);
   }
+
+  // ---------- Vy: Rätta system ----------
+  // Fristående från currentGame — en uppladdad fil kan gälla en helt annan,
+  // ofta tidigare, omgång än den som råkar vara laddad. Spel-id:t hittas
+  // alltid självständigt via findGameByBruteForce() ovan, utifrån filens
+  // egen speltyp/datum/bankod, aldrig via currentGame.
+
+  var rattningParsed = null;
+
+  function parseUploadedCoupons(xmlText){
+    var xmlDoc = new DOMParser().parseFromString(xmlText, "application/xml");
+    if(xmlDoc.getElementsByTagName("parsererror").length){
+      throw new Error("Kunde inte tolka filen som XML.");
+    }
+    var betType = null;
+    Object.keys(COUPON_TAG).forEach(function(type){
+      if(!betType && xmlDoc.getElementsByTagName(COUPON_TAG[type]).length){
+        betType = type;
+      }
+    });
+    if(!betType){
+      throw new Error("Hittade inga kända kuponger i filen (V85/V86/V75/GS75/V64/V5).");
+    }
+    var legCount = LEG_COUNT[betType];
+    var couponEls = xmlDoc.getElementsByTagName(COUPON_TAG[betType]);
+    var coupons = [];
+    for(var i = 0; i < couponEls.length; i++){
+      var el = couponEls[i];
+      var legEls = el.getElementsByTagName("leg");
+      if(legEls.length !== legCount){
+        throw new Error("Ogiltig fil: en kupong har fel antal avdelningar.");
+      }
+      var legs = [];
+      for(var j = 0; j < legEls.length; j++){
+        legs.push({
+          legno: Number(legEls[j].getAttribute("legno")),
+          marks: legEls[j].getAttribute("marks") || ""
+        });
+      }
+      var trackcodeAttr = el.getAttribute("trackcode");
+      coupons.push({
+        date: el.getAttribute("date"),
+        trackcode: trackcodeAttr ? Number(trackcodeAttr) : null,
+        legs: legs
+      });
+    }
+    if(coupons.length === 0){
+      throw new Error("Filen innehöll inga kuponger.");
+    }
+    return { betType: betType, coupons: coupons };
+  }
+
+  function legWinners(race){
+    if(race.status !== "results"){ return null; }
+    var vinnare = race.pools && race.pools.vinnare;
+    var winners = vinnare && vinnare.result && vinnare.result.winners;
+    if(!winners || !winners.length){ return null; }
+    return winners.map(function(w){
+      var start = race.starts.filter(function(s){ return s.number === w.number; })[0];
+      return { number: w.number, name: start ? start.horse.name : "", odds: w.odds };
+    });
+  }
+
+  function couponRowCount(coupon, legCount){
+    var legMap = {};
+    coupon.legs.forEach(function(l){ legMap[l.legno] = l.marks; });
+    var rows = 1;
+    for(var leg = 1; leg <= legCount; leg++){
+      var marks = legMap[leg] || "";
+      rows *= (marks.match(/1/g) || []).length;
+    }
+    return rows;
+  }
+
+  // Exakt fördelning av antal rätt bland en kupongs alla rader (den fulla
+  // korsprodukten) — en kupong kan innehålla flera hästar per avdelning, och
+  // olika rader i samma kupong kan ha olika antal rätt (bara "alla avdelningar
+  // träffar vinnaren" ger garanterat en enda rad, se CLAUDE.md avsnitt om
+  // kupongkomprimering). Räknas ut som en polynommultiplikation: varje
+  // avdelning bidrar antingen "1 sätt att träffa + (N-1) sätt att missa" (om
+  // vinnaren finns med i markeringen) eller "N sätt att missa, 0 sätt att
+  // träffa" (annars) — koefficienten för x^k i slutprodukten är exakt antalet
+  // rader med k rätt. Samma "aldrig en approximation"-princip som resten av
+  // reduceringslogiken.
+  function couponHitDistribution(coupon, legCount, winnersPerLeg){
+    var legMap = {};
+    coupon.legs.forEach(function(l){ legMap[l.legno] = l.marks; });
+    var poly = [1];
+    for(var leg = 1; leg <= legCount; leg++){
+      var marks = legMap[leg] || "";
+      var markedCount = (marks.match(/1/g) || []).length;
+      var winners = winnersPerLeg[leg - 1];
+      var winnerInMarks = winners ? winners.some(function(w){ return marks.charAt(w.number - 1) === "1"; }) : false;
+      var hitWays = winnerInMarks ? 1 : 0;
+      var missWays = winnerInMarks ? markedCount - 1 : markedCount;
+      var newPoly = new Array(poly.length + 1).fill(0);
+      for(var k = 0; k < poly.length; k++){
+        if(poly[k] === 0){ continue; }
+        if(missWays > 0){ newPoly[k] += poly[k] * missWays; }
+        if(hitWays > 0){ newPoly[k + 1] += poly[k] * hitWays; }
+      }
+      poly = newPoly;
+    }
+    return poly;
+  }
+
+  function renderRattning(coupons, betType, gameData){
+    var container = document.getElementById("rattning-result");
+    var legCount = LEG_COUNT[betType];
+    var races = gameData.races;
+    var pool = gameData.pools && gameData.pools[betType];
+
+    var winnersPerLeg = [];
+    var html = "<h3>Resultat per avdelning</h3><ul>";
+    for(var i = 0; i < legCount; i++){
+      var winners = legWinners(races[i]);
+      winnersPerLeg.push(winners);
+      if(winners && winners.length){
+        var text = winners.map(function(w){
+          return w.number + " " + w.name + ", odds " + formatKr(w.odds / 100);
+        }).join(" / ");
+        html += "<li>Avd " + (i + 1) + ": vinnare " + text + ".</li>";
+      } else {
+        html += "<li>Avd " + (i + 1) + ": inte avgjord ännu.</li>";
+      }
+    }
+    html += "</ul>";
+
+    var decidedCount = winnersPerLeg.filter(function(w){ return w; }).length;
+    var allDecided = decidedCount === legCount;
+
+    var totalRows = 0;
+    coupons.forEach(function(c){ totalRows += couponRowCount(c, legCount); });
+
+    if(allDecided){
+      var correctRowsByCount = {};
+      coupons.forEach(function(coupon){
+        var poly = couponHitDistribution(coupon, legCount, winnersPerLeg);
+        poly.forEach(function(count, k){
+          if(count > 0){ correctRowsByCount[k] = (correctRowsByCount[k] || 0) + count; }
+        });
+      });
+
+      html += "<h3>Rättning</h3>";
+      var resultPayouts = pool && pool.result && pool.result.payouts;
+      if(resultPayouts){
+        var brackets = Object.keys(resultPayouts).map(Number).sort(function(a, b){ return b - a; });
+        var anyCorrect = false;
+        html += "<ul>";
+        brackets.forEach(function(n){
+          var mine = correctRowsByCount[n] || 0;
+          if(mine === 0){ return; }
+          anyCorrect = true;
+          var info = resultPayouts[n];
+          if(info.movedDividend || info.payout == null){
+            html += "<li>" + n + " rätt: " + mine + " " + (mine === 1 ? "rad" : "rader") +
+              " — utdelningen flyttades till en annan pott.</li>";
+          } else {
+            var perRow = info.payout / 100;
+            html += "<li>" + n + " rätt, " + formatKr(perRow) + " kr, " + mine + " " +
+              (mine === 1 ? "styck" : "stycken") + ", " + formatKr(perRow * mine) + " kr.</li>";
+          }
+        });
+        html += "</ul>";
+        if(!anyCorrect){
+          html += "<p>Ingen av dina rader gav utdelning.</p>";
+        }
+      } else {
+        html += "<p>Alla avdelningar avgjorda, men ATG:s utdelningsdata saknas ännu — försök igen om en liten stund.</p>";
+      }
+    } else {
+      var eliminatedCoupons = 0;
+      var stillAliveCoupons = 0;
+      coupons.forEach(function(coupon){
+        var legMap = {};
+        coupon.legs.forEach(function(l){ legMap[l.legno] = l.marks; });
+        var eliminated = false;
+        for(var leg = 1; leg <= legCount; leg++){
+          var w = winnersPerLeg[leg - 1];
+          if(!w){ continue; }
+          var marks = legMap[leg] || "";
+          var hit = w.some(function(winner){ return marks.charAt(winner.number - 1) === "1"; });
+          if(!hit){ eliminated = true; }
+        }
+        if(eliminated){ eliminatedCoupons++; } else { stillAliveCoupons++; }
+      });
+
+      html += "<h3>Rättning (pågår)</h3>";
+      html += "<p>" + decidedCount + " av " + legCount + " avdelningar avgjorda. " +
+        stillAliveCoupons + " " + (stillAliveCoupons === 1 ? "kupong" : "kuponger") +
+        " fortfarande möjliga för fullträff, " + eliminatedCoupons + " redan uteslutna.</p>";
+
+      if(pool && pool.payouts && pool.systemCount){
+        html += "<h4>Lägsta möjliga uppskattning per rätt-nivå</h4>";
+        html += "<p>Baserat på ATG:s nuvarande pottstorlek delat på totala antalet " +
+          "system i hela omgången — det verkliga värdet blir sannolikt högre eftersom " +
+          "fler system troligen redan är utslagna än vad denna uppskattning räknar med." +
+          "</p><ul>";
+        Object.keys(pool.payouts).map(Number).sort(function(a, b){ return b - a; }).forEach(function(n){
+          var floorValue = (pool.payouts[n] / 100) / pool.systemCount;
+          html += "<li>" + n + " rätt: minst " + formatKr(floorValue) + " kr per system.</li>";
+        });
+        html += "</ul>";
+      }
+    }
+
+    html += "<p>Totalt " + totalRows + " rader i filen.</p>";
+    container.innerHTML = html;
+  }
+
+  function resolveAndRenderRattning(betType, date, track){
+    var statusEl = document.getElementById("rattning-status");
+    statusEl.className = "status-msg";
+    statusEl.textContent = "Söker efter omgången …";
+    findGameByBruteForce(betType, date, track).then(function(result){
+      statusEl.textContent = "";
+      renderRattning(rattningParsed.coupons, betType, result.data);
+    }).catch(function(){
+      statusEl.className = "status-msg error";
+      statusEl.textContent = "Kunde inte hitta omgången. Kontrollera att rätt fil (och ev. bankod) angetts.";
+    });
+  }
+
+  function handleRattningFile(file){
+    var statusEl = document.getElementById("rattning-status");
+    var resultEl = document.getElementById("rattning-result");
+    var bankodWrap = document.getElementById("rattning-bankod-wrap");
+    resultEl.innerHTML = "";
+    bankodWrap.hidden = true;
+    rattningParsed = null;
+    statusEl.className = "status-msg";
+    statusEl.textContent = "Läser filen …";
+
+    var reader = new FileReader();
+    reader.onload = function(){
+      var parsed;
+      try {
+        parsed = parseUploadedCoupons(String(reader.result));
+      } catch(e){
+        statusEl.className = "status-msg error";
+        statusEl.textContent = e.message;
+        return;
+      }
+      rattningParsed = parsed;
+      var firstCoupon = parsed.coupons[0];
+      if(COUPON_HAS_TRACKCODE[parsed.betType] && firstCoupon.trackcode != null){
+        resolveAndRenderRattning(parsed.betType, firstCoupon.date, String(firstCoupon.trackcode));
+      } else {
+        bankodWrap.hidden = false;
+        statusEl.className = "status-msg";
+        statusEl.textContent = parsed.betType + " har ingen bankod i filen — ange bankoden manuellt nedan.";
+        document.getElementById("rattning-bankod").focus();
+      }
+    };
+    reader.onerror = function(){
+      statusEl.className = "status-msg error";
+      statusEl.textContent = "Kunde inte läsa filen.";
+    };
+    reader.readAsText(file);
+  }
+
+  document.getElementById("rattning-file").addEventListener("change", function(e){
+    var file = e.target.files && e.target.files[0];
+    if(file){ handleRattningFile(file); }
+  });
+
+  document.getElementById("btn-rattning-bankod").addEventListener("click", function(){
+    if(!rattningParsed){ return; }
+    var bankod = document.getElementById("rattning-bankod").value;
+    var statusEl = document.getElementById("rattning-status");
+    if(!bankod){
+      statusEl.className = "status-msg error";
+      statusEl.textContent = "Ange en bankod.";
+      return;
+    }
+    resolveAndRenderRattning(rattningParsed.betType, rattningParsed.coupons[0].date, bankod);
+  });
 
   var STORAGE_KEY = "travreda-state-v1";
 

@@ -870,6 +870,98 @@ localStorage-nyckel (`travreda-compression`, global inställning precis som
 kör om `refreshLiveStatsAndUI()` direkt så sammanfattningen och sticky-
 knappen uppdateras utan att behöva trycka på "Beräkna rader".
 
+### Rätta system
+
+Egen, **fristående meny-vy** (`#view-rattning`, nås via "Rätta system" i
+huvudmenyn — placerad mellan "Villkor och export" och "Inställningar" på
+uttrycklig begäran) — byggd efter uttrycklig begäran om att kunna ladda
+upp samma fil man lämnat in hos ATG och se hur systemet gick.
+**Fristående från `currentGame` med flit**, inte en del av Villkor-vyn där
+den ursprungligen diskuterades: en uppladdad fil gäller oftast en helt
+annan (ofta äldre, redan avslutad) omgång än den som råkar vara laddad när
+man öppnar menyn, så vyn läser aldrig `currentGame` — allt härleds ur
+filen själv och en ny, egen `/games/{id}`-hämtning.
+
+**Speltyp, datum och (om den finns) bankod läses direkt ur filen** —
+kupongelementets tagnamn (`v85Coupon` osv., samma `COUPON_TAG`-tabell som
+exporten använder) avgör speltypen, `date`/`trackcode`-attributen resten.
+Saknar speltypen bankod i filen (V75/GS75/V64, se `COUPON_HAS_TRACKCODE`
+i avsnitt 5) visas ett extra fält där bankoden matas in manuellt — enda
+extra steget, annars räcker filen ensam. Spel-id:t hittas därefter med
+exakt samma `findGameByBruteForce()` som redan finns för manuell
+omgångsinmatning på Startsidan (provar avdelning 1–12) — ingen ny
+sökmekanism byggd, bara återanvänd.
+
+**Vinnare per avdelning** (`legWinners()`): `race.pools.vinnare.result.
+winners` (samma fält som redan användes för att verifiera flerbane-
+bankodsbuggen i avsnitt 5) ger startnummer + odds; hästnamnet slås upp i
+samma lopps `starts[]`. Odds visas i kronor per insatt krona
+(`formatKr(odds/100)`, kommaformat som resten av appen). En avdelning vars
+lopp ännu inte har status `"results"` visas som "inte avgjord ännu" —
+ingen gissning.
+
+**Exakt rättning av uppladdade rader** (`couponHitDistribution()`): en
+enskild `<coupon>` i filen kan ha flera hästar markerade per avdelning
+(särskilt efter kupongkomprimering, se ovan) och representerar då flera
+olika rader med **olika** antal rätt — inte nödvändigtvis alla lika. Antalet
+rader med exakt K rätt räknas ut exakt genom att multiplicera ihop ett litet
+polynom per avdelning (varje avdelning bidrar `1 sätt att träffa +
+(N−1) sätt att missa` om vinnaren är markerad, annars `N sätt att missa,
+0 sätt att träffa`) — koefficienten för x^K i slutprodukten är exakt
+antalet rader med K rätt, samma "aldrig en approximation"-princip som
+kupongkomprimeringen. **Verifierat** med en fristående Node-testfil: 200
+slumpade kuponger (blandning av avgjorda/oavgjorda avdelningar, 1–4
+markerade hästar per avdelning) jämförda mot en total, brute-force-mässig
+uppräkning av varje enskild rad i den fulla korsprodukten — 100 % match i
+samtliga fall.
+
+- **När alla avdelningar är avgjorda** (`pools[TYP].result.payouts`
+  finns): varje rätt-nivå med minst en egen rad visas som
+  `"{N} rätt, {utdelning per rad} kr, {antal av mina rader} stycken,
+  {total summa} kr."` — exakt det format som efterfrågades. En nivå vars
+  utdelning `movedDividend` (flyttades till en annan pott, förekommer t.ex.
+  vid för få vinnare på en nivå) visas utan kronbelopp, bara radantalet.
+- **Innan alla avdelningar är avgjorda** (ditt mer ovanliga användningsfall,
+  men uttryckligen efterfrågat): riktig utdelning finns inte än, så istället
+  visas (a) hur många av dina kuponger som redan är **uteslutna** (en redan
+  avgjord avdelnings vinnare saknas i markeringen — kan aldrig bli
+  fullträff) kontra fortfarande **möjliga**, och (b) en **lägsta-möjliga-
+  uppskattning per rätt-nivå**: `pools[TYP].payouts[N]` (ATG:s egen,
+  redan uppdaterade — men preliminära — pottstorlek per nivå, bekräftat
+  finnas även mitt i en pågående omgång, till skillnad från
+  `result.payouts` som bara finns efteråt) delat på `systemCount` (totalt
+  antal system i **hela** omgången vid start). Tydligt märkt som ett
+  golvvärde i UI-texten — det underskattar nästan alltid det verkliga
+  värdet, eftersom fler system troligen redan är utslagna än vad
+  divisionen med hela `systemCount` räknar med. Detta är den bästa
+  matematiskt hederliga uppskattningen möjlig utan tillgång till ATG:s
+  egna interna "hur många system återstår per nivå just nu"-data, som
+  inte exponeras i det öppna API:t.
+
+**Dödheat-antagande, inte oberoende verifierat:** har flera hästar delat
+förstaplatsen räknas en avdelning som "rätt" om **någon** av de delade
+vinnarna är markerad (`winners.some(...)`) — ett rimligt antagande
+(dödheat brukar innebära att båda räknas som vinnare), men inte testat
+mot ett verkligt dödheat-resultat.
+
+**Verifierat med Playwright** mot riktig, avslutad data
+(`V85_2026-08-22_23_5`, tre konstruerade testkuponger — en fulträff, en med
+exakt 7 rätt, en tredje med två markerade hästar i en avdelning som delar
+upp sig i en 8-rätt-rad och en 7-rätt-rad): gav korrekt
+`"8 rätt, 5439 kr, 2 stycken, 10878 kr."` och `"7 rätt, 139 kr, 2 stycken,
+278 kr."`, matchande `pools.V85.result.payouts` i fixturen. Mitt-i-omgången-
+läget verifierat mot en riktig, delvis avgjord V86-omgång (7 av 8
+avdelningar klara): en fortfarande möjlig kupong och en redan utesluten
+identifierades korrekt, med golvvärden `7,43`/`3,71`/`7,43` kr för
+8/7/6 rätt. Fel-/gränsfall verifierade: en ogiltig fil ger
+"Kunde inte tolka filen som XML.", en fil utan bankod (V75) visar
+bankod-fältet med korrekt förklaringstext.
+
+**Ej testat:** en riktig fil användaren faktiskt lämnat in till ATG (bara
+konstruerade testfiler mot riktig, verklig resultatdata) — bör provas live
+efter driftsättning, särskilt tillsammans med en faktisk kupongkomprimerad
+export.
+
 ---
 
 ## 7. Reduceringslogik — ABC(D)-bokstavshinkar + villkor
@@ -1166,7 +1258,9 @@ med Playwright att båda ställena renderar exakt identisk HTML vid varje
 datum+bankod), `view-avdelning` (huvudsidan: sticky avdelningsflikar + meny,
 en avdelning i taget: häst/kusk/tränare/procent/barfota + bokstavsval eller
 kryssruta), `view-villkor` (villkor, sammanfattning, export),
-`view-installningar` (sorteringsval, mer kommer). Enkel vy-växling, ingen
+`view-rattning` (fristående filuppladdning + rättning mot ATG:s
+resultat, se avsnitt 6), `view-installningar` (sorteringsval, mer
+kommer). Enkel vy-växling, ingen
 History API ännu (kan läggas till senare om det behövs).
 
 ### Tips och instruktioner (Startsidan)
