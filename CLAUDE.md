@@ -1061,9 +1061,14 @@ kvar. Kupongantalet utelämnas bara vid `compressionLevel === "none"`
 `renderLiveSummary()`) visas i `#summary-text`, fetstilad, med en extra
 rad om prisantagandet under — de två visar alltså aldrig olika/inaktuella
 tal, på uttrycklig begäran ("sammanfattningen ... presenteras likadant som
-på knappen"). Innan alla åtta avdelningar har minst en markerad häst visar
-knappen en vägledande text istället ("Markera minst en häst i varje
-avdelning …").
+på knappen"). **Dold helt** (`#sticky-footer[hidden]`, inte en vägledande
+text som tidigare) tills alla åtta avdelningar har minst en markerad häst
+— `liveStats` är `null` exakt i det läget (`computeLiveStats()` sätter
+aldrig `liveStats` om någon avdelnings kandidatlista är tom), så
+`renderLiveSummary()` togglar `stickyFooter.hidden` på samma villkor som
+den redan använde för att avgöra "inget att visa än". Ändrat på uttrycklig
+begäran — knappen hade inget meningsfullt att visa innan dess, samma
+"hellre tyst"-princip som resten av appen.
 
 **Visuell prominens (byggd efter uttrycklig begäran — knappen "syntes inte"):**
 `class="btn-primary"` (samma gula accentfärg som andra viktiga knappar,
@@ -1073,6 +1078,15 @@ CSS). `.sticky-footer` fick också extra `padding-bottom` via
 `env(safe-area-inset-bottom, 0px)` (samma mönster som VO Turf List
 använder för sina sticky-knappar) så att knappen inte sitter klistrad i
 absolut skärmkant utan har lite luft nedåt.
+
+**Smalare och mer luft ovanför (byggd efter uttrycklig begäran):**
+`.sticky-footer button`s `max-width` minskad från `28rem` till `16rem` —
+knappen är fortfarande centrerad (`.sticky-footer{justify-content:center}`),
+bara smalare än tidigare fullbreddsknappen. `.sticky-footer`s toppmargin
+ökad från `1rem` till `3.5rem` så det blir tydligt mer avstånd mellan
+hästlistan/systemöversikten ovanför och knappen — den är fortfarande
+`position:sticky;bottom:0` (glider fast i skärmens nederkant när man
+scrollat förbi den), bara med mer luft innan den träder in.
 
 `renderLiveSummary()` är den enda platsen som skriver till
 `#btn-sticky-summary`, `#summary-text`, `#calc-status` och togglar

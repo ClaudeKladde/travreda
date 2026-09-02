@@ -325,13 +325,13 @@
     background:var(--bg);
     border-top:1px solid var(--card-border);
     padding:.75rem 1rem calc(1rem + env(safe-area-inset-bottom, 0px));
-    margin:1rem -1rem 0;
+    margin:3.5rem -1rem 0;
     display:flex;
     justify-content:center;
   }
   .sticky-footer button{
     width:100%;
-    max-width:28rem;
+    max-width:16rem;
     text-align:center;
   }
   #btn-sticky-summary{
@@ -423,7 +423,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-08-26 21:55</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-09-02 18:21</span>
 
 </div>
 
@@ -461,7 +461,7 @@
 
   <p class="avd-progress" id="autosave-status"></p>
 
-  <div class="sticky-footer">
+  <div class="sticky-footer" id="sticky-footer">
     <button type="button" id="btn-sticky-summary" class="btn-primary" aria-live="polite">Markera minst en häst i varje avdelning för att se antal rader.</button>
   </div>
 
@@ -2004,6 +2004,7 @@
 
   function renderLiveSummary(){
     var btn = document.getElementById("btn-sticky-summary");
+    var stickyFooter = document.getElementById("sticky-footer");
     var summaryText = document.getElementById("summary-text");
     var statusEl = document.getElementById("calc-status");
     var exportBtn = document.getElementById("btn-export");
@@ -2013,12 +2014,17 @@
     var gameNotBettable = currentGame && currentGame.status && currentGame.status !== "bettable";
 
     if(!currentGame || !liveStats){
-      btn.textContent = "Markera minst en häst i varje avdelning för att se antal rader.";
+      // Inte alla avdelningar har en markerad häst än — knappen har inget
+      // meningsfullt att visa förrän dess, så den döljs helt istället för
+      // att visa en vägledande text (samma "hellre tyst"-princip som
+      // resten av appen).
+      if(stickyFooter){ stickyFooter.hidden = true; }
       if(summaryText){ summaryText.textContent = "Beräkna för att se antal rader."; }
       if(statusEl){ statusEl.className = "status-msg"; statusEl.textContent = ""; }
       exportBtn.disabled = true;
       return;
     }
+    if(stickyFooter){ stickyFooter.hidden = false; }
 
     if(liveStats.tooBig){
       var msg = liveStats.cancelled ?
