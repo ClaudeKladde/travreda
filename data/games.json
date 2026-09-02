@@ -1,33 +1,6 @@
 {
-  "updated": "2026-09-01T20:12:21Z",
+  "updated": "2026-09-02T01:34:40Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-01_17_4",
-      "date": "2026-09-01",
-      "startTime": "2026-09-01T13:27:08",
-      "status": "results",
-      "trackId": 17,
-      "trackName": "Hagmyren"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-01_54_2",
-      "date": "2026-09-01",
-      "startTime": "2026-09-01T18:25:35",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Bornholm"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-09-01_14_4",
-      "date": "2026-09-01",
-      "startTime": "2026-09-01T19:33:56",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-02_8_2",
