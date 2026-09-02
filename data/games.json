@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-02T19:07:20Z",
+  "updated": "2026-09-02T20:11:01Z",
   "games": [
     {
       "type": "V5",
@@ -24,7 +24,7 @@
       "id": "V86_2026-09-02_40_1",
       "date": "2026-09-02",
       "startTime": "2026-09-02T20:30:21",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 40,
       "trackName": "Flera banor"
     },
