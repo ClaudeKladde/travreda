@@ -485,48 +485,65 @@ loppnummer finns redan i `/games/{id}`-svaret (`race.track.id`/`.name`), så
 ingen separat hårdkodad bankodstabell behövs när vi väl har ett spel-id.
 
 **Fixad bugg — fel bankod i exportfilen gav "Angivet spel är inte
-tillgängligt" hos ATG:** rapporterad av användaren efter en avvisad
-V86-inlämning. Grundorsak, verifierad mot riktig, levande ATG-data:
-**V86 kan gå på två olika banor samma omgång** (flerbanespel) — det
-inlämnade exemplet (`V86_2026-08-26_40_1`) växlade mellan Åby (avdelning
-1, 3, 5, 7) och Solvalla (avdelning 2, 4, 6, 8). `scripts/fetch_games.py`
-hämtar bara den lätta `/calendar/day/{datum}`-listan (inte hela
-`/games/{id}` per omgång, för dyrt att göra för varje rad i listan) —
-den listans `game.tracks`-array är bara sorterad på bankod (`[5, 6]`),
-inte i avdelningsordning, så `tracks[0]` (bankod 5, Solvalla) råkade peka
-på fel bana — avdelning 1 körs faktiskt på Åby (bankod 6). Den felaktiga
-bankoden 5 skrevs sedan rakt in i exportfilens `trackcode`-attribut
-istället för den korrekta 6, vilket fick ATG att inte hitta något
-matchande spel alls.
+tillgängligt" hos ATG (två omgångar, tre försök, till slut rätt fixat):**
+rapporterad av användaren efter en avvisad V86-inlämning, och sedan igen
+efter ett andra, oberoende V86-tillfälle en vecka senare. Grundorsak:
+**V86 körs numera alltid över två olika banor** (Solvalla + en av
+Åby/Jägersro/Bergsåker, varje vecka) — de två rapporterade fallen
+(`V86_2026-08-26_40_1`: Åby/Solvalla, `V86_2026-09-02_40_1`:
+Solvalla/Axevalla) bekräftar båda mönstret.
 
-**Fix, i två delar:**
+Ett **första fixförsök** (efter det första fallet) antog att rätt bankod
+för exporten var **avdelning 1:s fysiska bana** (`data.races[0].track.id`,
+6/Åby) — bättre än den ursprungliga, ännu mer felaktiga gissningen
+(`tracks[0]` ur kalenderns osorterade lista, 5/Solvalla), men **fortfarande
+fel**: det andra, oberoende V86-fallet avvisades med exakt samma fel trots
+korrekt ifylld avdelning-1-bana (8/Axevalla). Grundligt verifierat först då
+den verkliga orsaken hittades:
 
-1. **`loadGame()`** litar nu **alltid** på den bankod/banenamn som
-   faktiskt kommer med det just hämtade `/games/{id}`-svaret
-   (`data.races[0].track`, dvs. avdelning 1:s bana) — inte på det
-   `trackId`/`trackName` som skickas in från anroparen (games.json-listan
-   eller en localStorage-återställning). Ordningen vändes:
-   `(data.races[0].track.id) || trackId` istället för tvärtom. Detta gör
-   att `currentGame.trackId` (och därmed exportfilens `trackcode`) alltid
-   blir korrekt så fort en riktig omgång faktiskt laddats, oavsett vad en
-   tidigare gissning påstod.
-2. **`scripts/fetch_games.py`** påstår inte längre en specifik (möjligen
-   fel) bana när en omgång har fler än en bana i kalenderns `tracks`-lista
-   — visar `"Flera banor"` och `trackId: null` istället, ärligt om att det
-   inte går att avgöra rätt bana utan att hämta hela `/games/{id}` (vilket
-   `loadGame()` ändå gör och rättar till automatiskt så fort omgången
-   faktiskt öppnas).
+- Spel-id:t för **båda** de rapporterade flerbanefallen innehöll bankoden
+  **40** (`V86_2026-08-26_40_1`, `V86_2026-09-02_40_1`) — trots att de
+  gällde helt olika banpar. 40 finns **inte** med i ATG:s egen officiella
+  bankodslista över riktiga svenska travbanor.
+- Källkoden till [HPTClient](https://github.com/Hospodaren/HPTClient) (det
+  verkliga, i produktion beprövade referensverktyget, se avsnitt 6)
+  innehåller en ATG-härledd bankodsenum där **bankod 40 = `ExtraE`** — en
+  av flera reserverade specialkoder (`ExtraC`=20, `ExtraD`=30, `ExtraE`=40,
+  `ExtraJ`=49), uttryckligen **undantagna** när samma källkod listar
+  "riktiga svenska banor". Samma källkod refererar även ett
+  `HostTrackId`-begrepp — en banidentitet för hela den kombinerade
+  omgången, skild från de enskilda lopplatsernas fysiska banor.
+- En **helt oberoende användare** på ett diskussionsforum (Flashback)
+  rapporterade exakt samma symptom för V86-filinlämning och löste det,
+  utan koppling till Travreda eller HPTClient, med `trackcode="40"`.
 
-**Ny varning i appen** (`#avd-multitrack-warning`, i `renderAvdelning()`):
-jämför varje avdelnings `race.track.id` mot `currentGame.trackId`
-(avdelning 1:s bana). Skiljer de sig åt visas en tydlig, röd varningstext
-direkt under omsättningsraden: vilka banor omgången spänner över, och att
-exportfilens bankod sätts efter avdelning 1:s bana — så att en användare
-som stöter på ett flerbanespel förstår situationen istället för att bara
-se ett obegripligt ATG-felmeddelande efteråt. Verifierat med Playwright
-mot riktig, levande data för `V86_2026-08-26_40_1`: bankoden i den
-exporterade XML-filen blev `6` (Åby, korrekt) istället för den
-ursprungliga felaktiga `5` (Solvalla).
+Tre oberoende källor pekar alltså samstämmigt på att bankoden för en
+flerbaneomgång inte är någon fysisk bana alls, utan ATG:s reserverade
+specialkod för hela den kombinerade omgången — och den koden råkar redan
+finnas där, inbakad i spel-id:t självt.
+
+**Den slutgiltiga fixen:** bankoden hämtas nu ur **spel-id:ts egen
+inbäddade bankodskomponent** (`{TYP}_{datum}_{bankod}_{avdelning}`,
+`id.split("_")[2]` i `loadGame()`, motsvarande parsning i
+`scripts/fetch_games.py`) — inte ur någon hämtad lopp-data alls. För
+enkelbanespel är detta exakt samma tal som avdelning 1:s fysiska bana
+(ingen ändring i praktiken, t.ex. Romme = 23 i båda fallen), så fixen är
+bakåtkompatibel. `scripts/fetch_games.py` slipper därmed också gissa eller
+dölja bankoden vid flerbanespel — `trackId` sätts korrekt direkt från
+kalenderns egen `game["id"]`-sträng, ingen extra `/games/{id}`-hämtning
+behövs för detta.
+
+Verifierat med Playwright mot riktig, levande data för
+`V86_2026-09-02_40_1`: exportfilens `trackcode` blev `40` för samtliga
+kuponger (tidigare felaktigt `8`), och en regressionstest mot ett
+enkelbanespel (`V85_2026-08-22_23_5`, Romme) bekräftade oförändrat `23`.
+
+**Den tidigare varningen i appen** (`#avd-multitrack-warning`, som jämförde
+varje avdelnings bana mot avdelning 1:s bana och varnade om flerbanespel)
+är **borttagen** på uttrycklig begäran — den byggdes för att kompensera
+för den då okända risken med fel bankod, men fyller inget syfte nu när
+bankoden alltid hämtas korrekt direkt ur spel-id:t, oavsett hur många
+fysiska banor omgången spänner över.
 
 **Andra, separata bugg-rapport med samma ATG-felmeddelande:** en efterföljande
 inlämning (samma omgång, `V86_2026-08-26_40_1`, den här gången med **korrekt**
@@ -1271,16 +1288,16 @@ lämna Villkor-vyn.
   exempel (bara V85 är bekräftat så, via Jokersystemet-PDF:en).
 - Spel-id-upptäckt (GitHub Action) ej körd/verifierad över flera dagar än —
   bör observeras några dagar för att bekräfta att den håller sig uppdaterad.
-- **Ett verkligt inlämningsförsök (V86) avvisades** ("Angivet spel är inte
-  tillgängligt") på grund av flerbanespels-bankodsbuggen, se avsnitt 6 —
-  fixad, men ett nytt lyckat inlämningsförsök efter fixen är inte
-  bekräftat än.
-- **Ett andra verkligt inlämningsförsök (samma V86-omgång, korrekt
-  bankod) avvisades med samma felmeddelande** eftersom omgången redan
-  hunnit starta (statusen hade gått från `bettable` till `ongoing`) —
-  orelaterat till bankodsbuggen. En proaktiv varning + export-spärr för
-  detta är byggd och verifierad med Playwright, se avsnitt 6, men ännu
-  inte bekräftad mot ett nytt, riktigt inlämningsförsök i det läget.
+- **Tre verkliga inlämningsförsök (V86) avvisades** ("Angivet spel är inte
+  tillgängligt") innan grundorsaken hittades, se avsnitt 5: två gällde fel
+  bankod (första gången `tracks[0]`-gissningen, andra gången det då
+  antagna men fortfarande felaktiga "avdelning 1:s fysiska bana") och ett
+  gällde en omgång som redan hunnit starta (statusen hade gått från
+  `bettable` till `ongoing`, en proaktiv varning + export-spärr för detta
+  finns sedan tidigare, se avsnitt 5). Bankoden hämtas nu ur spel-id:ts
+  egen inbäddade bankodskomponent — verifierad mot tre oberoende källor
+  och med Playwright, se avsnitt 5 — men ett nytt, lyckat, verkligt
+  inlämningsförsök efter denna sista fix är **inte bekräftat än**.
 - Ingen engelsk översättning (bara svenska, till skillnad från VO Turf List).
 
 ---

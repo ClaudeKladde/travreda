@@ -62,27 +62,29 @@ def main():
                     # Travreda hanterar bara trav — hoppar över galoppomgångar
                     # (förekommer för GS75/V64/V5, aldrig för V85/V75/V86).
                     continue
-                # Kalenderns "tracks"-lista är inte i avdelningsordning (bara
-                # sorterad på bankod) — för flerbanespel (V86 kan gå på två
-                # banor samma omgång) säger tracks[0] alltså INTE med
-                # säkerhet vilken bana avdelning 1 faktiskt körs på. Det kan
-                # bara avgöras genom att hämta hela /games/{id}, vilket är
-                # för dyrt att göra här för varje omgång. index.html:s egen
-                # loadGame() räknar därför alltid om bankoden från den redan
-                # hämtade riktiga lopp-datan när omgången faktiskt laddas —
-                # trackId/trackName här är bara en visningsgissning för
-                # listan på Startsidan, aldrig det som faktiskt skickas till
-                # ATG. Vid flera banor visas "Flera banor" istället för att
-                # påstå fel bana.
+                # Bankoden som faktiskt skickas till ATG (trackcode i
+                # exportfilen) hämtas ur spel-id:ts egen inbäddade
+                # bankodskomponent ({TYP}_{datum}_{bankod}_{avdelning}) —
+                # INTE ur kalenderns "tracks"-lista (bara sorterad på
+                # bankod, inte avdelningsordning). Ett tidigare antagande om
+                # att avdelning 1:s fysiska bana var rätt bankod visade sig
+                # felaktigt: V86 körs numera alltid över två banor (Solvalla
+                # + en av Åby/Jägersro/Bergsåker), och ATG identifierar hela
+                # den kombinerade omgången med en reserverad specialbankod
+                # (40) — exakt det som redan står i id-strängen. Bekräftat
+                # mot tre oberoende källor, se CLAUDE.md avsnitt 5.
+                game_id = game.get("id")
+                id_parts = game_id.split("_")
+                id_track_id = int(id_parts[2]) if len(id_parts) == 4 and id_parts[2].isdigit() else None
                 is_multi_track = len(tracks) > 1
                 games.append(
                     {
                         "type": bet_type,
-                        "id": game.get("id"),
+                        "id": game_id,
                         "date": date_str,
                         "startTime": game.get("startTime"),
                         "status": game.get("status"),
-                        "trackId": None if is_multi_track else track_id,
+                        "trackId": id_track_id if id_track_id is not None else track_id,
                         "trackName": "Flera banor" if is_multi_track else track_names.get(track_id),
                     }
                 )
