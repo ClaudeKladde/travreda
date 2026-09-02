@@ -1096,14 +1096,22 @@ CSS). `.sticky-footer` fick också extra `padding-bottom` via
 använder för sina sticky-knappar) så att knappen inte sitter klistrad i
 absolut skärmkant utan har lite luft nedåt.
 
-**Smalare och mer luft ovanför (byggd efter uttrycklig begäran):**
-`.sticky-footer button`s `max-width` minskad från `28rem` till `16rem` —
-knappen är fortfarande centrerad (`.sticky-footer{justify-content:center}`),
-bara smalare än tidigare fullbreddsknappen. `.sticky-footer`s toppmargin
-ökad från `1rem` till `3.5rem` så det blir tydligt mer avstånd mellan
-hästlistan/systemöversikten ovanför och knappen — den är fortfarande
+**Lägre och mer luft ovanför (byggd efter uttrycklig begäran):** ett första
+försök gjorde knappen smalare (`max-width:16rem`) efter en missuppfattning
+— användaren menade egentligen lägre (mindre på höjden), inte smalare på
+bredden, och bekräftade uttryckligen att fullbredd är önskvärt
+("bredden är ok att den är lika bred som sidan/skärmen"). Rättat:
+`max-width` borttagen helt (knappen är åter fullbredd, som ursprungligen),
+och istället halverad höjd via halverad padding på båda de inblandade
+elementen — `.sticky-footer` (`.75rem 1rem calc(1rem + safe-area)` →
+`.375rem 1rem calc(.5rem + safe-area)`) och `#btn-sticky-summary`
+(`.9rem 1rem` → `.45rem 1rem`). Textstorleken (`font-size:1.05rem`) är
+oförändrad — det är bara knappens "luft" runt texten som krympts, inte
+läsbarheten. `.sticky-footer`s toppmargin (`3.5rem`, oförändrad sedan
+tidigare) ger fortfarande tydligt avstånd mellan hästlistan/
+systemöversikten ovanför och den nu lägre knappen — den är fortfarande
 `position:sticky;bottom:0` (glider fast i skärmens nederkant när man
-scrollat förbi den), bara med mer luft innan den träder in.
+scrollat förbi den).
 
 `renderLiveSummary()` är den enda platsen som skriver till
 `#btn-sticky-summary`, `#summary-text`, `#calc-status` och togglar
