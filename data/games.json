@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-03T15:18:11Z",
+  "updated": "2026-09-03T20:11:16Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-03_54_3",
       "date": "2026-09-03",
-      "startTime": "2026-09-03T17:36:00",
-      "status": "bettable",
+      "startTime": "2026-09-03T17:36:38",
+      "status": "results",
       "trackId": 54,
       "trackName": "Nyköbing"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-09-03_32_2",
       "date": "2026-09-03",
-      "startTime": "2026-09-03T18:53:00",
-      "status": "bettable",
+      "startTime": "2026-09-03T18:53:16",
+      "status": "results",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -32,8 +32,8 @@
       "type": "V64",
       "id": "V64_2026-09-03_6_4",
       "date": "2026-09-03",
-      "startTime": "2026-09-03T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-03T19:34:26",
+      "status": "results",
       "trackId": 6,
       "trackName": "Åby"
     },
