@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-03T10:11:17Z",
+  "updated": "2026-09-03T15:18:11Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-03_12_5",
       "date": "2026-09-03",
-      "startTime": "2026-09-03T13:47:00",
-      "status": "bettable",
+      "startTime": "2026-09-03T13:47:37",
+      "status": "results",
       "trackId": 12,
       "trackName": "Bollnäs"
     },
@@ -225,6 +225,33 @@
       "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-09_11_2",
+      "date": "2026-09-09",
+      "startTime": "2026-09-09T18:39:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-09_6_2",
+      "date": "2026-09-09",
+      "startTime": "2026-09-09T18:51:00",
+      "status": "upcoming",
+      "trackId": 6,
+      "trackName": "Åby"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-09-09_40_1",
+      "date": "2026-09-09",
+      "startTime": "2026-09-09T20:30:00",
+      "status": "upcoming",
+      "trackId": 40,
+      "trackName": "Flera banor"
     }
   ]
 }
