@@ -1,33 +1,6 @@
 {
-  "updated": "2026-09-02T20:11:01Z",
+  "updated": "2026-09-03T01:38:31Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-02_8_2",
-      "date": "2026-09-02",
-      "startTime": "2026-09-02T18:52:19",
-      "status": "results",
-      "trackId": 8,
-      "trackName": "Axevalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-02_5_2",
-      "date": "2026-09-02",
-      "startTime": "2026-09-02T19:08:22",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-09-02_40_1",
-      "date": "2026-09-02",
-      "startTime": "2026-09-02T20:30:21",
-      "status": "results",
-      "trackId": 40,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-03_12_5",
