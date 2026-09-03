@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-03T01:38:31Z",
+  "updated": "2026-09-03T10:11:17Z",
   "games": [
     {
       "type": "V5",
@@ -114,7 +114,7 @@
       "id": "V5_2026-09-06_54_2",
       "date": "2026-09-06",
       "startTime": "2026-09-06T13:05:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Odense"
     },
@@ -159,7 +159,7 @@
       "id": "V5_2026-09-07_83_2",
       "date": "2026-09-07",
       "startTime": "2026-09-07T11:35:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 83,
       "trackName": "Orkla"
     },
@@ -195,16 +195,25 @@
       "id": "V5_2026-09-08_18_4",
       "date": "2026-09-08",
       "startTime": "2026-09-08T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 18,
       "trackName": "Halmstad"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-08_54_2",
+      "date": "2026-09-08",
+      "startTime": "2026-09-08T18:20:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Bornholm"
     },
     {
       "type": "V5",
       "id": "V5_2026-09-08_16_3",
       "date": "2026-09-08",
       "startTime": "2026-09-08T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 16,
       "trackName": "Gävle"
     },
@@ -213,7 +222,7 @@
       "id": "V64_2026-09-08_14_4",
       "date": "2026-09-08",
       "startTime": "2026-09-08T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
     }
