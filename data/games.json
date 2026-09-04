@@ -1,42 +1,6 @@
 {
-  "updated": "2026-09-03T20:11:16Z",
+  "updated": "2026-09-04T01:31:49Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-03_12_5",
-      "date": "2026-09-03",
-      "startTime": "2026-09-03T13:47:37",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-03_54_3",
-      "date": "2026-09-03",
-      "startTime": "2026-09-03T17:36:38",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Nyköbing"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-03_32_2",
-      "date": "2026-09-03",
-      "startTime": "2026-09-03T18:53:16",
-      "status": "results",
-      "trackId": 32,
-      "trackName": "Örebro"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-09-03_6_4",
-      "date": "2026-09-03",
-      "startTime": "2026-09-03T19:34:26",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-04_54_2",
