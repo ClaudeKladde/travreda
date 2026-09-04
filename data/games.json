@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-04T10:01:28Z",
+  "updated": "2026-09-04T15:13:13Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-04_54_2",
       "date": "2026-09-04",
-      "startTime": "2026-09-04T16:07:00",
-      "status": "bettable",
+      "startTime": "2026-09-04T16:09:30",
+      "status": "ongoing",
       "trackId": 54,
       "trackName": "Skive"
     },
@@ -216,6 +216,33 @@
       "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-10_28_4",
+      "date": "2026-09-10",
+      "startTime": "2026-09-10T13:26:00",
+      "status": "upcoming",
+      "trackId": 28,
+      "trackName": "Visby"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-10_23_3",
+      "date": "2026-09-10",
+      "startTime": "2026-09-10T18:30:00",
+      "status": "upcoming",
+      "trackId": 23,
+      "trackName": "Romme"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-10_33_4",
+      "date": "2026-09-10",
+      "startTime": "2026-09-10T19:30:00",
+      "status": "upcoming",
+      "trackId": 33,
+      "trackName": "Östersund"
     }
   ]
 }
