@@ -1,30 +1,30 @@
 {
-  "updated": "2026-09-05T09:31:08Z",
+  "updated": "2026-09-05T14:03:28Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-05_31_4",
-      "date": "2026-09-05",
-      "startTime": "2026-09-05T13:20:00",
-      "status": "bettable",
-      "trackId": 31,
-      "trackName": "Årjäng"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-05_54_2",
       "date": "2026-09-05",
-      "startTime": "2026-09-05T13:21:00",
-      "status": "bettable",
+      "startTime": "2026-09-05T13:22:36",
+      "status": "results",
       "trackId": 54,
       "trackName": "Ålborg"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-05_31_4",
+      "date": "2026-09-05",
+      "startTime": "2026-09-05T13:23:39",
+      "status": "results",
+      "trackId": 31,
+      "trackName": "Årjäng"
     },
     {
       "type": "V85",
       "id": "V85_2026-09-05_7_5",
       "date": "2026-09-05",
-      "startTime": "2026-09-05T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-09-05T15:00:21",
+      "status": "ongoing",
       "trackId": 7,
       "trackName": "Jägersro"
     },
