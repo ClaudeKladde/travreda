@@ -1,33 +1,6 @@
 {
-  "updated": "2026-09-04T19:57:19Z",
+  "updated": "2026-09-05T01:33:16Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-04_54_2",
-      "date": "2026-09-04",
-      "startTime": "2026-09-04T16:09:30",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Skive"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-09-04_23_4",
-      "date": "2026-09-04",
-      "startTime": "2026-09-04T19:30:29",
-      "status": "results",
-      "trackId": 23,
-      "trackName": "Romme"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-04_82_4",
-      "date": "2026-09-04",
-      "startTime": "2026-09-04T20:08:21",
-      "status": "results",
-      "trackId": 82,
-      "trackName": "Jarlsberg"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-05_31_4",
