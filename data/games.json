@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-05T14:03:28Z",
+  "updated": "2026-09-05T19:36:54Z",
   "games": [
     {
       "type": "V5",
@@ -24,7 +24,7 @@
       "id": "V85_2026-09-05_7_5",
       "date": "2026-09-05",
       "startTime": "2026-09-05T15:00:21",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-09-05_7_8",
       "date": "2026-09-05",
-      "startTime": "2026-09-05T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-09-05T16:07:11",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
