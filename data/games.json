@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-07T16:42:35Z",
+  "updated": "2026-09-07T20:50:31Z",
   "games": [
     {
       "type": "V5",
@@ -15,7 +15,7 @@
       "id": "V5_2026-09-07_9_3",
       "date": "2026-09-07",
       "startTime": "2026-09-07T18:30:12",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-09-07_15_2",
       "date": "2026-09-07",
-      "startTime": "2026-09-07T18:48:00",
-      "status": "bettable",
+      "startTime": "2026-09-07T18:49:18",
+      "status": "results",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -32,8 +32,8 @@
       "type": "V64",
       "id": "V64_2026-09-07_22_4",
       "date": "2026-09-07",
-      "startTime": "2026-09-07T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-07T19:31:15",
+      "status": "results",
       "trackId": 22,
       "trackName": "Mantorp"
     },
