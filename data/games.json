@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-09T15:23:26Z",
+  "updated": "2026-09-09T20:06:08Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-09_11_2",
       "date": "2026-09-09",
-      "startTime": "2026-09-09T18:39:00",
-      "status": "bettable",
+      "startTime": "2026-09-09T18:40:39",
+      "status": "results",
       "trackId": 11,
       "trackName": "Boden"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-09_6_2",
       "date": "2026-09-09",
-      "startTime": "2026-09-09T18:51:00",
-      "status": "bettable",
+      "startTime": "2026-09-09T18:51:41",
+      "status": "results",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -23,8 +23,8 @@
       "type": "V86",
       "id": "V86_2026-09-09_40_1",
       "date": "2026-09-09",
-      "startTime": "2026-09-09T20:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-09T20:30:02",
+      "status": "results",
       "trackId": 40,
       "trackName": "Flera banor"
     },
