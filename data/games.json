@@ -1,42 +1,6 @@
 {
-  "updated": "2026-09-08T20:22:30Z",
+  "updated": "2026-09-09T01:43:20Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-08_18_4",
-      "date": "2026-09-08",
-      "startTime": "2026-09-08T13:26:12",
-      "status": "results",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-08_54_2",
-      "date": "2026-09-08",
-      "startTime": "2026-09-08T18:25:44",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Bornholm"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-08_16_3",
-      "date": "2026-09-08",
-      "startTime": "2026-09-08T18:29:58",
-      "status": "results",
-      "trackId": 16,
-      "trackName": "Gävle"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-09-08_14_4",
-      "date": "2026-09-08",
-      "startTime": "2026-09-08T19:30:27",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-09_11_2",
