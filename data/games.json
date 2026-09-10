@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-10T15:17:27Z",
+  "updated": "2026-09-10T20:08:31Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-10_23_3",
       "date": "2026-09-10",
-      "startTime": "2026-09-10T18:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-10T18:32:38",
+      "status": "results",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -23,8 +23,8 @@
       "type": "V64",
       "id": "V64_2026-09-10_33_4",
       "date": "2026-09-10",
-      "startTime": "2026-09-10T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-10T19:30:35",
+      "status": "results",
       "trackId": 33,
       "trackName": "Östersund"
     },
