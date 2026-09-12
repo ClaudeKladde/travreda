@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-12T14:27:30Z",
+  "updated": "2026-09-12T19:43:37Z",
   "games": [
     {
       "type": "V5",
@@ -24,7 +24,7 @@
       "id": "V85_2026-09-12_17_5",
       "date": "2026-09-12",
       "startTime": "2026-09-12T15:00:10",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -33,7 +33,7 @@
       "id": "V5_2026-09-12_17_8",
       "date": "2026-09-12",
       "startTime": "2026-09-12T16:06:23",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -41,8 +41,8 @@
       "type": "V5",
       "id": "V5_2026-09-12_54_2",
       "date": "2026-09-12",
-      "startTime": "2026-09-12T17:20:00",
-      "status": "bettable",
+      "startTime": "2026-09-12T17:26:11",
+      "status": "results",
       "trackId": 54,
       "trackName": "Århus"
     },
