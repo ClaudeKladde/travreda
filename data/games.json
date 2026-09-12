@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-12T01:43:34Z",
+  "updated": "2026-09-12T09:40:03Z",
   "games": [
     {
       "type": "V5",
@@ -204,7 +204,7 @@
       "id": "V5_2026-09-17_28_4",
       "date": "2026-09-17",
       "startTime": "2026-09-17T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 28,
       "trackName": "Visby"
     },
@@ -213,7 +213,7 @@
       "id": "V5_2026-09-17_16_3",
       "date": "2026-09-17",
       "startTime": "2026-09-17T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 16,
       "trackName": "Gävle"
     },
@@ -222,7 +222,7 @@
       "id": "V64_2026-09-17_6_4",
       "date": "2026-09-17",
       "startTime": "2026-09-17T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     }
