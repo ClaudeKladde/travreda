@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-12T09:40:03Z",
+  "updated": "2026-09-12T14:27:30Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-12_32_6",
       "date": "2026-09-12",
-      "startTime": "2026-09-12T13:02:00",
-      "status": "bettable",
+      "startTime": "2026-09-12T13:05:36",
+      "status": "results",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-12_78_1",
       "date": "2026-09-12",
-      "startTime": "2026-09-12T14:10:00",
-      "status": "bettable",
+      "startTime": "2026-09-12T14:11:14",
+      "status": "results",
       "trackId": 78,
       "trackName": "Bjerke"
     },
@@ -23,8 +23,8 @@
       "type": "V85",
       "id": "V85_2026-09-12_17_5",
       "date": "2026-09-12",
-      "startTime": "2026-09-12T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-09-12T15:00:10",
+      "status": "ongoing",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-09-12_17_8",
       "date": "2026-09-12",
-      "startTime": "2026-09-12T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-09-12T16:06:23",
+      "status": "ongoing",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
