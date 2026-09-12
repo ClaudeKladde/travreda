@@ -1,33 +1,6 @@
 {
-  "updated": "2026-09-11T20:07:02Z",
+  "updated": "2026-09-12T01:43:34Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-11_54_2",
-      "date": "2026-09-11",
-      "startTime": "2026-09-11T16:08:16",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Ålborg"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-11_12_3",
-      "date": "2026-09-11",
-      "startTime": "2026-09-11T18:30:29",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "GS75",
-      "id": "GS75_2026-09-11_5_4",
-      "date": "2026-09-11",
-      "startTime": "2026-09-11T19:30:48",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-12_32_6",
