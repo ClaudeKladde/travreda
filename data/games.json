@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-13T01:33:49Z",
+  "updated": "2026-09-13T10:41:13Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-13_46_2",
       "date": "2026-09-13",
-      "startTime": "2026-09-13T11:22:00",
-      "status": "bettable",
+      "startTime": "2026-09-13T11:23:02",
+      "status": "ongoing",
       "trackId": 46,
       "trackName": "Tingsryd"
     },
