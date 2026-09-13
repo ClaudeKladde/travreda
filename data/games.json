@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-13T10:41:13Z",
+  "updated": "2026-09-13T15:08:23Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-13_46_2",
       "date": "2026-09-13",
       "startTime": "2026-09-13T11:23:02",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 46,
       "trackName": "Tingsryd"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-13_11_5",
       "date": "2026-09-13",
-      "startTime": "2026-09-13T12:40:00",
-      "status": "bettable",
+      "startTime": "2026-09-13T12:40:43",
+      "status": "results",
       "trackId": 11,
       "trackName": "Boden"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-09-13_54_2",
       "date": "2026-09-13",
-      "startTime": "2026-09-13T14:05:00",
-      "status": "bettable",
+      "startTime": "2026-09-13T14:05:59",
+      "status": "results",
       "trackId": 54,
       "trackName": "Skive"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-09-13_29_3",
       "date": "2026-09-13",
-      "startTime": "2026-09-13T14:45:00",
-      "status": "bettable",
+      "startTime": "2026-09-13T14:45:51",
+      "status": "results",
       "trackId": 29,
       "trackName": "Åmål"
     },
@@ -41,8 +41,8 @@
       "type": "V85",
       "id": "V85_2026-09-13_78_5",
       "date": "2026-09-13",
-      "startTime": "2026-09-13T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-09-13T15:01:10",
+      "status": "ongoing",
       "trackId": 78,
       "trackName": "Bjerke"
     },
@@ -50,8 +50,8 @@
       "type": "V5",
       "id": "V5_2026-09-13_78_8",
       "date": "2026-09-13",
-      "startTime": "2026-09-13T16:23:00",
-      "status": "bettable",
+      "startTime": "2026-09-13T16:26:03",
+      "status": "ongoing",
       "trackId": 78,
       "trackName": "Bjerke"
     },
