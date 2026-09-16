@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-16T01:52:05Z",
+  "updated": "2026-09-16T10:21:23Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-16_80_2",
       "date": "2026-09-16",
-      "startTime": "2026-09-16T11:35:00",
-      "status": "bettable",
+      "startTime": "2026-09-16T11:36:16",
+      "status": "ongoing",
       "trackId": 80,
       "trackName": "Momarken"
     },
@@ -69,7 +69,7 @@
       "id": "V5_2026-09-18_54_2",
       "date": "2026-09-18",
       "startTime": "2026-09-18T16:07:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Ålborg"
     },
@@ -132,16 +132,25 @@
       "id": "V5_2026-09-19_54_3",
       "date": "2026-09-19",
       "startTime": "2026-09-19T18:42:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Ålborg"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-20_54_2",
+      "date": "2026-09-20",
+      "startTime": "2026-09-20T12:20:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Nyköbing"
     },
     {
       "type": "V5",
       "id": "V5_2026-09-20_5_4",
       "date": "2026-09-20",
       "startTime": "2026-09-20T13:29:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -159,7 +168,7 @@
       "id": "V5_2026-09-21_26_3",
       "date": "2026-09-21",
       "startTime": "2026-09-21T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 26,
       "trackName": "Solänget"
     },
@@ -168,7 +177,7 @@
       "id": "V64_2026-09-21_12_4",
       "date": "2026-09-21",
       "startTime": "2026-09-21T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 12,
       "trackName": "Bollnäs"
     }
