@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-16T15:37:31Z",
+  "updated": "2026-09-16T20:30:04Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-16_5_2",
       "date": "2026-09-16",
-      "startTime": "2026-09-16T18:39:00",
-      "status": "bettable",
+      "startTime": "2026-09-16T18:41:18",
+      "status": "results",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-09-16_7_2",
       "date": "2026-09-16",
-      "startTime": "2026-09-16T18:51:00",
-      "status": "bettable",
+      "startTime": "2026-09-16T18:51:27",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -32,8 +32,8 @@
       "type": "V86",
       "id": "V86_2026-09-16_40_1",
       "date": "2026-09-16",
-      "startTime": "2026-09-16T20:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-16T20:30:35",
+      "status": "results",
       "trackId": 40,
       "trackName": "Flera banor"
     },
