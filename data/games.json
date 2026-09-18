@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-18T10:07:15Z",
+  "updated": "2026-09-18T15:15:49Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-18_54_2",
       "date": "2026-09-18",
-      "startTime": "2026-09-18T16:07:00",
-      "status": "bettable",
+      "startTime": "2026-09-18T16:07:48",
+      "status": "ongoing",
       "trackId": 54,
       "trackName": "Ålborg"
     },
@@ -201,12 +201,30 @@
     },
     {
       "type": "V5",
+      "id": "V5_2026-09-24_29_4",
+      "date": "2026-09-24",
+      "startTime": "2026-09-24T13:26:00",
+      "status": "upcoming",
+      "trackId": 29,
+      "trackName": "Åmål"
+    },
+    {
+      "type": "V5",
       "id": "V5_2026-09-24_54_3",
       "date": "2026-09-24",
       "startTime": "2026-09-24T17:36:00",
       "status": "upcoming",
       "trackId": 54,
       "trackName": "Ålborg"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-24_11_4",
+      "date": "2026-09-24",
+      "startTime": "2026-09-24T19:30:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
     }
   ]
 }
