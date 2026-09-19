@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-19T09:48:23Z",
+  "updated": "2026-09-19T14:53:04Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-19_33_4",
       "date": "2026-09-19",
-      "startTime": "2026-09-19T12:06:00",
-      "status": "bettable",
+      "startTime": "2026-09-19T12:06:19",
+      "status": "results",
       "trackId": 33,
       "trackName": "Östersund"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-19_18_4",
       "date": "2026-09-19",
-      "startTime": "2026-09-19T12:16:00",
-      "status": "bettable",
+      "startTime": "2026-09-19T12:16:10",
+      "status": "results",
       "trackId": 18,
       "trackName": "Halmstad"
     },
@@ -23,8 +23,8 @@
       "type": "V85",
       "id": "V85_2026-09-19_15_5",
       "date": "2026-09-19",
-      "startTime": "2026-09-19T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-09-19T15:16:12",
+      "status": "ongoing",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-09-19_15_8",
       "date": "2026-09-19",
-      "startTime": "2026-09-19T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-09-19T16:25:22",
+      "status": "ongoing",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -177,7 +177,7 @@
       "id": "V5_2026-09-24_29_4",
       "date": "2026-09-24",
       "startTime": "2026-09-24T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 29,
       "trackName": "Åmål"
     },
