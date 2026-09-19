@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-19T01:48:18Z",
+  "updated": "2026-09-19T09:48:23Z",
   "games": [
     {
       "type": "V5",
@@ -186,7 +186,7 @@
       "id": "V5_2026-09-24_54_3",
       "date": "2026-09-24",
       "startTime": "2026-09-24T17:36:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Ålborg"
     },
