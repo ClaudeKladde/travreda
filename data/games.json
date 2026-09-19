@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-19T14:53:04Z",
+  "updated": "2026-09-19T19:39:02Z",
   "games": [
     {
       "type": "V5",
@@ -24,7 +24,7 @@
       "id": "V85_2026-09-19_15_5",
       "date": "2026-09-19",
       "startTime": "2026-09-19T15:16:12",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -33,7 +33,7 @@
       "id": "V5_2026-09-19_15_8",
       "date": "2026-09-19",
       "startTime": "2026-09-19T16:25:22",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -41,8 +41,8 @@
       "type": "V5",
       "id": "V5_2026-09-19_54_3",
       "date": "2026-09-19",
-      "startTime": "2026-09-19T18:42:00",
-      "status": "bettable",
+      "startTime": "2026-09-19T18:46:41",
+      "status": "results",
       "trackId": 54,
       "trackName": "Ålborg"
     },
