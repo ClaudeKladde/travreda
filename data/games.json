@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-20T14:57:34Z",
+  "updated": "2026-09-20T19:52:15Z",
   "games": [
     {
       "type": "V5",
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-09-20_83_3",
       "date": "2026-09-20",
-      "startTime": "2026-09-20T18:25:00",
-      "status": "bettable",
+      "startTime": "2026-09-20T18:25:52",
+      "status": "results",
       "trackId": 83,
       "trackName": "Orkla"
     },
@@ -150,9 +150,27 @@
       "id": "V64_2026-09-24_11_4",
       "date": "2026-09-24",
       "startTime": "2026-09-24T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 11,
       "trackName": "Boden"
+    },
+    {
+      "type": "V85",
+      "id": "V85_2026-09-26_6_5",
+      "date": "2026-09-26",
+      "startTime": "2026-09-26T15:00:00",
+      "status": "upcoming",
+      "trackId": 6,
+      "trackName": "Åby"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-26_6_8",
+      "date": "2026-09-26",
+      "startTime": "2026-09-26T16:06:00",
+      "status": "upcoming",
+      "trackId": 6,
+      "trackName": "Åby"
     }
   ]
 }
