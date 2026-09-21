@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-21T01:52:01Z",
+  "updated": "2026-09-21T11:12:09Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-21_82_2",
       "date": "2026-09-21",
-      "startTime": "2026-09-21T11:35:00",
-      "status": "bettable",
+      "startTime": "2026-09-21T11:36:29",
+      "status": "ongoing",
       "trackId": 82,
       "trackName": "Jarlsberg"
     },
@@ -123,7 +123,7 @@
       "id": "V85_2026-09-26_6_5",
       "date": "2026-09-26",
       "startTime": "2026-09-26T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -132,7 +132,7 @@
       "id": "V5_2026-09-26_6_8",
       "date": "2026-09-26",
       "startTime": "2026-09-26T16:06:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     }
