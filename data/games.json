@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-22T10:25:06Z",
+  "updated": "2026-09-22T15:48:12Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-22_7_4",
       "date": "2026-09-22",
-      "startTime": "2026-09-22T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-09-22T13:26:11",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -155,6 +155,15 @@
       "trackName": "Åby"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-09-27_13_4",
+      "date": "2026-09-27",
+      "startTime": "2026-09-27T12:16:00",
+      "status": "upcoming",
+      "trackId": 13,
+      "trackName": "Dannero"
+    },
+    {
       "type": "V85",
       "id": "V85_2026-09-27_5_5",
       "date": "2026-09-27",
@@ -171,6 +180,24 @@
       "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-28_18_3",
+      "date": "2026-09-28",
+      "startTime": "2026-09-28T18:30:00",
+      "status": "upcoming",
+      "trackId": 18,
+      "trackName": "Halmstad"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-28_15_4",
+      "date": "2026-09-28",
+      "startTime": "2026-09-28T19:30:00",
+      "status": "upcoming",
+      "trackId": 15,
+      "trackName": "Färjestad"
     }
   ]
 }
