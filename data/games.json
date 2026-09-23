@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-23T10:20:32Z",
+  "updated": "2026-09-23T15:37:47Z",
   "games": [
     {
       "type": "V5",
@@ -171,6 +171,42 @@
       "status": "bettable",
       "trackId": 15,
       "trackName": "Färjestad"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-29_28_4",
+      "date": "2026-09-29",
+      "startTime": "2026-09-29T13:26:00",
+      "status": "upcoming",
+      "trackId": 28,
+      "trackName": "Visby"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-29_23_3",
+      "date": "2026-09-29",
+      "startTime": "2026-09-29T18:30:00",
+      "status": "upcoming",
+      "trackId": 23,
+      "trackName": "Romme"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-29_14_2",
+      "date": "2026-09-29",
+      "startTime": "2026-09-29T18:48:00",
+      "status": "upcoming",
+      "trackId": 14,
+      "trackName": "Eskilstuna"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-09-29_8_4",
+      "date": "2026-09-29",
+      "startTime": "2026-09-29T19:30:00",
+      "status": "upcoming",
+      "trackId": 8,
+      "trackName": "Axevalla"
     }
   ]
 }
