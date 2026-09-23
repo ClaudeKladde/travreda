@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-23T01:57:47Z",
+  "updated": "2026-09-23T10:20:32Z",
   "games": [
     {
       "type": "V5",
@@ -60,7 +60,7 @@
       "id": "V5_2026-09-25_54_2",
       "date": "2026-09-25",
       "startTime": "2026-09-25T16:07:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Odense"
     },
@@ -96,7 +96,7 @@
       "id": "V5_2026-09-26_54_2",
       "date": "2026-09-26",
       "startTime": "2026-09-26T12:50:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Bornholm"
     },
@@ -123,9 +123,18 @@
       "id": "V5_2026-09-27_13_4",
       "date": "2026-09-27",
       "startTime": "2026-09-27T12:16:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 13,
       "trackName": "Dannero"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-27_55_2",
+      "date": "2026-09-27",
+      "startTime": "2026-09-27T12:20:00",
+      "status": "upcoming",
+      "trackId": 55,
+      "trackName": "Charlottenlund"
     },
     {
       "type": "V85",
@@ -150,7 +159,7 @@
       "id": "V5_2026-09-28_18_3",
       "date": "2026-09-28",
       "startTime": "2026-09-28T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 18,
       "trackName": "Halmstad"
     },
@@ -159,7 +168,7 @@
       "id": "V64_2026-09-28_15_4",
       "date": "2026-09-28",
       "startTime": "2026-09-28T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 15,
       "trackName": "Färjestad"
     }
