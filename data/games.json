@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-24T10:34:44Z",
+  "updated": "2026-09-24T15:58:38Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-24_29_4",
       "date": "2026-09-24",
-      "startTime": "2026-09-24T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-09-24T13:26:35",
+      "status": "results",
       "trackId": 29,
       "trackName": "Åmål"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-24_54_3",
       "date": "2026-09-24",
-      "startTime": "2026-09-24T17:36:00",
-      "status": "bettable",
+      "startTime": "2026-09-24T17:45:36",
+      "status": "ongoing",
       "trackId": 54,
       "trackName": "Ålborg"
     },
@@ -132,7 +132,7 @@
       "id": "V5_2026-09-27_77_6",
       "date": "2026-09-27",
       "startTime": "2026-09-27T20:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 77,
       "trackName": "Bergen"
     },
@@ -189,6 +189,42 @@
       "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-30_17_4",
+      "date": "2026-09-30",
+      "startTime": "2026-09-30T13:26:00",
+      "status": "upcoming",
+      "trackId": 17,
+      "trackName": "Hagmyren"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-30_5_2",
+      "date": "2026-09-30",
+      "startTime": "2026-09-30T18:39:00",
+      "status": "upcoming",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-30_7_2",
+      "date": "2026-09-30",
+      "startTime": "2026-09-30T18:51:00",
+      "status": "upcoming",
+      "trackId": 7,
+      "trackName": "Jägersro"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-09-30_40_1",
+      "date": "2026-09-30",
+      "startTime": "2026-09-30T20:30:00",
+      "status": "upcoming",
+      "trackId": 40,
+      "trackName": "Flera banor"
     }
   ]
 }
