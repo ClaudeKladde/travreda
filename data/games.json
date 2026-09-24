@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-24T01:46:48Z",
+  "updated": "2026-09-24T10:34:44Z",
   "games": [
     {
       "type": "V5",
@@ -105,7 +105,7 @@
       "id": "V5_2026-09-27_55_2",
       "date": "2026-09-27",
       "startTime": "2026-09-27T12:20:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 55,
       "trackName": "Charlottenlund"
     },
@@ -126,6 +126,15 @@
       "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-09-27_77_6",
+      "date": "2026-09-27",
+      "startTime": "2026-09-27T20:00:00",
+      "status": "upcoming",
+      "trackId": 77,
+      "trackName": "Bergen"
     },
     {
       "type": "V5",
@@ -150,7 +159,7 @@
       "id": "V5_2026-09-29_28_4",
       "date": "2026-09-29",
       "startTime": "2026-09-29T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 28,
       "trackName": "Visby"
     },
@@ -159,7 +168,7 @@
       "id": "V5_2026-09-29_23_3",
       "date": "2026-09-29",
       "startTime": "2026-09-29T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -168,7 +177,7 @@
       "id": "V5_2026-09-29_14_2",
       "date": "2026-09-29",
       "startTime": "2026-09-29T18:48:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
     },
@@ -177,7 +186,7 @@
       "id": "V64_2026-09-29_8_4",
       "date": "2026-09-29",
       "startTime": "2026-09-29T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
     }
