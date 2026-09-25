@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-25T15:59:20Z",
+  "updated": "2026-09-25T20:47:42Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-25_19_2",
       "date": "2026-09-25",
-      "startTime": "2026-09-25T18:48:00",
-      "status": "bettable",
+      "startTime": "2026-09-25T18:49:23",
+      "status": "results",
       "trackId": 19,
       "trackName": "Kalmar"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-09-25_32_2",
       "date": "2026-09-25",
-      "startTime": "2026-09-25T18:53:00",
-      "status": "bettable",
+      "startTime": "2026-09-25T18:59:00",
+      "status": "results",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -32,8 +32,8 @@
       "type": "GS75",
       "id": "GS75_2026-09-25_16_4",
       "date": "2026-09-25",
-      "startTime": "2026-09-25T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-25T19:31:07",
+      "status": "results",
       "trackId": 16,
       "trackName": "Gävle"
     },
