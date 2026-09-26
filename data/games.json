@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-26T10:22:01Z",
+  "updated": "2026-09-26T15:10:54Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-26_54_2",
       "date": "2026-09-26",
-      "startTime": "2026-09-26T12:50:00",
-      "status": "bettable",
+      "startTime": "2026-09-26T12:57:36",
+      "status": "results",
       "trackId": 54,
       "trackName": "Bornholm"
     },
@@ -14,8 +14,8 @@
       "type": "V85",
       "id": "V85_2026-09-26_6_5",
       "date": "2026-09-26",
-      "startTime": "2026-09-26T15:02:00",
-      "status": "bettable",
+      "startTime": "2026-09-26T15:02:27",
+      "status": "ongoing",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-09-26_6_8",
       "date": "2026-09-26",
-      "startTime": "2026-09-26T16:08:00",
-      "status": "bettable",
+      "startTime": "2026-09-26T16:09:02",
+      "status": "ongoing",
       "trackId": 6,
       "trackName": "Åby"
     },
