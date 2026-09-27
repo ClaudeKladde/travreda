@@ -1,33 +1,6 @@
 {
-  "updated": "2026-09-26T20:14:55Z",
+  "updated": "2026-09-27T02:01:14Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-26_54_2",
-      "date": "2026-09-26",
-      "startTime": "2026-09-26T12:57:36",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Bornholm"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-09-26_6_5",
-      "date": "2026-09-26",
-      "startTime": "2026-09-26T15:02:27",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-26_6_8",
-      "date": "2026-09-26",
-      "startTime": "2026-09-26T16:09:02",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-27_13_4",
