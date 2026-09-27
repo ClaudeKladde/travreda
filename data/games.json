@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-27T15:51:49Z",
+  "updated": "2026-09-27T20:30:14Z",
   "games": [
     {
       "type": "V5",
@@ -41,8 +41,8 @@
       "type": "V5",
       "id": "V5_2026-09-27_77_6",
       "date": "2026-09-27",
-      "startTime": "2026-09-27T20:00:00",
-      "status": "bettable",
+      "startTime": "2026-09-27T20:12:55",
+      "status": "results",
       "trackId": 77,
       "trackName": "Bergen"
     },
@@ -189,6 +189,24 @@
       "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
+    },
+    {
+      "type": "V85",
+      "id": "V85_2026-10-03_11_5",
+      "date": "2026-10-03",
+      "startTime": "2026-10-03T15:00:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-03_11_8",
+      "date": "2026-10-03",
+      "startTime": "2026-10-03T16:06:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
     }
   ]
 }
