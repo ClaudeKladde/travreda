@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-27T10:53:37Z",
+  "updated": "2026-09-27T15:51:49Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-27_13_4",
       "date": "2026-09-27",
       "startTime": "2026-09-27T12:18:39",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 13,
       "trackName": "Dannero"
     },
@@ -15,7 +15,7 @@
       "id": "V5_2026-09-27_55_2",
       "date": "2026-09-27",
       "startTime": "2026-09-27T12:24:37",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 55,
       "trackName": "Charlottenlund"
     },
@@ -23,8 +23,8 @@
       "type": "V85",
       "id": "V85_2026-09-27_5_5",
       "date": "2026-09-27",
-      "startTime": "2026-09-27T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-09-27T15:00:33",
+      "status": "results",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-09-27_5_8",
       "date": "2026-09-27",
-      "startTime": "2026-09-27T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-09-27T16:06:01",
+      "status": "results",
       "trackId": 5,
       "trackName": "Solvalla"
     },
