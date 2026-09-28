@@ -1,12 +1,12 @@
 {
-  "updated": "2026-09-28T12:05:58Z",
+  "updated": "2026-09-28T22:40:20Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-09-28_54_2",
       "date": "2026-09-28",
-      "startTime": "2026-09-28T18:20:00",
-      "status": "bettable",
+      "startTime": "2026-09-28T18:20:39",
+      "status": "results",
       "trackId": 54,
       "trackName": "Skive"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-09-28_18_3",
       "date": "2026-09-28",
-      "startTime": "2026-09-28T18:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-28T18:30:12",
+      "status": "results",
       "trackId": 18,
       "trackName": "Halmstad"
     },
@@ -23,8 +23,8 @@
       "type": "V64",
       "id": "V64_2026-09-28_15_4",
       "date": "2026-09-28",
-      "startTime": "2026-09-28T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-09-28T19:30:49",
+      "status": "results",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -146,6 +146,33 @@
       "trackName": "Flera banor"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-10-02_12_2",
+      "date": "2026-10-02",
+      "startTime": "2026-10-02T18:39:00",
+      "status": "upcoming",
+      "trackId": 12,
+      "trackName": "Bollnäs"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-02_19_2",
+      "date": "2026-10-02",
+      "startTime": "2026-10-02T18:51:00",
+      "status": "upcoming",
+      "trackId": 19,
+      "trackName": "Kalmar"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-10-02_40_1",
+      "date": "2026-10-02",
+      "startTime": "2026-10-02T20:30:00",
+      "status": "upcoming",
+      "trackId": 40,
+      "trackName": "Flera banor"
+    },
+    {
       "type": "V85",
       "id": "V85_2026-10-03_11_5",
       "date": "2026-10-03",
@@ -162,6 +189,15 @@
       "status": "bettable",
       "trackId": 11,
       "trackName": "Boden"
+    },
+    {
+      "type": "GS75",
+      "id": "GS75_2026-10-04_14_4",
+      "date": "2026-10-04",
+      "startTime": "2026-10-04T15:00:00",
+      "status": "upcoming",
+      "trackId": 14,
+      "trackName": "Eskilstuna"
     }
   ]
 }
