@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-28T02:06:39Z",
+  "updated": "2026-09-28T12:05:58Z",
   "games": [
     {
       "type": "V5",
@@ -150,7 +150,7 @@
       "id": "V85_2026-10-03_11_5",
       "date": "2026-10-03",
       "startTime": "2026-10-03T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 11,
       "trackName": "Boden"
     },
@@ -159,7 +159,7 @@
       "id": "V5_2026-10-03_11_8",
       "date": "2026-10-03",
       "startTime": "2026-10-03T16:06:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 11,
       "trackName": "Boden"
     }
