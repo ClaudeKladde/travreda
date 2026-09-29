@@ -1,33 +1,6 @@
 {
-  "updated": "2026-09-28T22:40:20Z",
+  "updated": "2026-09-29T02:53:09Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-28_54_2",
-      "date": "2026-09-28",
-      "startTime": "2026-09-28T18:20:39",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Skive"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-28_18_3",
-      "date": "2026-09-28",
-      "startTime": "2026-09-28T18:30:12",
-      "status": "results",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-09-28_15_4",
-      "date": "2026-09-28",
-      "startTime": "2026-09-28T19:30:49",
-      "status": "results",
-      "trackId": 15,
-      "trackName": "Färjestad"
-    },
     {
       "type": "V5",
       "id": "V5_2026-09-29_28_4",
