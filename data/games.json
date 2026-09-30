@@ -1,5 +1,5 @@
 {
-  "updated": "2026-09-30T02:34:21Z",
+  "updated": "2026-09-30T11:26:23Z",
   "games": [
     {
       "type": "V5",
@@ -87,7 +87,7 @@
       "id": "V5_2026-10-02_54_2",
       "date": "2026-10-02",
       "startTime": "2026-10-02T16:07:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Odense"
     },
@@ -123,7 +123,7 @@
       "id": "V5_2026-10-03_6_4",
       "date": "2026-10-03",
       "startTime": "2026-10-03T12:16:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -132,9 +132,18 @@
       "id": "V5_2026-10-03_66_2",
       "date": "2026-10-03",
       "startTime": "2026-10-03T12:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 66,
       "trackName": "Bornholm"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-03_54_2",
+      "date": "2026-10-03",
+      "startTime": "2026-10-03T13:21:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Århus"
     },
     {
       "type": "V85",
@@ -155,6 +164,15 @@
       "trackName": "Boden"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-10-04_54_3",
+      "date": "2026-10-04",
+      "startTime": "2026-10-04T14:45:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Nyköbing"
+    },
+    {
       "type": "GS75",
       "id": "GS75_2026-10-04_14_4",
       "date": "2026-10-04",
@@ -168,7 +186,7 @@
       "id": "V5_2026-10-05_15_2",
       "date": "2026-10-05",
       "startTime": "2026-10-05T18:39:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -177,7 +195,7 @@
       "id": "V5_2026-10-05_16_2",
       "date": "2026-10-05",
       "startTime": "2026-10-05T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 16,
       "trackName": "Gävle"
     },
@@ -186,7 +204,7 @@
       "id": "V86_2026-10-05_40_1",
       "date": "2026-10-05",
       "startTime": "2026-10-05T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
     }
