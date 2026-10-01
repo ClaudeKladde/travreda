@@ -1,42 +1,6 @@
 {
-  "updated": "2026-09-30T21:34:10Z",
+  "updated": "2026-10-01T02:37:27Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-09-30_17_4",
-      "date": "2026-09-30",
-      "startTime": "2026-09-30T13:26:43",
-      "status": "results",
-      "trackId": 17,
-      "trackName": "Hagmyren"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-30_5_2",
-      "date": "2026-09-30",
-      "startTime": "2026-09-30T18:39:22",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-09-30_7_2",
-      "date": "2026-09-30",
-      "startTime": "2026-09-30T18:51:12",
-      "status": "results",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-09-30_40_1",
-      "date": "2026-09-30",
-      "startTime": "2026-09-30T20:30:26",
-      "status": "results",
-      "trackId": 40,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-01_31_4",
