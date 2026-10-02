@@ -261,14 +261,22 @@ gjorde `classList.add/remove("marked")` går via den). Tokens
 
 | Bokstav | Mörkt (vit text) | Ljust (marinblå text) |
 |---|---|---|
-| A guld | `#5e4a00` 8,6:1 | `#fff0a0` 12,2:1 |
-| B orange | `#6b3410` 9,9:1 | `#ffd0a8` 9,9:1 |
+| A guld | `#7a5f00` 6,1:1 | `#fff0a0` 12,2:1 |
+| B orange | `#8a3d0c` 7,6:1 | `#ffd0a8` 9,9:1 |
 | C röd | `#7a1c1c` 10,4:1 | `#ffbcbc` 8,8:1 |
 | D lila | `#4b2a70` 11,3:1 | `#e3d4f7` 10,1:1 |
 
+**Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
+A och B gjordes "lite starkare" (`#5e4a00`→`#7a5f00`, `#6b3410`→`#8a3d0c`)
+— användaren valde att behålla vit text istället för ännu starkare
+fyllnader (gul/ren orange) med mörk text. Omarkerade hästkort
+(`--horse-btn-bg`) gjordes samtidigt nästan svarta (`#012a5e`→`#050a14`,
+vit text 19,8:1), så att de valda korten sticker ut tydligare. Ljust tema
+oförändrat.
+
 Orange text (`.selected-label`, `.changed-info`) blir `--marked-hl`
-(`#ffc49a` mörkt / `#6e2f0d` ljust) och `.horse-sub` blir
-`--marked-muted` (`#dddddd`/`#4a4a4a`) på valda kort — ren orange/grå
+(`#ffe6d4` mörkt / `#6e2f0d` ljust) och `.horse-sub` blir
+`--marked-muted` (`#eeeeee`/`#4a4a4a`) på valda kort — ren orange/grå
 hade varit för svag mot fyllnaden. Orange ram behålls (färgoberoende
 markering). Vanligt system sätter ingen `data-letter` → B-färgen. Bara
 visuellt, uppläsningen oförändrad.
