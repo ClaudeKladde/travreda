@@ -437,7 +437,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:48</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:52</span>
 
 </div>
 
@@ -1452,16 +1452,33 @@
 
   // En rad med valda hästar per bokstav, t.ex. "A-häst: 8. B-hästar: 7, 12."
   // (variant 3 i uppläsningstestet, vald av användaren). I Vanligt system är
-  // alla hästar internt "A", så där blir det bara numren. Tom sträng om inga.
-  function letterLineText(legLetters){
+  // alla hästar internt "A", så där blir det bara numren. Är bara en häst
+  // vald i avdelningen blir det istället en spik med namn: "Spik A: 4 Varenne."
+  // (utan bokstav i Vanligt system). Tom sträng om inga.
+  function letterLineText(legLetters, race){
     var numbers = Object.keys(legLetters).map(Number).sort(function(a, b){ return a - b; });
     if(numbers.length === 0){ return ""; }
+    if(numbers.length === 1){
+      return (systemMode === "plain" ? "Spik: " : "Spik " + legLetters[numbers[0]] + ": ") +
+        spikRef(race, numbers[0]) + ".";
+    }
     if(systemMode === "plain"){ return numbers.join(", ") + "."; }
     return ["A", "B", "C", "D"].map(function(letter){
       var nrs = numbers.filter(function(nr){ return legLetters[nr] === letter; });
       if(nrs.length === 0){ return ""; }
       return (nrs.length === 1 ? letter + "-häst: " : letter + "-hästar: ") + nrs.join(", ") + ".";
     }).filter(Boolean).join(" ");
+  }
+
+  // "4 Varenne" — startnummer och hästnamn för en spik.
+  function spikRef(race, nr){
+    var start = race && race.starts.find(function(s){ return s.number === nr; });
+    return nr + (start && start.horse && start.horse.name ? " " + start.horse.name : "");
+  }
+
+  // "1 häst vald" / "3 hästar valda".
+  function valdaText(n){
+    return pl(n, "häst", "hästar") + (n === 1 ? " vald" : " valda");
   }
 
   function pl(n, singular, plural){
@@ -1721,9 +1738,10 @@
     // hästarna per bokstav på andra (döljs när inga hästar är valda).
     function updateMarkedCount(){
       document.getElementById("avd-marked-count").textContent =
-        Object.keys(legLetters).length + " av " + race.starts.length + " hästar valda.";
+        Object.keys(legLetters).length + " av " + race.starts.length + " hästar " +
+        (Object.keys(legLetters).length === 1 ? "vald." : "valda.");
       var lettersEl = document.getElementById("avd-marked-letters");
-      var line = letterLineText(legLetters);
+      var line = letterLineText(legLetters, race);
       lettersEl.textContent = line;
       lettersEl.hidden = !line;
     }
@@ -2077,13 +2095,14 @@
       var heading = document.createElement("h3");
 
       if(systemMode === "plain"){
-        heading.textContent = "Avd " + (idx + 1) + ": " + pl(numbers.length, "häst", "hästar") + " valda" +
-          (numbers.length ? ": " + numbers.join(", ") : "") + ".";
+        heading.textContent = "Avd " + (idx + 1) + ": " + valdaText(numbers.length) +
+          (numbers.length === 1 ? ": spik " + spikRef(race, numbers[0]) :
+            numbers.length ? ": " + numbers.join(", ") : "") + ".";
         container.appendChild(heading);
       } else {
-        heading.textContent = "Avd " + (idx + 1) + ": " + pl(numbers.length, "häst", "hästar") + " valda";
+        heading.textContent = "Avd " + (idx + 1) + ": " + valdaText(numbers.length);
         container.appendChild(heading);
-        var line = letterLineText(legLetters);
+        var line = letterLineText(legLetters, race);
         if(line){
           var p = document.createElement("p");
           p.textContent = line;

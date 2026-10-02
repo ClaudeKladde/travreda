@@ -1236,6 +1236,19 @@ hästar internt är "A". Används på två ställen:
   bokstavsantal ("1 a-häst, 2 b-hästar"). `updateMarkedCount()` uppdaterar
   båda raderna, både vid rendering och i `markChanged()`.
 
+**Spik (byggd efter uttrycklig begäran):** när exakt **en** häst är vald i
+en avdelning ersätts bokstavsraden av en spikrad med nummer och namn —
+`letterLineText(legLetters, race)` tar därför numera även loppet som
+parameter, för att slå upp hästnamnet (`spikRef()`). Bokstaven är med på
+uttrycklig begäran (den påverkar villkoren och radantalet):
+`"Spik A: 4 Varenne."` / `"Spik B: 8 Mr Carnation."`. I Vanligt system
+utan bokstav: `"Spik: 4 Varenne."` högst upp, och på rubrikraden i
+Systemöversikten `"Avd 1: 1 häst vald: spik 4 Varenne."`.
+Gäller alla tre ställena (högst upp + båda översiktskopiorna).
+
+**Grammatikfix i samma veva:** `"1 häst valda"` → `"1 häst vald"` (och
+`"1 av 9 hästar vald."` högst upp) — `valdaText(n)` väljer vald/valda.
+
 ### Live sammanfattning och insatsprocent per häst
 
 Byggt efter uttrycklig begäran: *"Det är viktigt att förstå hur mycket av
