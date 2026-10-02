@@ -184,6 +184,10 @@
     padding:.75rem;
     margin-bottom:.75rem;
     background:var(--card);
+    display:grid;
+    grid-template-columns:1fr minmax(4.5rem, 5.5rem);
+    grid-template-areas:"main letters" "detail detail";
+    column-gap:.5rem;
   }
   .horse-row.marked{
     border-color:var(--accent-text);
@@ -223,6 +227,7 @@
     margin-bottom:.25rem;
   }
   .horse-heading{
+    grid-area:main;
     margin:0;
     font-size:1rem;
     font-weight:400;
@@ -271,6 +276,7 @@
     font-weight:700;
   }
   .horse-detail{
+    grid-area:detail;
     margin:.5rem 0;
     padding:.6rem .75rem;
     border-left:3px solid var(--card-border);
@@ -279,19 +285,24 @@
   .btn-minimize{
     margin-top:.6rem;
   }
-  .horse-letter{margin-top:.5rem;}
+  .horse-letter{
+    grid-area:letters;
+    align-self:center;
+  }
+  .horse-letter select{max-width:100%;}
   .letter-stepper{
     display:flex;
+    flex-direction:column;
     gap:.5rem;
   }
   .letter-stepper button{
-    flex:1 1 0;
     text-align:center;
     background:var(--stepper-bg);
     border-color:var(--stepper-bg);
     color:#fff;
   }
   .toggle-select-btn{
+    width:100%;
     background:var(--stepper-bg);
     border-color:var(--stepper-bg);
     color:#fff;
@@ -422,7 +433,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-09-02 22:28</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:16</span>
 
 </div>
 
@@ -1894,6 +1905,7 @@
         var label = document.createElement("label");
         var selectId = "letter-" + currentAvd + "-" + start.number;
         label.setAttribute("for", selectId);
+        label.className = "visually-hidden";
         label.textContent = "Bokstav för " + horse.name;
         letterWrap.appendChild(label);
 

@@ -300,6 +300,49 @@ knappen som syskon, vilket dubblerade antalet svep per häst — rättat.
   tydlig stängknapp efter att ha svept igenom all information, istället för
   att behöva svepa bakåt till den ursprungliga knappen.
 
+**Bokstavsknappen bredvid hästen istället för under (byggd efter uttrycklig
+begäran om mindre scroll).** `.horse-row` är numera ett CSS Grid
+(`grid-template-columns:1fr minmax(4.5rem, 5.5rem)`,
+`grid-template-areas:"main letters" "detail detail"`) istället för ett
+enkelt block — hästens knapp/text (`.horse-heading`, grid-area `main`) och
+bokstavskontrollen (`.horse-letter`, grid-area `letters`, `align-self:
+center`) hamnar därmed sida vid sida, medan den utfällbara detaljvyn
+(`.horse-detail`, grid-area `detail`) fortfarande spänner hela bredden
+under. **Ingen DOM-ordning ändrades** — bara CSS-placeringen — så
+VoiceOver-svepordningen (häst-knapp, sedan ev. detaljinnehåll om expanderat,
+sedan bokstavskontroll) är exakt oförändrad från innan.
+
+Undersökt och tydliggjort för användaren innan bygget: den stora höjden per
+häst kommer i praktiken från **texten** (kusk/tränare/vagn/barfota-raden,
+som ofta radbryts till 2–3 rader), inte från bokstavsknappens egen höjd —
+att bara flytta knappen sparar alltså knappens egen rad (en mindre men
+reell vinst), inte radbrytningarna i texten. Användaren valde uttryckligen
+denna mindre, lågrisk-variant framför att även gömma kusk/tränare/vagn/
+barfota bakom detaljknappen (en större men mer ingripande ändring som
+skulle dölja information som visas direkt på uttrycklig begäran tidigare i
+projektet).
+
+Alla tre bokstavslägen fungerar i den smalare högerkolumnen:
+`.letter-stepper` fick `flex-direction:column` (de 1–2 knapparna staplas nu
+vertikalt istället för sida vid sida, eftersom kolumnen är smal) och
+`.toggle-select-btn` fick `width:100%`. Menyläget (`<select>`) fick en
+liten egen justering som blev nödvändig av den smalare kolumnen: den
+tidigare synliga etiketten ("Bokstav för {namn}") är nu
+`.visually-hidden` (kopplingen till `<select>` finns kvar via `for`/`id`,
+bara den visuella, ofta flerradiga etikettexten är borttagen) — annars såg
+den trasig ut i en ~5 rem bred kolumn. **Känd kvarstående kosmetisk
+begränsning i menyläget** (inte standardläget): webbläsarens egen
+`<select>`-rendering klipper av den synliga texten något (t.ex. "Ej vald"
+visas som "Ej val") när kontrollen är smalare än textens naturliga bredd —
+bara visuellt, det valda värdet och skärmläsaruppläsningen påverkas inte.
+
+Verifierat med Playwright mot riktig, levande data (`V86_2026-10-02_40_1`)
+vid 375px och det extra smala 320px-läget, i alla tre bokstavslägen
+(knappar, meny, Vanligt system-togg) samt stegrarens tvåknappsläge (redan
+vald häst) — layouten håller ihop, ingen överlappning, och att markera en
+häst fungerar identiskt som innan (bekräftat via `#avd-marked-count` och
+`.horse-row.marked`).
+
 ### Detaljvyns rader + valbara fält
 
 Den utfällda detaljvyn (tidigare ett enda sammanhängande stycke, sedan
