@@ -1104,8 +1104,12 @@ runt"). En ny inställning under Inställningar, **"Bokstavsval"**
   (`idx === 0 ? "B" : ...` i `renderStepper()`), därefter stegar kedjan
   som vanligt (B → A/C, A → Ta bort/B, C → B/D). Knappen tillbaka till
   omarkerad heter numera **"Ta bort"** (synlig text, tidigare "Ej vald");
-  `aria-label` "Ta bort bokstav" oförändrad. Den förstagångsknapp som
-  läses upp som "Välj {nummer} {namn}" visar alltså "B". Gäller bara
+  `aria-label` "Ta bort {nummer} {namn}". Den förstagångsknapp som
+  läses upp som "Välj {nummer} {namn}" visar alltså "B".
+  **Alla stegknappars `aria-label` innehåller nu hästens nummer och namn**
+  (på uttrycklig begäran, ersätter den tidigare korta formen "Byt till B"):
+  `"Byt till C, 4 Varenne"` / `"Ta bort 4 Varenne"`. Kommat efter bokstaven
+  är medvetet — utan det läser talsyntesen lätt ihop "C 4" till "C4". Gäller bara
   knappläget — menyläget och Vanligt system påverkas inte.
 - **Egen bakgrundsfärg** (`--stepper-bg`, en mörkorange ton skild från både
   den ljusare CTA-orangen och den marinblå standardknappsfärgen) på

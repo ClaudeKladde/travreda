@@ -436,7 +436,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:34</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:35</span>
 
 </div>
 
@@ -1980,7 +1980,8 @@
             var backBtn = document.createElement("button");
             backBtn.type = "button";
             backBtn.textContent = backValue || "Ta bort";
-            backBtn.setAttribute("aria-label", backValue ? ("Byt till " + backValue) : "Ta bort bokstav");
+            var horseRef = start.number + " " + horse.name;
+            backBtn.setAttribute("aria-label", backValue ? ("Byt till " + backValue + ", " + horseRef) : ("Ta bort " + horseRef));
             backBtn.addEventListener("click", function(){ setLetterValue(backValue); });
             stepperWrap.appendChild(backBtn);
           }
@@ -1997,7 +1998,7 @@
             // mellan redan valda bokstäver (B, C, D) behåller "Byt till X".
             fwdBtn.setAttribute("aria-label", idx === 0 ?
               ("Välj " + start.number + " " + horse.name) :
-              ("Byt till " + fwdValue));
+              ("Byt till " + fwdValue + ", " + start.number + " " + horse.name));
             fwdBtn.addEventListener("click", function(){ setLetterValue(fwdValue); });
             stepperWrap.appendChild(fwdBtn);
           }
