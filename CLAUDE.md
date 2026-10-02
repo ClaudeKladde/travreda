@@ -253,6 +253,26 @@ och den avsiktliga 1×1px-tekniken i `.visually-hidden`. `viewport`-taggen
 saknar `maximum-scale`/`user-scalable=no`, så pinch-zoom är aldrig
 blockerad.
 
+**Bakgrundsfärg per bokstav på valda hästar (byggd efter uttrycklig
+begäran, ersätter den tidigare `--marked-bg`):** `markRow(li, letter)`
+sätter `.marked` + `data-letter` på raden (alla ställen som tidigare
+gjorde `classList.add/remove("marked")` går via den). Tokens
+`--marked-a/-b/-c/-d` per tema, kontrast uträknad med WCAG-formeln:
+
+| Bokstav | Mörkt (vit text) | Ljust (marinblå text) |
+|---|---|---|
+| A guld | `#5e4a00` 8,6:1 | `#fff0a0` 12,2:1 |
+| B orange | `#6b3410` 9,9:1 | `#ffd0a8` 9,9:1 |
+| C röd | `#7a1c1c` 10,4:1 | `#ffbcbc` 8,8:1 |
+| D lila | `#4b2a70` 11,3:1 | `#e3d4f7` 10,1:1 |
+
+Orange text (`.selected-label`, `.changed-info`) blir `--marked-hl`
+(`#ffc49a` mörkt / `#6e2f0d` ljust) och `.horse-sub` blir
+`--marked-muted` (`#dddddd`/`#4a4a4a`) på valda kort — ren orange/grå
+hade varit för svag mot fyllnaden. Orange ram behålls (färgoberoende
+markering). Vanligt system sätter ingen `data-letter` → B-färgen. Bara
+visuellt, uppläsningen oförändrad.
+
 **Ny inställning "Tema"** (`themeMode`) under Inställningar, tre
 radioknappar (Följ systemets inställning/Ljust/Mörkt), samma mönster som
 Sortering/Komprimering/Bokstavsval. "Följ systemets inställning" är
@@ -1379,6 +1399,15 @@ tidigare) ger fortfarande tydligt avstånd mellan hästlistan/
 systemöversikten ovanför och den nu lägre knappen — den är fortfarande
 `position:sticky;bottom:0` (glider fast i skärmens nederkant när man
 scrollat förbi den).
+
+**En rad hög (byggd efter uttrycklig begäran, tar mindre plats):**
+`setStickyText(btn, kort, hel)` — knappen visar en kort text
+(`"8372 rader, 4186,00 kr, 168 kuponger"`, `aria-hidden`,
+`.sticky-short` med `nowrap`+ellips) och innehåller samtidigt hela
+meningen i en `.visually-hidden`-span, så VoiceOver (och `aria-live`)
+läser **exakt samma hela mening som innan**. `font-size` .95rem. Villkor-
+vyns `#summary-text` visar fortfarande hela meningen. Får plats på en rad
+ner till 375px även med stora tal; vid 320px kapas den med ellips.
 
 `renderLiveSummary()` är den enda platsen som skriver till
 `#btn-sticky-summary`, `#summary-text`, `#calc-status` och togglar

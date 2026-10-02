@@ -17,7 +17,12 @@
     --input-bg:#242424;
     --badge-bg:#2a2a2a;
     --detail-bg:#191919;
-    --marked-bg:#2e1a08;
+    --marked-a:#5e4a00;
+    --marked-b:#6b3410;
+    --marked-c:#7a1c1c;
+    --marked-d:#4b2a70;
+    --marked-hl:#ffc49a;
+    --marked-muted:#dddddd;
     --accent:#F37835;
     --accent-fg:#1a0f00;
     --accent-text:#F37835;
@@ -42,7 +47,12 @@
       --input-bg:#eef0f2;
       --badge-bg:#e8e8e5;
       --detail-bg:#eeeeeb;
-      --marked-bg:#ffe6d5;
+      --marked-a:#fff0a0;
+      --marked-b:#ffd0a8;
+      --marked-c:#ffbcbc;
+      --marked-d:#e3d4f7;
+      --marked-hl:#6e2f0d;
+      --marked-muted:#4a4a4a;
       --accent:#F37835;
       --accent-fg:#1a0f00;
       --accent-text:#9c4a17;
@@ -67,7 +77,12 @@
     --input-bg:#eef0f2;
     --badge-bg:#e8e8e5;
     --detail-bg:#eeeeeb;
-    --marked-bg:#ffe6d5;
+    --marked-a:#fff0a0;
+    --marked-b:#ffd0a8;
+    --marked-c:#ffbcbc;
+    --marked-d:#e3d4f7;
+    --marked-hl:#6e2f0d;
+    --marked-muted:#4a4a4a;
     --accent:#F37835;
     --accent-fg:#1a0f00;
     --accent-text:#9c4a17;
@@ -189,11 +204,20 @@
     grid-template-areas:"main letters" "detail detail";
     column-gap:.5rem;
   }
+  /* Valda hästar: bakgrund per bokstav (A guld, B orange, C röd, D lila),
+     på uttrycklig begäran. Vanligt system har ingen data-letter och får
+     B-färgen. Orange ram behålls som färgoberoende markering. */
   .horse-row.marked .horse-toggle{
     border-color:var(--accent-text);
-    background:var(--marked-bg);
+    background:var(--marked-b);
     box-shadow:0 0 0 2px var(--accent-text) inset;
   }
+  .horse-row.marked[data-letter="A"] .horse-toggle{background:var(--marked-a);}
+  .horse-row.marked[data-letter="C"] .horse-toggle{background:var(--marked-c);}
+  .horse-row.marked[data-letter="D"] .horse-toggle{background:var(--marked-d);}
+  .horse-row.marked .selected-label,
+  .horse-row.marked .horse-sub .changed-info{color:var(--marked-hl);}
+  .horse-row.marked .horse-sub{color:var(--marked-muted);}
   .horse-row.new-barefoot .horse-toggle,
   .horse-row.scratched .horse-toggle{
     border-left:6px solid var(--danger);
@@ -361,8 +385,15 @@
     text-align:center;
   }
   #btn-sticky-summary{
-    font-size:1.05rem;
+    font-size:.95rem;
     padding:.45rem 1rem;
+    position:relative;
+  }
+  .sticky-short{
+    display:block;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .status-msg{margin:.5rem 0 1rem;min-height:1.4em;}
   .status-msg.error{color:var(--danger);}
@@ -449,7 +480,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:21</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:29</span>
 
 </div>
 
@@ -1493,6 +1524,14 @@
     return pl(n, "häst", "hästar") + (n === 1 ? " vald" : " valda");
   }
 
+  // Markerar en hästrad som vald + vilken bokstav (styr bakgrundsfärgen).
+  // Vanligt system sätter ingen bokstav (alla är internt "A") → B-färgen.
+  function markRow(li, letter){
+    li.classList.toggle("marked", !!letter);
+    if(letter && systemMode !== "plain"){ li.dataset.letter = letter; }
+    else { delete li.dataset.letter; }
+  }
+
   function pl(n, singular, plural){
     return n + " " + (n === 1 ? singular : plural);
   }
@@ -1945,15 +1984,15 @@
         includeBtn.addEventListener("click", function(){
           if(legLetters[start.number]){
             delete legLetters[start.number];
-            li.classList.remove("marked");
+            markRow(li, "");
           } else {
             legLetters[start.number] = "A";
-            li.classList.add("marked");
+            markRow(li, "A");
           }
           updateIncludeBtn();
           markChanged();
         });
-        if(legLetters[start.number]){ li.classList.add("marked"); }
+        markRow(li, legLetters[start.number]);
         letterWrap.appendChild(includeBtn);
       } else if(letterInputMode === "menu"){
         var label = document.createElement("label");
@@ -1981,14 +2020,14 @@
         select.addEventListener("change", function(){
           if(select.value){
             legLetters[start.number] = select.value;
-            li.classList.add("marked");
+            markRow(li, select.value);
           } else {
             delete legLetters[start.number];
-            li.classList.remove("marked");
+            markRow(li, "");
           }
           markChanged();
         });
-        if(select.value){ li.classList.add("marked"); }
+        markRow(li, select.value);
         letterWrap.appendChild(select);
       } else {
         // Stegvis bokstavsval: 1–2 knappar (bakåt/framåt i kedjan Ej vald↔A↔B↔C↔D)
@@ -2031,10 +2070,10 @@
         function setLetterValue(value){
           if(value){
             legLetters[start.number] = value;
-            li.classList.add("marked");
+            markRow(li, value);
           } else {
             delete legLetters[start.number];
-            li.classList.remove("marked");
+            markRow(li, "");
           }
           renderStepper();
           markChanged();
@@ -2073,7 +2112,7 @@
         }
 
         if(scratched){ delete legLetters[start.number]; }
-        if(legLetters[start.number]){ li.classList.add("marked"); }
+        markRow(li, legLetters[start.number]);
         renderStepper();
       }
 
@@ -2418,7 +2457,7 @@
       var msg = liveStats.cancelled ?
         "Avbrutet. Minska antalet bokstavsmärkta hästar för en mindre beräkning." :
         "Oreducerat antal (" + liveStats.unreduced + ") är mycket stort. Tryck på \"Beräkna rader\" för att beräkna ändå.";
-      btn.textContent = msg;
+      setStickyText(btn, liveStats.cancelled ? "Avbrutet" : liveStats.unreduced + " rader, för stort", msg);
       if(summaryText){ summaryText.textContent = msg; }
       if(statusEl){
         statusEl.className = liveStats.cancelled ? "status-msg error" : "status-msg";
@@ -2436,7 +2475,10 @@
       compressionLevel === "light" ? " (lättare komprimering)" : " (hårdare komprimering)";
     var couponText = compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger") + levelText;
     var coreText = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr" + couponText + ".";
-    btn.textContent = coreText;
+    setStickyText(btn,
+      liveStats.rows + " rader, " + price + " kr" +
+        (compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger")),
+      coreText);
 
     if(summaryText){
       summaryText.innerHTML =
@@ -2456,6 +2498,21 @@
       }
     }
     exportBtn.disabled = liveStats.rows === 0 || gameNotBettable;
+  }
+
+  // Sticky-knappen: kort text på en rad visuellt (på uttrycklig begäran, tar
+  // mindre plats), men VoiceOver läser fortfarande hela meningen.
+  function setStickyText(btn, shortText, fullText){
+    btn.innerHTML = "";
+    var shortEl = document.createElement("span");
+    shortEl.className = "sticky-short";
+    shortEl.setAttribute("aria-hidden", "true");
+    shortEl.textContent = shortText;
+    var fullEl = document.createElement("span");
+    fullEl.className = "visually-hidden";
+    fullEl.textContent = fullText;
+    btn.appendChild(shortEl);
+    btn.appendChild(fullEl);
   }
 
   function refreshLiveStatsAndUI(){
