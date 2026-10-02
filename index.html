@@ -131,6 +131,7 @@
   .menu-wrap{position:relative;display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin:.5rem 0 .25rem;}
   .avd-title{font-size:1.05rem;margin:0;flex:1 1 auto;}
   #avd-turnover{margin-bottom:.25rem;}
+  #avd-marked-count{margin-bottom:.15rem;}
   .avd-heading-wrap{margin:.25rem 0 .4rem;}
   #main-menu{
     position:absolute;
@@ -436,7 +437,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:35</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:48</span>
 
 </div>
 
@@ -464,6 +465,7 @@
   <h2 class="avd-heading-wrap"><button type="button" id="avd-heading" class="horse-toggle" aria-expanded="false" aria-controls="avd-terms">Avdelning</button></h2>
   <p class="avd-progress" id="avd-terms" hidden></p>
   <p class="avd-progress" id="avd-marked-count"></p>
+  <p class="avd-progress" id="avd-marked-letters" hidden></p>
 
   <ul class="horse-list" id="horse-list"></ul>
 
@@ -1448,6 +1450,20 @@
 
   // ---------- Vy: avdelning ----------
 
+  // En rad med valda hästar per bokstav, t.ex. "A-häst: 8. B-hästar: 7, 12."
+  // (variant 3 i uppläsningstestet, vald av användaren). I Vanligt system är
+  // alla hästar internt "A", så där blir det bara numren. Tom sträng om inga.
+  function letterLineText(legLetters){
+    var numbers = Object.keys(legLetters).map(Number).sort(function(a, b){ return a - b; });
+    if(numbers.length === 0){ return ""; }
+    if(systemMode === "plain"){ return numbers.join(", ") + "."; }
+    return ["A", "B", "C", "D"].map(function(letter){
+      var nrs = numbers.filter(function(nr){ return legLetters[nr] === letter; });
+      if(nrs.length === 0){ return ""; }
+      return (nrs.length === 1 ? letter + "-häst: " : letter + "-hästar: ") + nrs.join(", ") + ".";
+    }).filter(Boolean).join(" ");
+  }
+
   function pl(n, singular, plural){
     return n + " " + (n === 1 ? singular : plural);
   }
@@ -1701,19 +1717,18 @@
 
     var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
 
-    function buildMarkedCountText(){
-      var counts = { A: 0, B: 0, C: 0, D: 0 };
-      Object.keys(legLetters).forEach(function(nr){
-        var l = legLetters[nr];
-        if(counts[l] != null){ counts[l]++; }
-      });
-      var letterParts = ["A", "B", "C", "D"].filter(function(l){ return counts[l] > 0; })
-        .map(function(l){ return pl(counts[l], l.toLowerCase() + "-häst", l.toLowerCase() + "-hästar"); });
-      var text = Object.keys(legLetters).length + " av " + race.starts.length + " hästar markerade";
-      return letterParts.length ? text + ", " + letterParts.join(", ") + "." : text + ".";
+    // Spegling av Systemöversiktens rad längst ner: antal på första raden,
+    // hästarna per bokstav på andra (döljs när inga hästar är valda).
+    function updateMarkedCount(){
+      document.getElementById("avd-marked-count").textContent =
+        Object.keys(legLetters).length + " av " + race.starts.length + " hästar valda.";
+      var lettersEl = document.getElementById("avd-marked-letters");
+      var line = letterLineText(legLetters);
+      lettersEl.textContent = line;
+      lettersEl.hidden = !line;
     }
 
-    document.getElementById("avd-marked-count").textContent = buildMarkedCountText();
+    updateMarkedCount();
 
     var list = document.getElementById("horse-list");
     list.innerHTML = "";
@@ -1865,7 +1880,7 @@
       letterWrap.className = "horse-letter";
 
       function markChanged(){
-        document.getElementById("avd-marked-count").textContent = buildMarkedCountText();
+        updateMarkedCount();
         renderAvdTabs();
         refreshLiveStatsAndUI();
         saveState();
@@ -2066,15 +2081,14 @@
           (numbers.length ? ": " + numbers.join(", ") : "") + ".";
         container.appendChild(heading);
       } else {
-        heading.textContent = "Avd " + (idx + 1) + ": " + pl(numbers.length, "häst", "hästar") + " valda:";
+        heading.textContent = "Avd " + (idx + 1) + ": " + pl(numbers.length, "häst", "hästar") + " valda";
         container.appendChild(heading);
-        ["A", "B", "C", "D"].forEach(function(letter){
-          var nrsForLetter = numbers.filter(function(nr){ return legLetters[nr] === letter; });
-          if(nrsForLetter.length === 0){ return; }
+        var line = letterLineText(legLetters);
+        if(line){
           var p = document.createElement("p");
-          p.textContent = letter + ": " + nrsForLetter.join(", ") + ".";
+          p.textContent = line;
           container.appendChild(p);
-        });
+        }
       }
     });
   }

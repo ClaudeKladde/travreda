@@ -1217,6 +1217,25 @@ vilken kontroll som visas per häst i avdelningsvyn:
   hästlistan ritas om med bokstavsväljare — redan ikryssade hästar (bokstav
   "A") följer med rätt över.
 
+**Bokstavsraden — ny gemensam form (byggd efter uttrycklig begäran, ersätter
+de två äldre formerna ovan):** `letterLineText(legLetters)` bygger **en enda
+rad** per avdelning, t.ex. `"A-häst: 4. B-hästar: 8, 9. C-häst: 1."` —
+variant 3 av sex i ett uppläsningstest användaren provade med VoiceOver
+(alternativen var bl.a. bara kolon, punkt mellan hästarna, "och" mellan
+hästarna, semikolon). Singular/plural per bokstav, bokstäver utan hästar
+utelämnas. I Vanligt system bara numren (`"1, 4, 8, 9."`), eftersom alla
+hästar internt är "A". Används på två ställen:
+- **Systemöversikten** (båda kopiorna): `<h3>` "Avd 1: 4 hästar valda"
+  (utan avslutande kolon) följt av **en** `<p>` med raden, istället för en
+  `<p>` per bokstav. Ingen rad alls när avdelningen saknar valda hästar.
+  Vanligt system oförändrat (allt på rubrikraden).
+- **Högst upp i avdelningsvyn** (spegling av raden längst ner):
+  `#avd-marked-count` visar bara `"4 av 9 hästar valda."`, och en ny
+  `#avd-marked-letters` under den visar bokstavsraden (dold när inga
+  hästar är valda). Ersätter den tidigare formen med gemena
+  bokstavsantal ("1 a-häst, 2 b-hästar"). `updateMarkedCount()` uppdaterar
+  båda raderna, både vid rendering och i `markChanged()`.
+
 ### Live sammanfattning och insatsprocent per häst
 
 Byggt efter uttrycklig begäran: *"Det är viktigt att förstå hur mycket av
