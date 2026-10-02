@@ -262,8 +262,8 @@ gjorde `classList.add/remove("marked")` går via den). Tokens
 | Bokstav | Mörkt (vit text) | Ljust (marinblå text) |
 |---|---|---|
 | A guld | `#7a5f00` 6,1:1 | `#fff0a0` 12,2:1 |
-| B orange | `#8a3d0c` 7,6:1 | `#ffd0a8` 9,9:1 |
-| C röd | `#7a1c1c` 10,4:1 | `#ffbcbc` 8,8:1 |
+| B orange | `#94470a` 6,6:1 | `#ffd0a8` 9,9:1 |
+| C hallonröd | `#8a1040` 9,4:1 | `#ffbcbc` 8,8:1 |
 | D lila | `#4b2a70` 11,3:1 | `#e3d4f7` 10,1:1 |
 
 **Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
@@ -273,6 +273,10 @@ fyllnader (gul/ren orange) med mörk text. Omarkerade hästkort
 (`--horse-btn-bg`) gjordes samtidigt nästan svarta (`#012a5e`→`#050a14`,
 vit text 19,8:1), så att de valda korten sticker ut tydligare. Ljust tema
 oförändrat.
+**Tredje omgången (mörkt tema):** användaren upplevde B och C som för
+lika (rödorange `#8a3d0c` mot orangeröd `#7a1c1c`, bara ~23° isär i
+färgcirkeln). C blev hallonröd `#8a1040` (dragning åt rosa) och B mer ren
+orange `#94470a` — ~51° isär, fortfarande långt från D:s lila.
 
 Orange text (`.selected-label`, `.changed-info`) blir `--marked-hl`
 (`#ffe6d4` mörkt / `#6e2f0d` ljust) och `.horse-sub` blir
