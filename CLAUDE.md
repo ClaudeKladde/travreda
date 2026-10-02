@@ -1142,6 +1142,21 @@ runt"). En ny inställning under Inställningar, **"Bokstavsval"**
   dessutom efter `setTimeout(…, 100)` så iOS hinner klart med själva
   knapptrycket. Verifierat med Playwright (samma knappelement före/efter,
   fokus + Tab-ordning); **ej verifierat med riktig VoiceOver** än.
+  **Bekräftat fungerande** av användaren med VoiceOver efter detta.
+- **Bakåtknappen före hästen i svepordningen** (på uttrycklig begäran,
+  för färre svep): bakåtknappen ("Byt till A"/"Ta bort") ligger i en egen
+  behållare (`.letter-back`) **först** i `<li>`, före hästens `<h3>` —
+  svep vänster från hästen når den, svep höger når framåtknappen ("Byt
+  till C"), och nästa svep höger går vidare till nästa häst. Användaren
+  valde uttryckligen att **bara** ändra svepordningen, inte utseendet:
+  visuellt staplas båda knapparna kvar i högerkolumnen som förut, via
+  grid-areas på `.horse-row.stepper-row` (`"main back" "main letters"
+  "detail detail"`), med klasserna `no-back`/`no-fwd` som centrerar den
+  ensamma knappen när bara en syns. Konsekvens: är **nästa** häst redan
+  vald kommer dess "Byt till A"/"Ta bort" före själva hästen när man sveper
+  höger. Gäller bara knappläget (menyläget/Vanligt system har en enda
+  kontroll per häst). Verifierat med Playwright: Tab-ordning och oförändrad
+  radhöjd/knapposition.
   Menyläget och Vanligt system uppdaterar samma kontroll på plats och
   påverkades aldrig.
 - Struken häst visar **inga** knappar alls i knappläget (samma "hellre

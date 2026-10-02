@@ -305,6 +305,17 @@
     color:#fff;
   }
   .letter-stepper button[hidden]{display:none;}
+  /* Knappläget: bakåtknappen (Byt till A / Ta bort) ligger FÖRE hästen i
+     DOM:en (svep vänster från hästen), framåtknappen efter (svep höger) —
+     men visuellt staplas båda i högerkolumnen som förut. */
+  .horse-row.stepper-row{
+    grid-template-areas:"main back" "main letters" "detail detail";
+  }
+  .letter-back{grid-area:back;align-self:end;}
+  .horse-row.stepper-row .horse-letter{align-self:start;}
+  .horse-row.stepper-row:not(.no-back):not(.no-fwd) .letter-back{margin-bottom:.5rem;}
+  .horse-row.no-back .horse-letter{grid-row:1 / span 2;align-self:center;}
+  .horse-row.no-fwd .letter-back{grid-row:1 / span 2;align-self:center;}
   .toggle-select-btn{
     width:100%;
     font-size:.9rem;
@@ -438,7 +449,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:15</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:21</span>
 
 </div>
 
@@ -1997,13 +2008,21 @@
         // tidigare om vid varje tryck, så knappen man just tryckt på försvann
         // ur DOM:en och VoiceOver blev stående på en borttagen nod (gick inte
         // att svepa vidare alls). Behövs bara en knapp döljs den andra.
+        // Bakåtknappen ligger i en egen behållare FÖRST i raden (före hästens
+        // rubrik) så att VoiceOver når den med svep vänster från hästen och
+        // framåtknappen med svep höger — ett svep höger mindre per häst, på
+        // uttrycklig begäran. Visuellt hamnar den ändå i högerkolumnen (CSS).
         var horseRef = start.number + " " + horse.name;
+        li.classList.add("stepper-row");
+        var backWrap = document.createElement("div");
+        backWrap.className = "letter-stepper letter-back";
+        li.insertBefore(backWrap, li.firstChild);
         var backBtn = document.createElement("button");
         backBtn.type = "button";
         var fwdBtn = document.createElement("button");
         fwdBtn.type = "button";
         if(!scratched){
-          stepperWrap.appendChild(backBtn);
+          backWrap.appendChild(backBtn);
           stepperWrap.appendChild(fwdBtn);
         }
         backBtn.addEventListener("click", function(){ setLetterValue(backBtn._value); });
@@ -2030,6 +2049,8 @@
           if(scratched){ return; }
           var idx = letterIndex();
           backBtn.hidden = idx <= 0;
+          li.classList.toggle("no-back", idx <= 0);
+          li.classList.toggle("no-fwd", idx >= LETTER_SEQUENCE.length - 1);
           if(idx > 0){
             var backValue = LETTER_SEQUENCE[idx - 1];
             backBtn._value = backValue;
