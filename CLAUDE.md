@@ -1126,6 +1126,16 @@ runt"). En ny inställning under Inställningar, **"Bokstavsval"**
   uttrycklig begäran, så knapparna syns tydligare bredvid hästkortets egen
   (marinblå) knapp.
 - **Menyläget** är den ursprungliga `<select>`:n, oförändrad.
+- **Fokus efter tryck (fixad bugg):** `setLetterValue()` bygger om
+  knapparna (`renderStepper()`), så den tryckta knappen försvann ur DOM:en
+  och fokus hamnade ingenstans — VoiceOver tappade bort sin plats och de
+  nya knapparna gick inte att svepa till (bara att peka på direkt). Inte
+  ett tabindex-fel. Fix, på användarens förslag: efter varje tryck flyttas
+  fokus till hästens egen knapp (`detailToggle.focus()`), som läser upp
+  nya statusen ("Vald B …"); ett svep höger når sedan de nya
+  bokstavsknapparna. Verifierat med Playwright (fokus + Tab-ordning).
+  Menyläget och Vanligt system uppdaterar samma kontroll på plats och
+  påverkades aldrig.
 - Struken häst visar **inga** knappar alls i knappläget (samma "hellre
   tyst"-princip som resten av appen) — motsvarar den inaktiverade,
   fortfarande synliga `<select>`:n i menyläget, bara utan en overksam

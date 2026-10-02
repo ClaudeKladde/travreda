@@ -437,7 +437,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:52</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:09</span>
 
 </div>
 
@@ -2002,6 +2002,12 @@
           }
           renderStepper();
           markChanged();
+          // Knappen som trycktes finns inte längre (renderStepper bygger om
+          // dem), så VoiceOver tappade bort var man var och de nya knapparna
+          // gick inte att svepa till. Fokus till hästens knapp istället — den
+          // läser upp nya statusen ("Vald B …"), och ett svep höger når sedan
+          // de nya bokstavsknapparna. Önskat av användaren.
+          detailToggle.focus();
         }
 
         function renderStepper(){
