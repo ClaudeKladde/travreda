@@ -343,6 +343,20 @@ vald häst) — layouten håller ihop, ingen överlappning, och att markera en
 häst fungerar identiskt som innan (bekräftat via `#avd-marked-count` och
 `.horse-row.marked`).
 
+**Mindre text på hästkorten (byggd efter uttrycklig begäran, "för att spara
+plats"):** `.horse-row .horse-toggle` (huvudknappens bastextstorlek,
+badge/kusk/tränare/vagn/barfota ärver den), `.horse-name`, `.horse-pct`,
+samt bokstavskontrollerna (`.letter-stepper button`, `.toggle-select-btn`,
+`.horse-letter select`) sänktes alla ett steg (`1rem`→`.9rem`,
+`1.05rem`→`.95rem`, `1.1rem`→`1rem`) — scopat bara till hästkorten, resten
+av appens text (rubriker, knappar utanför avdelningsvyn) är oförändrad.
+Fortfarande `rem`-baserat (Dynamic Type fungerar fortfarande), bara en
+mindre absolut storlek. **Avvägning värd att känna till:** appens
+huvudprincip är VoiceOver-användning (uppläst text, inte visuell storlek),
+men mindre text försämrar ändå läsbarheten för den som tittar på skärmen
+samtidigt (lågsynt användning, eller en seende som hjälper till) — ett
+medvetet val av användaren, inte en standardrekommendation.
+
 ### Detaljvyns rader + valbara fält
 
 Den utfällda detaljvyn (tidigare ett enda sammanhängande stycke, sedan
