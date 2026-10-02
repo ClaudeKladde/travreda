@@ -128,7 +128,10 @@
     color:var(--accent-fg);
     border-color:var(--tab-active-bg);
   }
-  .menu-wrap{position:relative;display:flex;justify-content:flex-end;margin-bottom:.5rem;}
+  .menu-wrap{position:relative;display:flex;justify-content:space-between;align-items:center;gap:.75rem;margin:.5rem 0 .25rem;}
+  .avd-title{font-size:1.05rem;margin:0;flex:1 1 auto;}
+  #avd-turnover{margin-bottom:.25rem;}
+  .avd-heading-wrap{margin:.25rem 0 .4rem;}
   #main-menu{
     position:absolute;
     right:0;
@@ -179,28 +182,22 @@
   ul.game-list button{width:100%;text-align:left;}
   ul.horse-list{list-style:none;margin:0;padding:0;}
   .horse-row{
-    border:1px solid var(--card-border);
-    border-radius:10px;
-    padding:.75rem;
-    margin-bottom:.75rem;
-    background:var(--card);
+    margin-bottom:.45rem;
     display:grid;
     grid-template-columns:1fr minmax(4.5rem, 5.5rem);
     grid-template-areas:"main letters" "detail detail";
     column-gap:.5rem;
   }
-  .horse-row.marked{
+  .horse-row.marked .horse-toggle{
     border-color:var(--accent-text);
     background:var(--marked-bg);
     box-shadow:0 0 0 2px var(--accent-text) inset;
   }
-  .horse-row.new-barefoot{
+  .horse-row.new-barefoot .horse-toggle,
+  .horse-row.scratched .horse-toggle{
     border-left:6px solid var(--danger);
   }
-  .horse-row.scratched{
-    border-left:6px solid var(--danger);
-    opacity:.75;
-  }
+  .horse-row.scratched{opacity:.75;}
   .horse-row p{margin:.2rem 0;}
   .horse-toggle{
     display:block;
@@ -214,18 +211,21 @@
     border:2px solid var(--horse-btn-border);
     color:var(--horse-btn-fg);
     font-size:.9rem;
+    padding:.35rem .6rem;
+    line-height:1.3;
+    position:relative;
   }
   .scratched-label{
     display:block;
     color:var(--danger);
     font-weight:700;
-    margin-bottom:.25rem;
+    font-size:.85rem;
   }
   .selected-label{
     display:block;
     color:var(--accent-text);
     font-weight:700;
-    margin-bottom:.25rem;
+    font-size:.85rem;
   }
   .horse-heading{
     grid-area:main;
@@ -238,14 +238,14 @@
     align-items:baseline;
     flex-wrap:wrap;
     gap:.5rem;
-    margin:0 0 .15rem;
+    margin:0;
   }
   .horse-badge{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    min-width:1.8rem;
-    height:1.8rem;
+    min-width:1.6rem;
+    height:1.6rem;
     padding:0 .3rem;
     border-radius:50%;
     background:var(--badge-bg);
@@ -373,7 +373,7 @@
 </head>
 <body>
 
-<p id="global-status" class="status-msg" role="status"></p>
+<p id="global-status" class="status-msg visually-hidden" role="status"></p>
 
 <!-- ===== VY: VÄLJ OMGÅNG (STARTSIDA) ===== -->
 <div id="view-start">
@@ -436,7 +436,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:19</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:28</span>
 
 </div>
 
@@ -444,6 +444,7 @@
 <div id="view-avdelning" hidden>
 
   <div class="menu-wrap">
+    <h1 id="avd-progress" class="avd-title"></h1>
     <button type="button" id="btn-menu-toggle" aria-expanded="false" aria-controls="main-menu">Meny</button>
     <ul id="main-menu" hidden>
       <li><button type="button" id="menu-startsida">Gå till startsidan</button></li>
@@ -453,7 +454,6 @@
     </ul>
   </div>
 
-  <p class="avd-progress" id="avd-progress"></p>
   <p class="avd-progress" id="avd-turnover" hidden></p>
   <p class="status-msg error" id="avd-not-bettable-warning" hidden></p>
 
@@ -461,7 +461,7 @@
     <div class="avd-tabs" id="avd-tabs"></div>
   </div>
 
-  <h2><button type="button" id="avd-heading" class="horse-toggle" aria-expanded="false" aria-controls="avd-terms">Avdelning</button></h2>
+  <h2 class="avd-heading-wrap"><button type="button" id="avd-heading" class="horse-toggle" aria-expanded="false" aria-controls="avd-terms">Avdelning</button></h2>
   <p class="avd-progress" id="avd-terms" hidden></p>
   <p class="avd-progress" id="avd-marked-count"></p>
 
@@ -942,8 +942,13 @@
   }
   renderDetailFieldSettings();
 
-  function setGlobalStatus(msg){
-    document.getElementById("global-status").textContent = msg || "";
+  // Visuellt dold som standard (läses ändå upp av VoiceOver via role="status")
+  // för att inte ta en hel rad högst upp — visas bara vid fel.
+  function setGlobalStatus(msg, isError){
+    var el = document.getElementById("global-status");
+    el.textContent = msg || "";
+    el.classList.toggle("visually-hidden", !isError);
+    el.classList.toggle("error", !!isError);
   }
 
   function fetchJson(url){
@@ -1437,7 +1442,7 @@
     }).catch(function(){
       setGlobalStatus(restoreData ?
         "Kunde inte återställa den sparade omgången (den kan ha avslutats)." :
-        "Kunde inte hämta omgången från ATG.");
+        "Kunde inte hämta omgången från ATG.", true);
     });
   }
 
@@ -1790,31 +1795,32 @@
       updateSelectionLabel();
 
       var subParts = [
-        { text: driver ? (driver.firstName + " " + driver.lastName) : "okänd" },
-        { text: trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd" }
+        { text: driver ? (driver.firstName + " " + driver.lastName) : "okänd", visible: true },
+        { text: trainer ? (trainer.firstName + " " + trainer.lastName) : "okänd", visible: false }
       ];
       var sulky = sulkyMainInfo(horse);
-      if(sulky.text){ subParts.push(sulky); }
+      if(sulky.text){ subParts.push({ text: sulky.text, highlight: sulky.highlight, visible: sulky.highlight }); }
       var shoes = shoesInfo(horse);
-      if(shoes.text){ subParts.push(shoes); }
+      if(shoes.text){ subParts.push({ text: shoes.text, highlight: shoes.highlight, visible: shoes.highlight }); }
 
-      // Vagnbyte/skobyte (och barfota) färgmarkeras (--accent-text) direkt i
-      // raden istället för att bara synas i den vanliga dova textfärgen —
-      // på uttrycklig begäran om tydligare färgindikering för den här
-      // informationen, byggd med egna <span> istället för addSub()s enda
-      // textnod eftersom bara en del av raden ska få färgen.
+      // ATG-lik kompakt rad: visuellt bara kusk + färgmarkerade byten/barfota.
+      // Tränare, oförändrad vagn och "Skor på" är .visually-hidden — VoiceOver
+      // läser fortfarande exakt samma text som förut, i samma ordning.
+      // Skiljetecken syns bara mellan två synliga delar.
+      var lastVisibleIdx = -1;
+      subParts.forEach(function(part, i){ if(part.visible){ lastVisibleIdx = i; } });
       var subSpan = document.createElement("span");
       subSpan.className = "horse-sub";
       subParts.forEach(function(part, i){
-        var partText = part.text + (i === subParts.length - 1 ? "." : ",");
-        if(part.highlight){
-          var mark = document.createElement("span");
-          mark.className = "changed-info";
-          mark.textContent = partText;
-          subSpan.appendChild(mark);
-        } else {
-          subSpan.appendChild(document.createTextNode(partText));
-        }
+        var textEl = document.createElement("span");
+        textEl.textContent = part.text;
+        if(!part.visible){ textEl.className = "visually-hidden"; }
+        else if(part.highlight){ textEl.className = "changed-info"; }
+        subSpan.appendChild(textEl);
+        var punctEl = document.createElement("span");
+        punctEl.textContent = i === subParts.length - 1 ? "." : ",";
+        if(!part.visible || i >= lastVisibleIdx){ punctEl.className = "visually-hidden"; }
+        subSpan.appendChild(punctEl);
         subSpan.appendChild(document.createTextNode(" "));
       });
       detailToggle.appendChild(subSpan);

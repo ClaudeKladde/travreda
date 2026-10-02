@@ -357,6 +357,37 @@ men mindre text försämrar ändå läsbarheten för den som tittar på skärmen
 samtidigt (lågsynt användning, eller en seende som hjälper till) — ett
 medvetet val av användaren, inte en standardrekommendation.
 
+**Kompakta, ATG-lika hästkort (byggd efter uttrycklig begäran om "fler
+hästar per sida", jämfört med ATG:s app där ~10 hästar syns samtidigt mot
+4–5 i Travreda).** Användaren valde uttryckligen varianten "ATG-likt,
+uppläsning oförändrad":
+
+- **En ram istället för två:** `.horse-row` har inte längre egen
+  kant/bakgrund/padding — bara huvudknappen (`.horse-toggle`) är ramen.
+  Markerad/struken/barfota-första-gången-tillstånden flyttades därför från
+  `li` till knappen (`.horse-row.marked .horse-toggle` osv.); strukna
+  hästar behåller `opacity` på hela raden. Tunnare padding/radavstånd,
+  mindre nummerbricka.
+- **Visuellt två rader:** nummer + namn + procent, sedan kusk. Vagnbyte,
+  skobyte och barfota (allt med `highlight:true`) syns fortfarande,
+  orangemarkerat, efter kusken. Tränare, oförändrad vagn och "Skor på" är
+  `.visually-hidden` — **VoiceOver läser exakt samma text i samma ordning
+  som innan** (verifierat i Playwright: knappens text är fortfarande t.ex.
+  "8 Mr Carnation, 48.4%, Carl Johan Jepson, Christoffer Eriksson, Vanlig
+  vagn, Skor på."). Skiljetecken är egna `<span>`:ar och syns bara mellan
+  två synliga delar, så den synliga raden inte slutar med ett hängande
+  komma.
+- Resultat i Playwright (390px, iPhone-storlek): radhöjd ~60–78 px mot
+  tidigare ~140–175 px.
+
+**Sidhuvudet komprimerat (samma begäran):** `#global-status` ("V86 — Kalmar
+laddad.") är `.visually-hidden` som standard — läses fortfarande upp via
+`role="status"` — och visas bara vid fel (`setGlobalStatus(msg, true)`).
+Omgångens namn (`#avd-progress`) är nu en `<h1 class="avd-title">` på
+**samma rad** som Meny-knappen (namnet först i DOM:en, så VoiceOver läser
+namnet före menyn), och ger dessutom ett rotorstopp. Tightare marginaler
+på omsättningsraden och lopprubriken (`.avd-heading-wrap`).
+
 ### Detaljvyns rader + valbara fält
 
 Den utfällda detaljvyn (tidigare ett enda sammanhängande stycke, sedan
@@ -476,8 +507,8 @@ fick dessutom en egen orange bakgrund (`--accent`/`--accent-fg`, samma
 par som `.btn-primary`) istället för standardknapparnas marinblå, på
 uttrycklig begäran om att den ska synas ännu bättre.
 
-**Sidhuvudets ordning på huvudsidan** (`view-avdelning`): `.menu-wrap` →
-`#avd-progress` (omgångens namn: "V85 — Romme — 2026-08-22") →
+**Sidhuvudets ordning på huvudsidan** (`view-avdelning`): `.menu-wrap`
+(omgångens namn som `<h1 id="avd-progress">` + Meny-knappen på samma rad) →
 `#avd-turnover` (omsättning) → `.topbar` (nu bara avdelningsflikarna,
 fortfarande sticky) → `avd-heading` (lopprubrik) → `avd-terms` (se nedan)
 → `avd-marked-count` → hästlistan.
