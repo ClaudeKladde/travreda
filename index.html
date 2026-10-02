@@ -436,7 +436,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:28</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-02 23:34</span>
 
 </div>
 
@@ -1979,19 +1979,21 @@
             var backValue = LETTER_SEQUENCE[idx - 1];
             var backBtn = document.createElement("button");
             backBtn.type = "button";
-            backBtn.textContent = backValue || "Ej vald";
+            backBtn.textContent = backValue || "Ta bort";
             backBtn.setAttribute("aria-label", backValue ? ("Byt till " + backValue) : "Ta bort bokstav");
             backBtn.addEventListener("click", function(){ setLetterValue(backValue); });
             stepperWrap.appendChild(backBtn);
           }
           if(idx < LETTER_SEQUENCE.length - 1){
-            var fwdValue = LETTER_SEQUENCE[idx + 1];
+            // Första valet går direkt till B (vanligaste bokstaven), på
+            // uttrycklig begäran — därifrån stegar kedjan som vanligt (A/C).
+            var fwdValue = idx === 0 ? "B" : LETTER_SEQUENCE[idx + 1];
             var fwdBtn = document.createElement("button");
             fwdBtn.type = "button";
             fwdBtn.textContent = fwdValue;
             // Från "Ej vald" är detta den första, egentliga valhandlingen för
             // hästen — namnger den efter häst istället för bokstav (bokstaven
-            // är ändå alltid "A" härifrån), på uttrycklig begäran. Byte
+            // är ändå alltid "B" härifrån), på uttrycklig begäran. Byte
             // mellan redan valda bokstäver (B, C, D) behåller "Byt till X".
             fwdBtn.setAttribute("aria-label", idx === 0 ?
               ("Välj " + start.number + " " + horse.name) :

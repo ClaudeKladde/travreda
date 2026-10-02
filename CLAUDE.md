@@ -1099,6 +1099,14 @@ runt"). En ny inställning under Inställningar, **"Bokstavsval"**
   heter istället `"Välj {nummer} {namn}"` — den handlingen är den egentliga
   urvalshandlingen (bokstaven är ändå alltid "A" härifrån), så numret/namnet
   är mer relevant att läsa upp än bokstaven.
+- **Första valet ger B, inte A** (på uttrycklig begäran — B är den
+  vanligaste bokstaven): från "Ej vald" hoppar framåtknappen direkt till B
+  (`idx === 0 ? "B" : ...` i `renderStepper()`), därefter stegar kedjan
+  som vanligt (B → A/C, A → Ta bort/B, C → B/D). Knappen tillbaka till
+  omarkerad heter numera **"Ta bort"** (synlig text, tidigare "Ej vald");
+  `aria-label` "Ta bort bokstav" oförändrad. Den förstagångsknapp som
+  läses upp som "Välj {nummer} {namn}" visar alltså "B". Gäller bara
+  knappläget — menyläget och Vanligt system påverkas inte.
 - **Egen bakgrundsfärg** (`--stepper-bg`, en mörkorange ton skild från både
   den ljusare CTA-orangen och den marinblå standardknappsfärgen) på
   uttrycklig begäran, så knapparna syns tydligare bredvid hästkortets egen
