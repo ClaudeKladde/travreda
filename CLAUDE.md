@@ -1413,7 +1413,9 @@ scrollat förbi den).
 (`"8372 rader, 4186,00 kr, 168 kuponger"`, `aria-hidden`,
 `.sticky-short` med `nowrap`+ellips) och innehåller samtidigt hela
 meningen i en `.visually-hidden`-span, så VoiceOver (och `aria-live`)
-läser **exakt samma hela mening som innan**. `font-size` .95rem. Villkor-
+läser **exakt samma hela mening som innan**. `font-size` .95rem,
+`padding` .8rem (höjd ~45px — första versionen med .45rem blev ~33px,
+"väldigt låg" enligt användaren). Villkor-
 vyns `#summary-text` visar fortfarande hela meningen. Får plats på en rad
 ner till 375px även med stora tal; vid 320px kapas den med ellips.
 
