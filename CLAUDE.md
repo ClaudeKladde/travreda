@@ -39,6 +39,16 @@ V64, V5**, i första hand V85 — byggd specifikt för skärmläsaranvändare
 4. Användaren säger uttryckligen "ja", "nu kör vi" eller liknande
 5. **Först då** bygger du
 
+### Fråga efter fler ändringar innan push
+
+**Pusha aldrig utan att först ha frågat "Är det något mer innan jag
+pushar?"** — uttrycklig instruktion från användaren. Bygg, verifiera och
+committa gärna lokalt, men vänta med `git push` tills användaren svarat
+att det inte finns mer (eller uttryckligen säger "pusha"/"kör"). Kommer det
+fler ändringar läggs de till och allt pushas tillsammans i en omgång.
+Gäller även om en automatisk stop-hook påminner om opushade commits —
+användarens instruktion går före.
+
 ### Undersök innan du påstår
 
 Gissa aldrig om hur ATG:s API eller filformat fungerar. Flera antaganden i det
