@@ -304,6 +304,7 @@
     border-color:var(--stepper-bg);
     color:#fff;
   }
+  .letter-stepper button[hidden]{display:none;}
   .toggle-select-btn{
     width:100%;
     font-size:.9rem;
@@ -437,7 +438,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:09</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:15</span>
 
 </div>
 
@@ -1992,6 +1993,22 @@
           return LETTER_SEQUENCE.indexOf(legLetters[start.number] || "");
         }
 
+        // Två fasta knappar som bara byter text/etikett på plats — de byggdes
+        // tidigare om vid varje tryck, så knappen man just tryckt på försvann
+        // ur DOM:en och VoiceOver blev stående på en borttagen nod (gick inte
+        // att svepa vidare alls). Behövs bara en knapp döljs den andra.
+        var horseRef = start.number + " " + horse.name;
+        var backBtn = document.createElement("button");
+        backBtn.type = "button";
+        var fwdBtn = document.createElement("button");
+        fwdBtn.type = "button";
+        if(!scratched){
+          stepperWrap.appendChild(backBtn);
+          stepperWrap.appendChild(fwdBtn);
+        }
+        backBtn.addEventListener("click", function(){ setLetterValue(backBtn._value); });
+        fwdBtn.addEventListener("click", function(){ setLetterValue(fwdBtn._value); });
+
         function setLetterValue(value){
           if(value){
             legLetters[start.number] = value;
@@ -2002,44 +2019,35 @@
           }
           renderStepper();
           markChanged();
-          // Knappen som trycktes finns inte längre (renderStepper bygger om
-          // dem), så VoiceOver tappade bort var man var och de nya knapparna
-          // gick inte att svepa till. Fokus till hästens knapp istället — den
-          // läser upp nya statusen ("Vald B …"), och ett svep höger når sedan
-          // de nya bokstavsknapparna. Önskat av användaren.
-          detailToggle.focus();
+          // Fokus till hästens knapp, som läser upp nya statusen ("Vald B …");
+          // ett svep höger når sedan bokstavsknapparna. Önskat av användaren.
+          // Liten fördröjning så iOS hinner klart med själva knapptrycket
+          // innan fokus flyttas — annars kan VoiceOver hoppa tillbaka.
+          setTimeout(function(){ detailToggle.focus(); }, 100);
         }
 
         function renderStepper(){
-          stepperWrap.innerHTML = "";
           if(scratched){ return; }
           var idx = letterIndex();
+          backBtn.hidden = idx <= 0;
           if(idx > 0){
             var backValue = LETTER_SEQUENCE[idx - 1];
-            var backBtn = document.createElement("button");
-            backBtn.type = "button";
+            backBtn._value = backValue;
             backBtn.textContent = backValue || "Ta bort";
-            var horseRef = start.number + " " + horse.name;
             backBtn.setAttribute("aria-label", backValue ? ("Byt till " + backValue + ", " + horseRef) : ("Ta bort " + horseRef));
-            backBtn.addEventListener("click", function(){ setLetterValue(backValue); });
-            stepperWrap.appendChild(backBtn);
           }
+          fwdBtn.hidden = idx >= LETTER_SEQUENCE.length - 1;
           if(idx < LETTER_SEQUENCE.length - 1){
             // Första valet går direkt till B (vanligaste bokstaven), på
             // uttrycklig begäran — därifrån stegar kedjan som vanligt (A/C).
             var fwdValue = idx === 0 ? "B" : LETTER_SEQUENCE[idx + 1];
-            var fwdBtn = document.createElement("button");
-            fwdBtn.type = "button";
+            fwdBtn._value = fwdValue;
             fwdBtn.textContent = fwdValue;
             // Från "Ej vald" är detta den första, egentliga valhandlingen för
             // hästen — namnger den efter häst istället för bokstav (bokstaven
             // är ändå alltid "B" härifrån), på uttrycklig begäran. Byte
             // mellan redan valda bokstäver (B, C, D) behåller "Byt till X".
-            fwdBtn.setAttribute("aria-label", idx === 0 ?
-              ("Välj " + start.number + " " + horse.name) :
-              ("Byt till " + fwdValue + ", " + start.number + " " + horse.name));
-            fwdBtn.addEventListener("click", function(){ setLetterValue(fwdValue); });
-            stepperWrap.appendChild(fwdBtn);
+            fwdBtn.setAttribute("aria-label", idx === 0 ? ("Välj " + horseRef) : ("Byt till " + fwdValue + ", " + horseRef));
           }
         }
 

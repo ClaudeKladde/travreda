@@ -1133,7 +1133,15 @@ runt"). En ny inställning under Inställningar, **"Bokstavsval"**
   ett tabindex-fel. Fix, på användarens förslag: efter varje tryck flyttas
   fokus till hästens egen knapp (`detailToggle.focus()`), som läser upp
   nya statusen ("Vald B …"); ett svep höger når sedan de nya
-  bokstavsknapparna. Verifierat med Playwright (fokus + Tab-ordning).
+  bokstavsknapparna. **Räckte inte ensamt** — användaren rapporterade att
+  uppläsningen blev rätt men att svep höger sedan inte gick alls
+  (VoiceOver stod troligen kvar på den borttagna knappen). Andra steget:
+  **två fasta knappar per häst** (`backBtn`/`fwdBtn`, skapas en gång) som
+  bara byter text/`aria-label`/`_value` på plats och döljs med `hidden`
+  när bara en behövs — inget tas längre bort ur DOM:en. Fokusflytten sker
+  dessutom efter `setTimeout(…, 100)` så iOS hinner klart med själva
+  knapptrycket. Verifierat med Playwright (samma knappelement före/efter,
+  fokus + Tab-ordning); **ej verifierat med riktig VoiceOver** än.
   Menyläget och Vanligt system uppdaterar samma kontroll på plats och
   påverkades aldrig.
 - Struken häst visar **inga** knappar alls i knappläget (samma "hellre
