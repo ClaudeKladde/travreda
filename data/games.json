@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-02T02:42:11Z",
+  "updated": "2026-10-02T11:25:53Z",
   "games": [
     {
       "type": "V5",
@@ -159,7 +159,7 @@
       "id": "V5_2026-10-06_18_2",
       "date": "2026-10-06",
       "startTime": "2026-10-06T18:39:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 18,
       "trackName": "Halmstad"
     },
@@ -168,7 +168,7 @@
       "id": "V5_2026-10-06_78_2",
       "date": "2026-10-06",
       "startTime": "2026-10-06T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 78,
       "trackName": "Bjerke"
     },
@@ -177,16 +177,25 @@
       "id": "V86_2026-10-06_40_1",
       "date": "2026-10-06",
       "startTime": "2026-10-06T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-07_82_1",
+      "date": "2026-10-07",
+      "startTime": "2026-10-07T10:55:00",
+      "status": "upcoming",
+      "trackId": 82,
+      "trackName": "Jarlsberg"
     },
     {
       "type": "V5",
       "id": "V5_2026-10-07_5_2",
       "date": "2026-10-07",
       "startTime": "2026-10-07T18:39:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -195,7 +204,7 @@
       "id": "V5_2026-10-07_8_2",
       "date": "2026-10-07",
       "startTime": "2026-10-07T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -204,7 +213,7 @@
       "id": "V86_2026-10-07_40_1",
       "date": "2026-10-07",
       "startTime": "2026-10-07T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
     }
