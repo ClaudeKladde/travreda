@@ -259,12 +259,12 @@ sätter `.marked` + `data-letter` på raden (alla ställen som tidigare
 gjorde `classList.add/remove("marked")` går via den). Tokens
 `--marked-a/-b/-c/-d` per tema, kontrast uträknad med WCAG-formeln:
 
-| Bokstav | Mörkt (vit text) | Ljust (marinblå text) |
+| Bokstav | Mörkt (svart text `#1a0f00`) | Ljust (marinblå text) |
 |---|---|---|
-| A guld | `#7a5f00` 6,1:1 | `#fff0a0` 12,2:1 |
-| B orange | `#94470a` 6,6:1 | `#ffd0a8` 9,9:1 |
-| C hallonröd | `#8a1040` 9,4:1 | `#ffbcbc` 8,8:1 |
-| D lila | `#4b2a70` 11,3:1 | `#e3d4f7` 10,1:1 |
+| A gul | `#f0c419` 11,3:1 | `#fff0a0` 12,2:1 |
+| B orange | `#F37835` 6,8:1 | `#ffd0a8` 9,9:1 |
+| C hallonrosa | `#ff6f9a` 7,2:1 | `#ffbcbc` 8,8:1 |
+| D lila | `#b48cff` 7,3:1 | `#e3d4f7` 10,1:1 |
 
 **Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
 A och B gjordes "lite starkare" (`#5e4a00`→`#7a5f00`, `#6b3410`→`#8a3d0c`)
@@ -277,6 +277,31 @@ oförändrat.
 lika (rödorange `#8a3d0c` mot orangeröd `#7a1c1c`, bara ~23° isär i
 färgcirkeln). C blev hallonröd `#8a1040` (dragning åt rosa) och B mer ren
 orange `#94470a` — ~51° isär, fortfarande långt från D:s lila.
+
+**Fjärde omgången (mörkt tema, nuvarande):** användaren valde till slut
+det tidigare avböjda förslaget — **starka fyllnader med svart text** för
+alla fyra bokstäver (tabellen ovan). Valda kort får `--marked-fg`
+(`#1a0f00` mörkt / `#012a5e` ljust) som textfärg, `--marked-hl`/
+`--marked-muted` blev mörka i mörkt tema (`#1a0f00`/`#2b1d0a`).
+`.horse-badge` har numera egen `color:var(--fg)` så nummerbrickan förblir
+läsbar på de ljusa fyllnaderna. Samtidigt, eftersom B nu är exakt
+Lakers-orange: **`--accent` (Meny-knappen, `.btn-primary` inkl.
+sammanfattningsknappen) och `--stepper-bg` (bokstavsknapparna/
+Vanligt system-toggeln) blev en ljusare persikoorange `#ffb27a` i mörkt
+tema**, med svart text (`--stepper-fg`, ny token; 10,7:1) — så knapparna
+inte smälter ihop med B-korten. Ljust tema behåller `#F37835`/`#a34d1a`
+med vit stegartext.
+
+**Ordet "Vald" borttaget i ABC-läget** (på uttrycklig begäran, bokstaven
+räcker): statusetiketten är nu `"B 12%, "` istället för `"Vald B 12%, "`.
+Vanligt system behåller `"Vald 12%, "` (ingen bokstav att visa).
+
+**Avdelningsflikarna tydligare** (på uttrycklig begäran): siffran
+`font-size` .95rem→1.15rem, `font-weight` 800; i mörkt tema mörkare
+brun fyllnad `#4a3a14` (vit text 11:1, tidigare `#7d6836` 5,4:1) med en
+ljus Lakers-tan-ring (`--tab-border`, `#B39759`) som avgränsar cirkeln
+mot den mörka sidan. Cirkelstorleken (2,2rem) oförändrad så alla 8
+fortfarande ryms på en rad vid 375px. Ljust tema: bara större siffra.
 
 Orange text (`.selected-label`, `.changed-info`) blir `--marked-hl`
 (`#ffe6d4` mörkt / `#6e2f0d` ljust) och `.horse-sub` blir

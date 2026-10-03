@@ -17,22 +17,25 @@
     --input-bg:#242424;
     --badge-bg:#2a2a2a;
     --detail-bg:#191919;
-    --marked-a:#7a5f00;
-    --marked-b:#94470a;
-    --marked-c:#8a1040;
-    --marked-d:#4b2a70;
-    --marked-hl:#ffe6d4;
-    --marked-muted:#eeeeee;
-    --accent:#F37835;
+    --marked-a:#f0c419;
+    --marked-b:#F37835;
+    --marked-c:#ff6f9a;
+    --marked-d:#b48cff;
+    --marked-fg:#1a0f00;
+    --marked-hl:#1a0f00;
+    --marked-muted:#2b1d0a;
+    --accent:#ffb27a;
     --accent-fg:#1a0f00;
     --accent-text:#F37835;
-    --stepper-bg:#a34d1a;
+    --stepper-bg:#ffb27a;
+    --stepper-fg:#1a0f00;
     --link:#6aa8e0;
     --brand-blue:#2568b5;
     --horse-btn-bg:#050a14;
     --horse-btn-border:#cddcee;
     --horse-btn-fg:#ffffff;
-    --tab-bg:#7d6836;
+    --tab-bg:#4a3a14;
+    --tab-border:#B39759;
     --tab-active-bg:#e8590c;
     --danger:#ff8080;
     --focus:#F37835;
@@ -51,18 +54,21 @@
       --marked-b:#ffd0a8;
       --marked-c:#ffbcbc;
       --marked-d:#e3d4f7;
+      --marked-fg:#012a5e;
       --marked-hl:#6e2f0d;
       --marked-muted:#4a4a4a;
       --accent:#F37835;
       --accent-fg:#1a0f00;
       --accent-text:#9c4a17;
       --stepper-bg:#a34d1a;
+      --stepper-fg:#ffffff;
       --link:#0a5cae;
       --brand-blue:#013A80;
       --horse-btn-bg:#d6e3f5;
       --horse-btn-border:#013A80;
       --horse-btn-fg:#012a5e;
       --tab-bg:#7d6836;
+      --tab-border:#7d6836;
       --tab-active-bg:#e8590c;
       --danger:#a4161a;
       --focus:#9c4a17;
@@ -81,18 +87,21 @@
     --marked-b:#ffd0a8;
     --marked-c:#ffbcbc;
     --marked-d:#e3d4f7;
+    --marked-fg:#012a5e;
     --marked-hl:#6e2f0d;
     --marked-muted:#4a4a4a;
     --accent:#F37835;
     --accent-fg:#1a0f00;
     --accent-text:#9c4a17;
     --stepper-bg:#a34d1a;
+    --stepper-fg:#ffffff;
     --link:#0a5cae;
     --brand-blue:#013A80;
     --horse-btn-bg:#d6e3f5;
     --horse-btn-border:#013A80;
     --horse-btn-fg:#012a5e;
     --tab-bg:#7d6836;
+    --tab-border:#7d6836;
     --tab-active-bg:#e8590c;
     --danger:#a4161a;
     --focus:#9c4a17;
@@ -132,10 +141,10 @@
     height:2.2rem;
     padding:0;
     border-radius:50%;
-    font-weight:700;
-    font-size:.95rem;
+    font-weight:800;
+    font-size:1.15rem;
     background:var(--tab-bg);
-    border-color:var(--tab-bg);
+    border-color:var(--tab-border);
     color:#fff;
   }
   .avd-tab.active{
@@ -210,6 +219,7 @@
   .horse-row.marked .horse-toggle{
     border-color:var(--accent-text);
     background:var(--marked-b);
+    color:var(--marked-fg);
     box-shadow:0 0 0 2px var(--accent-text) inset;
   }
   .horse-row.marked[data-letter="A"] .horse-toggle{background:var(--marked-a);}
@@ -274,6 +284,7 @@
     padding:0 .3rem;
     border-radius:50%;
     background:var(--badge-bg);
+    color:var(--fg);
     border:1px solid var(--card-border);
     font-weight:700;
     flex-shrink:0;
@@ -326,7 +337,7 @@
     font-size:.9rem;
     background:var(--stepper-bg);
     border-color:var(--stepper-bg);
-    color:#fff;
+    color:var(--stepper-fg);
   }
   .letter-stepper button[hidden]{display:none;}
   /* Knappläget: bakåtknappen (Byt till A / Ta bort) ligger FÖRE hästen i
@@ -345,7 +356,7 @@
     font-size:.9rem;
     background:var(--stepper-bg);
     border-color:var(--stepper-bg);
-    color:#fff;
+    color:var(--stepper-fg);
   }
   #btn-menu-toggle{
     background:var(--accent);
@@ -480,7 +491,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 00:40</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 12:57</span>
 
 </div>
 
@@ -1852,7 +1863,9 @@
           selectionLabel.className = "scratched-label";
           selectionLabel.textContent = "Struken. ";
         } else if(legLetters[start.number]){
-          var label = systemMode === "plain" ? "Vald" : "Vald " + legLetters[start.number];
+          // ABC-läge: bara bokstaven ("B 12%,"), "Vald" togs bort på uttrycklig
+          // begäran — bokstaven räcker. Vanligt system saknar bokstav → "Vald".
+          var label = systemMode === "plain" ? "Vald" : legLetters[start.number];
           var stakeText = "";
           if(liveStats && !liveStats.tooBig && liveStats.rows > 0){
             var cnt = (liveStats.perLegCounts[currentAvd] || {})[start.number] || 0;
