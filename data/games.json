@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-03T02:28:40Z",
+  "updated": "2026-10-03T10:42:29Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-03_6_4",
       "date": "2026-10-03",
-      "startTime": "2026-10-03T12:16:00",
-      "status": "bettable",
+      "startTime": "2026-10-03T12:16:07",
+      "status": "ongoing",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -150,7 +150,7 @@
       "id": "V5_2026-10-07_82_1",
       "date": "2026-10-07",
       "startTime": "2026-10-07T10:55:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 82,
       "trackName": "Jarlsberg"
     },
@@ -186,7 +186,7 @@
       "id": "V5_2026-10-08_25_4",
       "date": "2026-10-08",
       "startTime": "2026-10-08T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 25,
       "trackName": "Skellefteå"
     },
@@ -195,7 +195,7 @@
       "id": "V64_2026-10-08_33_4",
       "date": "2026-10-08",
       "startTime": "2026-10-08T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 33,
       "trackName": "Östersund"
     }
