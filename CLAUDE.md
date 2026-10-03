@@ -262,8 +262,8 @@ gjorde `classList.add/remove("marked")` går via den). Tokens
 | Bokstav | Mörkt (svart text `#1a0f00`) | Ljust (marinblå text) |
 |---|---|---|
 | A gul | `#f0c419` 11,3:1 | `#fff0a0` 12,2:1 |
-| B orange | `#F37835` 6,8:1 | `#ffd0a8` 9,9:1 |
-| C mörkröd | `#9b1020` **vit** text 8,4:1 | `#ffbcbc` 8,8:1 |
+| B grön | `#6fbf73` 8,4:1 | `#c8ecc9` 10,9:1 |
+| C röd | `#b5162e` **vit** text 6,7:1 | `#ffbcbc` 8,8:1 |
 | D lila | `#b48cff` 7,3:1 | `#e3d4f7` 10,1:1 |
 
 **Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
@@ -291,6 +291,14 @@ Vanligt system-toggeln) blev en ljusare persikoorange `#ffb27a` i mörkt
 tema**, med svart text (`--stepper-fg`, ny token; 10,7:1) — så knapparna
 inte smälter ihop med B-korten. Ljust tema behåller `#F37835`/`#a34d1a`
 med vit stegartext.
+
+**Femte omgången (nuvarande):** användaren ändrade sig — **B blev en
+neutral grön** (`#6fbf73` mörkt / `#c8ecc9` ljust, båda teman), **C lite
+ljusare röd** (`#9b1020`→`#b5162e`, fortfarande vit text 6,7:1), och
+**knapparna tillbaka till stark Lakers-orange** i mörkt tema: `--accent`
+och `--stepper-bg` = `#F37835` med svart text (6,8:1) — ingen konflikt
+längre eftersom B inte är orange. (Den persikoorange `#ffb27a` nedan är
+alltså ersatt.)
 
 **C ändrad till mörkröd med vit text** (på uttrycklig begäran, hallonrosa
 `#ff6f9a` upplevdes för lik orange B): egna tokens `--marked-c-fg/-hl/
