@@ -19,7 +19,10 @@
     --detail-bg:#191919;
     --marked-a:#f0c419;
     --marked-b:#F37835;
-    --marked-c:#ff6f9a;
+    --marked-c:#9b1020;
+    --marked-c-fg:#ffffff;
+    --marked-c-hl:#ffe6d4;
+    --marked-c-muted:#eeeeee;
     --marked-d:#b48cff;
     --marked-fg:#1a0f00;
     --marked-hl:#1a0f00;
@@ -53,6 +56,9 @@
       --marked-a:#fff0a0;
       --marked-b:#ffd0a8;
       --marked-c:#ffbcbc;
+      --marked-c-fg:#012a5e;
+      --marked-c-hl:#6e2f0d;
+      --marked-c-muted:#4a4a4a;
       --marked-d:#e3d4f7;
       --marked-fg:#012a5e;
       --marked-hl:#6e2f0d;
@@ -86,6 +92,9 @@
     --marked-a:#fff0a0;
     --marked-b:#ffd0a8;
     --marked-c:#ffbcbc;
+    --marked-c-fg:#012a5e;
+    --marked-c-hl:#6e2f0d;
+    --marked-c-muted:#4a4a4a;
     --marked-d:#e3d4f7;
     --marked-fg:#012a5e;
     --marked-hl:#6e2f0d;
@@ -223,11 +232,15 @@
     box-shadow:0 0 0 2px var(--accent-text) inset;
   }
   .horse-row.marked[data-letter="A"] .horse-toggle{background:var(--marked-a);}
-  .horse-row.marked[data-letter="C"] .horse-toggle{background:var(--marked-c);}
+  .horse-row.marked[data-letter="C"] .horse-toggle{background:var(--marked-c);color:var(--marked-c-fg);}
   .horse-row.marked[data-letter="D"] .horse-toggle{background:var(--marked-d);}
   .horse-row.marked .selected-label,
   .horse-row.marked .horse-sub .changed-info{color:var(--marked-hl);}
   .horse-row.marked .horse-sub{color:var(--marked-muted);}
+  /* C är mörkröd med vit text i mörkt tema (skiljer sig från orange B). */
+  .horse-row.marked[data-letter="C"] .selected-label,
+  .horse-row.marked[data-letter="C"] .horse-sub .changed-info{color:var(--marked-c-hl);}
+  .horse-row.marked[data-letter="C"] .horse-sub{color:var(--marked-c-muted);}
   .horse-row.new-barefoot .horse-toggle,
   .horse-row.scratched .horse-toggle{
     border-left:6px solid var(--danger);
@@ -491,7 +504,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 12:57</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 13:12</span>
 
 </div>
 
@@ -703,6 +716,7 @@
   var systemMode = "abc";
   var liveStats = null;
   var currentRowUpdaters = [];
+  var currentPctEls = {};
   var LIVE_STATS_MAX = 200000;
 
   var DETAIL_FIELDS = [
@@ -1491,6 +1505,7 @@
       }
       lastCalculatedRows = null;
       lastCoupons = null;
+      lastRefreshAt = Date.now();
       document.getElementById("btn-export").disabled = true;
       setGlobalStatus(type + " — " + currentGame.trackName + (restoreData ? " återställd." : " laddad."));
       showView("avdelning");
@@ -1761,6 +1776,103 @@
     });
   }
 
+  // Omsättning + varning om omgången inte längre går att spela. Egen funktion
+  // så att den automatiska uppdateringen kan köra den utan att rita om vyn.
+  function updateGameInfoUI(){
+    var turnoverEl = document.getElementById("avd-turnover");
+    var turnover = turnoverText();
+    turnoverEl.hidden = !turnover;
+    turnoverEl.textContent = turnover || "";
+
+    var notBettableEl = document.getElementById("avd-not-bettable-warning");
+    if(currentGame.status && currentGame.status !== "bettable"){
+      var statusText = GAME_STATUS_TEXT[currentGame.status] || currentGame.status;
+      notBettableEl.hidden = false;
+      notBettableEl.textContent = "Omgången " + statusText + " hos ATG och går inte längre att " +
+        "lämna in en fil för — en inlämning avvisas med \"Angivet spel är inte tillgängligt\".";
+    } else {
+      notBettableEl.hidden = true;
+    }
+  }
+
+  // ---------- Automatisk uppdatering från ATG ----------
+  // Hämtar om omgången var 2:a minut (och när man återvänder till fliken),
+  // på uttrycklig begäran, så att strykningar, spelprocent, odds, omsättning
+  // och status hålls färska. Bokstäverna påverkas inte. Procenttexterna i
+  // den visade avdelningen byts på plats (ingen ombyggnad, VoiceOver-platsen
+  // bevaras); listan sorteras om först nästa gång avdelningen ritas. En NY
+  // strykning i den visade avdelningen ritar däremot om den (hästen flyttas
+  // sist, bokstaven tas bort) och meddelas via #global-status.
+  var REFRESH_INTERVAL_MS = 2 * 60 * 1000;
+  var refreshInFlight = false;
+  var lastRefreshAt = 0;
+
+  function refreshGameData(){
+    if(!currentGame || refreshInFlight){ return; }
+    var gameId = currentGame.id;
+    refreshInFlight = true;
+    lastRefreshAt = Date.now();
+    fetchJson(API_BASE + "/games/" + gameId).then(function(data){
+      refreshInFlight = false;
+      if(!currentGame || currentGame.id !== gameId || !data || !data.races ||
+        data.races.length !== currentGame.races.length){ return; }
+      var oldRaces = currentGame.races;
+      var newScratches = [];
+      var lettersChanged = false;
+      data.races.forEach(function(race, idx){
+        var wasScratched = {};
+        (oldRaces[idx].starts || []).forEach(function(s){ if(s.scratched === true){ wasScratched[s.number] = true; } });
+        (race.starts || []).forEach(function(s){
+          if(s.scratched === true && !wasScratched[s.number]){
+            newScratches.push({ avd: idx, start: s });
+            if(letters[idx] && letters[idx][s.number]){
+              delete letters[idx][s.number];
+              lettersChanged = true;
+            }
+          }
+        });
+      });
+      currentGame.races = data.races;
+      currentGame.pools = data.pools;
+      currentGame.status = data.status;
+      lastCalculatedRows = null;
+      lastCoupons = null;
+
+      var avdVisible = !document.getElementById("view-avdelning").hidden;
+      var scratchHere = newScratches.some(function(n){ return n.avd === currentAvd; });
+      if(avdVisible && scratchHere){
+        renderAvdelning();
+      } else if(avdVisible){
+        updateGameInfoUI();
+        var race = currentGame.races[currentAvd];
+        race.starts.forEach(function(s){
+          var el = currentPctEls[s.number];
+          var pct = percentText(s, currentGame.type);
+          if(el && pct){ el.textContent = pct + " "; }
+        });
+        renderAvdTabs();
+        refreshLiveStatsAndUI();
+      } else {
+        refreshLiveStatsAndUI();
+      }
+      if(newScratches.length){
+        setGlobalStatus("Ny strykning: " + newScratches.map(function(n){
+          return "avdelning " + (n.avd + 1) + ", " + n.start.number + " " + n.start.horse.name;
+        }).join("; ") + ".");
+      }
+      if(lettersChanged){ saveState(); }
+    }).catch(function(){ refreshInFlight = false; });
+  }
+
+  setInterval(function(){
+    if(document.visibilityState === "visible"){ refreshGameData(); }
+  }, REFRESH_INTERVAL_MS);
+  document.addEventListener("visibilitychange", function(){
+    if(document.visibilityState === "visible" && Date.now() - lastRefreshAt > 60 * 1000){
+      refreshGameData();
+    }
+  });
+
   function renderAvdelning(){
     if(!currentGame){ return; }
     var race = currentGame.races[currentAvd];
@@ -1779,20 +1891,7 @@
     document.getElementById("avd-progress").textContent =
       currentGame.type + " — " + currentGame.trackName + " — " + currentGame.date;
 
-    var turnoverEl = document.getElementById("avd-turnover");
-    var turnover = turnoverText();
-    turnoverEl.hidden = !turnover;
-    turnoverEl.textContent = turnover || "";
-
-    var notBettableEl = document.getElementById("avd-not-bettable-warning");
-    if(currentGame.status && currentGame.status !== "bettable"){
-      var statusText = GAME_STATUS_TEXT[currentGame.status] || currentGame.status;
-      notBettableEl.hidden = false;
-      notBettableEl.textContent = "Omgången " + statusText + " hos ATG och går inte längre att " +
-        "lämna in en fil för — en inlämning avvisas med \"Angivet spel är inte tillgängligt\".";
-    } else {
-      notBettableEl.hidden = true;
-    }
+    updateGameInfoUI();
 
     var legLetters = letters[currentAvd] || (letters[currentAvd] = {});
 
@@ -1813,6 +1912,7 @@
     var list = document.getElementById("horse-list");
     list.innerHTML = "";
     currentRowUpdaters = [];
+    currentPctEls = {};
 
     function addSub(parent, className, text){
       var span = document.createElement("span");
@@ -1831,6 +1931,9 @@
     } else {
       sortedStarts.sort(function(a, b){ return a.number - b.number; });
     }
+    // Strukna hästar alltid sist, oavsett sortering (stabil sortering behåller
+    // ordningen inom respektive grupp).
+    sortedStarts.sort(function(a, b){ return (a.scratched === true) - (b.scratched === true); });
 
     sortedStarts.forEach(function(start){
       var horse = start.horse;
@@ -1844,7 +1947,10 @@
 
       var detailId = "detail-" + currentAvd + "-" + start.number;
 
-      var heading = document.createElement("h3");
+      // Vanlig <div>, inte <h3> — rubriknivåerna per häst togs bort på
+      // uttrycklig begäran, så rotorn kan hoppa direkt mellan toppen och
+      // Systemöversikten.
+      var heading = document.createElement("div");
       heading.className = "horse-heading";
       li.appendChild(heading);
 
@@ -1887,6 +1993,9 @@
       addSub(topRow, "horse-name", horse.name + ",");
       var pct = percentText(start, currentGame.type);
       if(pct){ addSub(topRow, "horse-pct", pct); }
+      // Spara procentelementet så att den automatiska uppdateringen kan byta
+      // bara texten, utan att bygga om raden (VoiceOver-platsen bevaras).
+      currentPctEls[start.number] = pct ? topRow.lastChild : null;
       detailToggle.appendChild(topRow);
 
       updateSelectionLabel();

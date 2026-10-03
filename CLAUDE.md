@@ -263,7 +263,7 @@ gjorde `classList.add/remove("marked")` går via den). Tokens
 |---|---|---|
 | A gul | `#f0c419` 11,3:1 | `#fff0a0` 12,2:1 |
 | B orange | `#F37835` 6,8:1 | `#ffd0a8` 9,9:1 |
-| C hallonrosa | `#ff6f9a` 7,2:1 | `#ffbcbc` 8,8:1 |
+| C mörkröd | `#9b1020` **vit** text 8,4:1 | `#ffbcbc` 8,8:1 |
 | D lila | `#b48cff` 7,3:1 | `#e3d4f7` 10,1:1 |
 
 **Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
@@ -292,6 +292,11 @@ tema**, med svart text (`--stepper-fg`, ny token; 10,7:1) — så knapparna
 inte smälter ihop med B-korten. Ljust tema behåller `#F37835`/`#a34d1a`
 med vit stegartext.
 
+**C ändrad till mörkröd med vit text** (på uttrycklig begäran, hallonrosa
+`#ff6f9a` upplevdes för lik orange B): egna tokens `--marked-c-fg/-hl/
+-muted` (mörkt: `#ffffff`/`#ffe6d4`/`#eeeeee`, ljust: samma som övriga
+bokstäver), så C är det enda valda kortet med vit text i mörkt tema.
+
 **Ordet "Vald" borttaget i ABC-läget** (på uttrycklig begäran, bokstaven
 räcker): statusetiketten är nu `"B 12%, "` istället för `"Vald B 12%, "`.
 Vanligt system behåller `"Vald 12%, "` (ingen bokstav att visa).
@@ -317,7 +322,14 @@ förvalt.
 
 ### Hästkortens struktur (avdelningsvyn)
 
-Varje häst är en `<h3>` som **omsluter** den enda knappen
+**Rubrikerna per häst är borttagna** (på uttrycklig begäran): hästkortets
+omslutande element är numera en vanlig `<div class="horse-heading">`, inte
+`<h3>` — så rotorns rubriknavigering hoppar direkt mellan toppen
+(lopprubriken) och Systemöversikten utan att stanna på varje häst.
+Svepordningen är oförändrad. Texten nedan om `<h3>` beskriver den tidigare
+lösningen.
+
+Varje häst var tidigare en `<h3>` som **omsluter** den enda knappen
 (`<h3><button class="horse-toggle">...</button></h3>`) — inte en syskon-
 rubrik bredvid knappen. Testat och bekräftat att detta ger exakt **ett**
 svep/tabbstopp per häst (plus ett till för bokstavsvalet/kryssrutan) i
@@ -748,6 +760,38 @@ vald omgång, ingen polling, så det har inte varit ett problem hittills.
   (observera: delas med 100 för procent, t.ex. `1333` → 13,33 %)
 - `pools.{TYP}.betDistribution` per häst = spelprocent × 100 (summerar till
   10000 per lopp), `pools.vinnare.odds` = odds × 100
+
+### Automatisk uppdatering av omgången (var 2:a minut)
+
+Byggd efter uttrycklig begäran (användaren frågade hur ofta strykningar
+uppdateras — svaret var tidigare "bara vid val av omgång/omladdning").
+`refreshGameData()` hämtar om `/games/{id}` var 2:a minut
+(`REFRESH_INTERVAL_MS`, bara när sidan är synlig) och när man återvänder
+till fliken (`visibilitychange`, om senaste hämtning är äldre än 60 s).
+Uppdaterar `currentGame.races/pools/status` — dvs. strykningar,
+spelprocent, odds, trend, omsättning och spelbar-status. Bokstäverna
+påverkas inte, förutom att en **ny** strykning tar bort den hästens
+bokstav (i alla avdelningar).
+
+- **Ingen ombyggnad av vyn i normalfallet:** procenttexten i den visade
+  avdelningen byts på plats (`currentPctEls`, en referens per rad),
+  omsättning/varning via `updateGameInfoUI()`, flikar och live-statistik
+  räknas om — VoiceOver-platsen bevaras (samma lärdom som
+  bokstavsknapparna: bygg aldrig om elementet användaren står på).
+  Listan sorteras om efter ny procent först nästa gång avdelningen ritas.
+- **Ny strykning i den visade avdelningen:** `renderAvdelning()` körs
+  (hästen flyttas sist, fokus till lopprubriken), och `#global-status`
+  (`role="status"`) meddelar `"Ny strykning: avdelning 1, 9 Googoo
+  Casino."` — oavsett avdelning.
+- Fel vid hämtning ignoreras tyst (nästa cykel försöker igen).
+
+Verifierat med Playwright (`page.clock`): ett anrop efter 2 min, procent
+uppdaterad på plats med fokus kvar, simulerad strykning av en vald häst
+gav meddelandet, flyttade hästen sist och tog bort bokstaven.
+
+**Strukna hästar alltid sist** i startlistan (på uttrycklig begäran),
+oavsett sortering (procent eller startnummer) — en stabil extra sortering
+efter `scratched` i `renderAvdelning()`.
 
 ### Hur vi hittar dagens/kommande omgångar
 
