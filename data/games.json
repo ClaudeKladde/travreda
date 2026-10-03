@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-03T15:16:57Z",
+  "updated": "2026-10-03T20:15:23Z",
   "games": [
     {
       "type": "V5",
@@ -33,7 +33,7 @@
       "id": "V85_2026-10-03_11_5",
       "date": "2026-10-03",
       "startTime": "2026-10-03T15:08:18",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 11,
       "trackName": "Boden"
     },
@@ -42,7 +42,7 @@
       "id": "V5_2026-10-03_11_8",
       "date": "2026-10-03",
       "startTime": "2026-10-03T16:17:37",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 11,
       "trackName": "Boden"
     },
