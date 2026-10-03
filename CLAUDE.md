@@ -261,9 +261,9 @@ gjorde `classList.add/remove("marked")` går via den). Tokens
 
 | Bokstav | Mörkt (svart text `#1a0f00`) | Ljust (marinblå text) |
 |---|---|---|
-| A gul | `#f0c419` 11,3:1 | `#fff0a0` 12,2:1 |
-| B grön | `#6fbf73` 8,4:1 | `#c8ecc9` 10,9:1 |
-| C röd | `#b5162e` **vit** text 6,7:1 | `#ffbcbc` 8,8:1 |
+| A senapsgul | `#c49d14` 7,4:1 | `#fff0a0` 12,2:1 |
+| B grön | `#4c9450` 5,1:1 | `#c8ecc9` 10,9:1 |
+| C mörkröd | `#8e1023` **vit** text 9,3:1 | `#ffbcbc` 8,8:1 |
 | D lila | `#b48cff` 7,3:1 | `#e3d4f7` 10,1:1 |
 
 **Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
@@ -292,7 +292,12 @@ tema**, med svart text (`--stepper-fg`, ny token; 10,7:1) — så knapparna
 inte smälter ihop med B-korten. Ljust tema behåller `#F37835`/`#a34d1a`
 med vit stegartext.
 
-**Femte omgången (nuvarande):** användaren ändrade sig — **B blev en
+**Sjätte omgången (nuvarande, mörkt tema):** A, B och C dämpades ("sticker
+inte lika mycket") — användaren valde "Alt 2, mer dämpad" av tre
+alternativ: A `#c49d14`, B `#4c9450`, C `#8e1023` (tabellen ovan). D
+oförändrad.
+
+**Femte omgången:** användaren ändrade sig — **B blev en
 neutral grön** (`#6fbf73` mörkt / `#c8ecc9` ljust, båda teman), **C lite
 ljusare röd** (`#9b1020`→`#b5162e`, fortfarande vit text 6,7:1), och
 **knapparna tillbaka till stark Lakers-orange** i mörkt tema: `--accent`
