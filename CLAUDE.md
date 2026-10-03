@@ -263,7 +263,7 @@ gjorde `classList.add/remove("marked")` går via den). Tokens
 |---|---|---|
 | A senapsgul | `#c49d14` 7,4:1 | `#fff0a0` 12,2:1 |
 | B grön | `#4c9450` 5,1:1 | `#c8ecc9` 10,9:1 |
-| C mörkröd | `#8e1023` **vit** text 9,3:1 | `#ffbcbc` 8,8:1 |
+| C röd | `#e65a5a` 5,4:1 | `#ffbcbc` 8,8:1 |
 | D lila | `#b48cff` 7,3:1 | `#e3d4f7` 10,1:1 |
 
 **Justerat i en andra omgång (på uttrycklig begäran, bara mörkt tema):**
@@ -292,7 +292,12 @@ tema**, med svart text (`--stepper-fg`, ny token; 10,7:1) — så knapparna
 inte smälter ihop med B-korten. Ljust tema behåller `#F37835`/`#a34d1a`
 med vit stegartext.
 
-**Sjätte omgången (nuvarande, mörkt tema):** A, B och C dämpades ("sticker
+**Sjunde omgången (nuvarande, mörkt tema):** för enhetlighet har C nu
+också **svart text**, så röd tonen ljusades till `#e65a5a` (svart 5,4:1,
+i nivå med gröna B:s 5,1:1). `--marked-c-fg/-hl/-muted` har samma mörka
+värden som övriga bokstäver (tokens finns kvar ifall C ska avvika igen).
+
+**Sjätte omgången (mörkt tema):** A, B och C dämpades ("sticker
 inte lika mycket") — användaren valde "Alt 2, mer dämpad" av tre
 alternativ: A `#c49d14`, B `#4c9450`, C `#8e1023` (tabellen ovan). D
 oförändrad.
