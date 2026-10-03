@@ -1,42 +1,6 @@
 {
-  "updated": "2026-10-02T21:28:45Z",
+  "updated": "2026-10-03T02:28:40Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-02_54_2",
-      "date": "2026-10-02",
-      "startTime": "2026-10-02T16:07:36",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Odense"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-02_12_2",
-      "date": "2026-10-02",
-      "startTime": "2026-10-02T18:39:12",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-02_19_2",
-      "date": "2026-10-02",
-      "startTime": "2026-10-02T18:52:12",
-      "status": "results",
-      "trackId": 19,
-      "trackName": "Kalmar"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-10-02_40_1",
-      "date": "2026-10-02",
-      "startTime": "2026-10-02T20:34:13",
-      "status": "results",
-      "trackId": 40,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-03_6_4",
