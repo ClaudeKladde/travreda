@@ -1,51 +1,6 @@
 {
-  "updated": "2026-10-03T20:15:23Z",
+  "updated": "2026-10-04T02:59:34Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-03_6_4",
-      "date": "2026-10-03",
-      "startTime": "2026-10-03T12:16:07",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-03_66_2",
-      "date": "2026-10-03",
-      "startTime": "2026-10-03T12:51:40",
-      "status": "results",
-      "trackId": 66,
-      "trackName": "Bornholm"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-03_54_2",
-      "date": "2026-10-03",
-      "startTime": "2026-10-03T13:23:33",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Århus"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-10-03_11_5",
-      "date": "2026-10-03",
-      "startTime": "2026-10-03T15:08:18",
-      "status": "results",
-      "trackId": 11,
-      "trackName": "Boden"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-03_11_8",
-      "date": "2026-10-03",
-      "startTime": "2026-10-03T16:17:37",
-      "status": "results",
-      "trackId": 11,
-      "trackName": "Boden"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-04_54_3",
