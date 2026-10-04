@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-04T16:01:38Z",
+  "updated": "2026-10-04T20:31:52Z",
   "games": [
     {
       "type": "V5",
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-10-04_83_5",
       "date": "2026-10-04",
-      "startTime": "2026-10-04T19:20:00",
-      "status": "bettable",
+      "startTime": "2026-10-04T19:24:27",
+      "status": "results",
       "trackId": 83,
       "trackName": "Orkla"
     },
@@ -153,6 +153,24 @@
       "status": "bettable",
       "trackId": 33,
       "trackName": "Östersund"
+    },
+    {
+      "type": "V85",
+      "id": "V85_2026-10-10_5_6",
+      "date": "2026-10-10",
+      "startTime": "2026-10-10T15:00:00",
+      "status": "upcoming",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-10_5_9",
+      "date": "2026-10-10",
+      "startTime": "2026-10-10T16:06:00",
+      "status": "upcoming",
+      "trackId": 5,
+      "trackName": "Solvalla"
     }
   ]
 }
