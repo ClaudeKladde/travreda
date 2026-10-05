@@ -1,33 +1,6 @@
 {
-  "updated": "2026-10-04T20:31:52Z",
+  "updated": "2026-10-05T02:32:43Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-04_54_3",
-      "date": "2026-10-04",
-      "startTime": "2026-10-04T14:46:19",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Nyköbing"
-    },
-    {
-      "type": "GS75",
-      "id": "GS75_2026-10-04_14_4",
-      "date": "2026-10-04",
-      "startTime": "2026-10-04T15:00:20",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-04_83_5",
-      "date": "2026-10-04",
-      "startTime": "2026-10-04T19:24:27",
-      "status": "results",
-      "trackId": 83,
-      "trackName": "Orkla"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-05_26_4",
