@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-07T02:50:53Z",
+  "updated": "2026-10-07T12:08:08Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-07_82_1",
       "date": "2026-10-07",
-      "startTime": "2026-10-07T11:05:00",
-      "status": "bettable",
+      "startTime": "2026-10-07T11:06:16",
+      "status": "results",
       "trackId": 82,
       "trackName": "Jarlsberg"
     },
@@ -60,7 +60,7 @@
       "id": "V5_2026-10-09_54_2",
       "date": "2026-10-09",
       "startTime": "2026-10-09T16:07:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Ålborg"
     },
@@ -105,7 +105,7 @@
       "id": "V5_2026-10-10_54_2",
       "date": "2026-10-10",
       "startTime": "2026-10-10T12:54:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Bornholm"
     },
@@ -132,16 +132,25 @@
       "id": "V5_2026-10-11_43_4",
       "date": "2026-10-11",
       "startTime": "2026-10-11T13:16:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 43,
       "trackName": "Vaggeryd"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-11_55_3",
+      "date": "2026-10-11",
+      "startTime": "2026-10-11T14:42:00",
+      "status": "upcoming",
+      "trackId": 55,
+      "trackName": "Charlottenlund"
     },
     {
       "type": "V5",
       "id": "V5_2026-10-11_32_3",
       "date": "2026-10-11",
       "startTime": "2026-10-11T14:45:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -150,7 +159,7 @@
       "id": "GS75_2026-10-11_17_4",
       "date": "2026-10-11",
       "startTime": "2026-10-11T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -159,7 +168,7 @@
       "id": "V5_2026-10-11_85_4",
       "date": "2026-10-11",
       "startTime": "2026-10-11T19:20:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 85,
       "trackName": "Klosterskogen"
     },
@@ -168,7 +177,7 @@
       "id": "V5_2026-10-12_8_4",
       "date": "2026-10-12",
       "startTime": "2026-10-12T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -177,7 +186,7 @@
       "id": "V64_2026-10-12_23_4",
       "date": "2026-10-12",
       "startTime": "2026-10-12T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -186,7 +195,7 @@
       "id": "V5_2026-10-12_83_5",
       "date": "2026-10-12",
       "startTime": "2026-10-12T20:05:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 83,
       "trackName": "Orkla"
     }
