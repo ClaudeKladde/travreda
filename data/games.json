@@ -1,42 +1,6 @@
 {
-  "updated": "2026-10-06T21:55:56Z",
+  "updated": "2026-10-07T02:50:53Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-06_28_4",
-      "date": "2026-10-06",
-      "startTime": "2026-10-06T13:31:58",
-      "status": "results",
-      "trackId": 28,
-      "trackName": "Visby"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-06_18_2",
-      "date": "2026-10-06",
-      "startTime": "2026-10-06T18:39:13",
-      "status": "results",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-06_78_2",
-      "date": "2026-10-06",
-      "startTime": "2026-10-06T18:52:10",
-      "status": "results",
-      "trackId": 78,
-      "trackName": "Bjerke"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-10-06_40_1",
-      "date": "2026-10-06",
-      "startTime": "2026-10-06T20:31:07",
-      "status": "results",
-      "trackId": 40,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-07_82_1",
