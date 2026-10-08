@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-08T03:08:34Z",
+  "updated": "2026-10-08T12:18:43Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-08_25_4",
       "date": "2026-10-08",
-      "startTime": "2026-10-08T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-10-08T13:27:05",
+      "status": "ongoing",
       "trackId": 25,
       "trackName": "Skellefteå"
     },
@@ -105,7 +105,7 @@
       "id": "V5_2026-10-11_55_3",
       "date": "2026-10-11",
       "startTime": "2026-10-11T14:42:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 55,
       "trackName": "Charlottenlund"
     },
@@ -168,7 +168,7 @@
       "id": "V5_2026-10-13_14_4",
       "date": "2026-10-13",
       "startTime": "2026-10-13T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
     },
@@ -177,7 +177,7 @@
       "id": "V5_2026-10-13_26_3",
       "date": "2026-10-13",
       "startTime": "2026-10-13T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 26,
       "trackName": "Solänget"
     },
@@ -186,7 +186,7 @@
       "id": "V64_2026-10-13_7_4",
       "date": "2026-10-13",
       "startTime": "2026-10-13T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
     }
