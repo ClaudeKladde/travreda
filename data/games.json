@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-09T12:09:27Z",
+  "updated": "2026-10-09T21:54:36Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-09_54_2",
       "date": "2026-10-09",
-      "startTime": "2026-10-09T16:07:00",
-      "status": "bettable",
+      "startTime": "2026-10-09T16:07:44",
+      "status": "results",
       "trackId": 54,
       "trackName": "Ålborg"
     },
@@ -14,8 +14,8 @@
       "type": "V64",
       "id": "V64_2026-10-09_19_4",
       "date": "2026-10-09",
-      "startTime": "2026-10-09T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-09T19:41:28",
+      "status": "results",
       "trackId": 19,
       "trackName": "Kalmar"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-10-09_96_4",
       "date": "2026-10-09",
-      "startTime": "2026-10-09T20:05:00",
-      "status": "bettable",
+      "startTime": "2026-10-09T20:06:05",
+      "status": "results",
       "trackId": 96,
       "trackName": "Biri"
     },
@@ -108,6 +108,15 @@
       "status": "bettable",
       "trackId": 17,
       "trackName": "Hagmyren"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-11_70_2",
+      "date": "2026-10-11",
+      "startTime": "2026-10-11T15:25:00",
+      "status": "upcoming",
+      "trackId": 70,
+      "trackName": "Turin"
     },
     {
       "type": "V5",
@@ -201,12 +210,39 @@
     },
     {
       "type": "V5",
+      "id": "V5_2026-10-15_5_4",
+      "date": "2026-10-15",
+      "startTime": "2026-10-15T13:26:00",
+      "status": "upcoming",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
       "id": "V5_2026-10-15_54_3",
       "date": "2026-10-15",
       "startTime": "2026-10-15T17:36:00",
       "status": "upcoming",
       "trackId": 54,
       "trackName": "Århus"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-15_15_3",
+      "date": "2026-10-15",
+      "startTime": "2026-10-15T18:30:00",
+      "status": "upcoming",
+      "trackId": 15,
+      "trackName": "Färjestad"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-10-15_11_5",
+      "date": "2026-10-15",
+      "startTime": "2026-10-15T19:30:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
     }
   ]
 }
