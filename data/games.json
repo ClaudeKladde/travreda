@@ -1,24 +1,6 @@
 {
-  "updated": "2026-10-08T22:32:03Z",
+  "updated": "2026-10-09T03:14:33Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-08_25_4",
-      "date": "2026-10-08",
-      "startTime": "2026-10-08T13:27:05",
-      "status": "results",
-      "trackId": 25,
-      "trackName": "Skellefteå"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-10-08_33_4",
-      "date": "2026-10-08",
-      "startTime": "2026-10-08T19:30:31",
-      "status": "results",
-      "trackId": 33,
-      "trackName": "Östersund"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-09_54_2",
