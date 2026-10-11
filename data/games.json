@@ -1,51 +1,6 @@
 {
-  "updated": "2026-10-10T20:45:52Z",
+  "updated": "2026-10-11T02:23:24Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-10_18_4",
-      "date": "2026-10-10",
-      "startTime": "2026-10-10T12:16:11",
-      "status": "results",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-10_12_5",
-      "date": "2026-10-10",
-      "startTime": "2026-10-10T12:30:20",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-10_54_2",
-      "date": "2026-10-10",
-      "startTime": "2026-10-10T12:54:59",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Bornholm"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-10-10_5_6",
-      "date": "2026-10-10",
-      "startTime": "2026-10-10T15:00:29",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-10_5_9",
-      "date": "2026-10-10",
-      "startTime": "2026-10-10T16:08:20",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-11_43_4",
