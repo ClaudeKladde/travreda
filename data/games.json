@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-11T11:40:18Z",
+  "updated": "2026-10-11T16:50:28Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-11_43_4",
       "date": "2026-10-11",
       "startTime": "2026-10-11T13:28:33",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 43,
       "trackName": "Vaggeryd"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-10-11_55_3",
       "date": "2026-10-11",
-      "startTime": "2026-10-11T14:42:00",
-      "status": "bettable",
+      "startTime": "2026-10-11T14:46:46",
+      "status": "results",
       "trackId": 55,
       "trackName": "Charlottenlund"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-10-11_32_3",
       "date": "2026-10-11",
-      "startTime": "2026-10-11T14:45:00",
-      "status": "bettable",
+      "startTime": "2026-10-11T14:47:23",
+      "status": "results",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -32,8 +32,8 @@
       "type": "GS75",
       "id": "GS75_2026-10-11_17_4",
       "date": "2026-10-11",
-      "startTime": "2026-10-11T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-10-11T15:00:06",
+      "status": "results",
       "trackId": 17,
       "trackName": "Hagmyren"
     },
@@ -41,8 +41,8 @@
       "type": "V5",
       "id": "V5_2026-10-11_70_2",
       "date": "2026-10-11",
-      "startTime": "2026-10-11T15:25:00",
-      "status": "bettable",
+      "startTime": "2026-10-11T15:26:34",
+      "status": "results",
       "trackId": 70,
       "trackName": "Turin"
     },
@@ -171,6 +171,24 @@
       "status": "bettable",
       "trackId": 11,
       "trackName": "Boden"
+    },
+    {
+      "type": "V85",
+      "id": "V85_2026-10-17_16_5",
+      "date": "2026-10-17",
+      "startTime": "2026-10-17T15:00:00",
+      "status": "upcoming",
+      "trackId": 16,
+      "trackName": "Gävle"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-17_16_8",
+      "date": "2026-10-17",
+      "startTime": "2026-10-17T16:06:00",
+      "status": "upcoming",
+      "trackId": 16,
+      "trackName": "Gävle"
     }
   ]
 }
