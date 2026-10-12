@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-12T13:37:56Z",
+  "updated": "2026-10-12T23:51:22Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V64",
       "id": "V64_2026-10-12_23_4",
       "date": "2026-10-12",
-      "startTime": "2026-10-12T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-12T19:33:22",
+      "status": "results",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-10-12_83_5",
       "date": "2026-10-12",
-      "startTime": "2026-10-12T20:05:00",
-      "status": "bettable",
+      "startTime": "2026-10-12T20:05:49",
+      "status": "results",
       "trackId": 83,
       "trackName": "Orkla"
     },
