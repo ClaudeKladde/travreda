@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-12T02:47:30Z",
+  "updated": "2026-10-12T13:37:56Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-12_8_4",
       "date": "2026-10-12",
-      "startTime": "2026-10-12T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-10-12T13:26:17",
+      "status": "results",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -119,11 +119,38 @@
       "trackName": "Boden"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-10-16_33_3",
+      "date": "2026-10-16",
+      "startTime": "2026-10-16T18:30:00",
+      "status": "upcoming",
+      "trackId": 33,
+      "trackName": "Östersund"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-10-16_18_4",
+      "date": "2026-10-16",
+      "startTime": "2026-10-16T19:30:00",
+      "status": "upcoming",
+      "trackId": 18,
+      "trackName": "Halmstad"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-17_28_5",
+      "date": "2026-10-17",
+      "startTime": "2026-10-17T12:30:00",
+      "status": "upcoming",
+      "trackId": 28,
+      "trackName": "Visby"
+    },
+    {
       "type": "V85",
       "id": "V85_2026-10-17_16_5",
       "date": "2026-10-17",
       "startTime": "2026-10-17T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 16,
       "trackName": "Gävle"
     },
@@ -132,9 +159,18 @@
       "id": "V5_2026-10-17_16_8",
       "date": "2026-10-17",
       "startTime": "2026-10-17T16:06:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 16,
       "trackName": "Gävle"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-18_25_3",
+      "date": "2026-10-18",
+      "startTime": "2026-10-18T14:45:00",
+      "status": "upcoming",
+      "trackId": 25,
+      "trackName": "Skellefteå"
     }
   ]
 }
