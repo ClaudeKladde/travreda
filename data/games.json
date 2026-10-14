@@ -1,33 +1,6 @@
 {
-  "updated": "2026-10-13T22:00:09Z",
+  "updated": "2026-10-14T02:18:10Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-13_14_4",
-      "date": "2026-10-13",
-      "startTime": "2026-10-13T13:30:26",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-13_26_3",
-      "date": "2026-10-13",
-      "startTime": "2026-10-13T18:30:52",
-      "status": "results",
-      "trackId": 26,
-      "trackName": "Solänget"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-10-13_7_4",
-      "date": "2026-10-13",
-      "startTime": "2026-10-13T19:31:18",
-      "status": "results",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-14_6_2",
