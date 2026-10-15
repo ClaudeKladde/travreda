@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-15T01:59:15Z",
+  "updated": "2026-10-15T10:25:27Z",
   "games": [
     {
       "type": "V5",
@@ -87,7 +87,7 @@
       "id": "V5_2026-10-17_54_2",
       "date": "2026-10-17",
       "startTime": "2026-10-17T12:50:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Bornholm"
     },
@@ -177,7 +177,7 @@
       "id": "V5_2026-10-19_77_6",
       "date": "2026-10-19",
       "startTime": "2026-10-19T20:05:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 77,
       "trackName": "Bergen"
     },
@@ -186,7 +186,7 @@
       "id": "V5_2026-10-20_9_5",
       "date": "2026-10-20",
       "startTime": "2026-10-20T13:47:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -195,7 +195,7 @@
       "id": "V5_2026-10-20_8_3",
       "date": "2026-10-20",
       "startTime": "2026-10-20T18:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -204,7 +204,7 @@
       "id": "V64_2026-10-20_14_4",
       "date": "2026-10-20",
       "startTime": "2026-10-20T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
     }
