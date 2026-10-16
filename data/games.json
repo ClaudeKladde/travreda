@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-16T01:49:24Z",
+  "updated": "2026-10-16T10:12:39Z",
   "games": [
     {
       "type": "V5",
@@ -177,7 +177,7 @@
       "id": "V5_2026-10-21_5_2",
       "date": "2026-10-21",
       "startTime": "2026-10-21T18:39:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -186,7 +186,7 @@
       "id": "V5_2026-10-21_6_2",
       "date": "2026-10-21",
       "startTime": "2026-10-21T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -195,7 +195,7 @@
       "id": "V86_2026-10-21_40_1",
       "date": "2026-10-21",
       "startTime": "2026-10-21T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
     }
