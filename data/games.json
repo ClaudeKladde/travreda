@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-17T09:46:32Z",
+  "updated": "2026-10-17T14:29:55Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-17_7_4",
       "date": "2026-10-17",
-      "startTime": "2026-10-17T12:16:00",
-      "status": "bettable",
+      "startTime": "2026-10-17T12:16:11",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-10-17_28_5",
       "date": "2026-10-17",
-      "startTime": "2026-10-17T12:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-17T12:38:26",
+      "status": "results",
       "trackId": 28,
       "trackName": "Visby"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-10-17_54_2",
       "date": "2026-10-17",
-      "startTime": "2026-10-17T12:50:00",
-      "status": "bettable",
+      "startTime": "2026-10-17T12:50:48",
+      "status": "results",
       "trackId": 54,
       "trackName": "Bornholm"
     },
@@ -32,8 +32,8 @@
       "type": "V85",
       "id": "V85_2026-10-17_16_5",
       "date": "2026-10-17",
-      "startTime": "2026-10-17T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-10-17T15:00:43",
+      "status": "ongoing",
       "trackId": 16,
       "trackName": "Gävle"
     },
@@ -41,8 +41,8 @@
       "type": "V5",
       "id": "V5_2026-10-17_16_8",
       "date": "2026-10-17",
-      "startTime": "2026-10-17T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-10-17T16:06:51",
+      "status": "ongoing",
       "trackId": 16,
       "trackName": "Gävle"
     },
