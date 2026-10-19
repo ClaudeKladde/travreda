@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-19T01:58:24Z",
+  "updated": "2026-10-19T11:21:05Z",
   "games": [
     {
       "type": "V5",
@@ -114,7 +114,7 @@
       "id": "V85_2026-10-24_7_5",
       "date": "2026-10-24",
       "startTime": "2026-10-24T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -123,7 +123,7 @@
       "id": "V5_2026-10-24_7_8",
       "date": "2026-10-24",
       "startTime": "2026-10-24T16:06:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
     }
