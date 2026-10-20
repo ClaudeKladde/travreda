@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-20T02:15:52Z",
+  "updated": "2026-10-20T10:29:34Z",
   "games": [
     {
       "type": "V5",
@@ -84,10 +84,19 @@
     },
     {
       "type": "V5",
+      "id": "V5_2026-10-23_54_2",
+      "date": "2026-10-23",
+      "startTime": "2026-10-23T16:09:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Odense"
+    },
+    {
+      "type": "V5",
       "id": "V5_2026-10-23_19_2",
       "date": "2026-10-23",
       "startTime": "2026-10-23T18:53:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 19,
       "trackName": "Kalmar"
     },
@@ -96,7 +105,7 @@
       "id": "V64_2026-10-23_12_4",
       "date": "2026-10-23",
       "startTime": "2026-10-23T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 12,
       "trackName": "Bollnäs"
     },
