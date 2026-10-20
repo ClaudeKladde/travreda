@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-20T15:53:22Z",
+  "updated": "2026-10-20T20:56:15Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-10-20_8_3",
       "date": "2026-10-20",
-      "startTime": "2026-10-20T18:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-20T18:32:33",
+      "status": "results",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -23,8 +23,8 @@
       "type": "V64",
       "id": "V64_2026-10-20_14_4",
       "date": "2026-10-20",
-      "startTime": "2026-10-20T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-20T19:30:50",
+      "status": "results",
       "trackId": 14,
       "trackName": "Eskilstuna"
     },
