@@ -1,33 +1,6 @@
 {
-  "updated": "2026-10-20T20:56:15Z",
+  "updated": "2026-10-21T02:09:13Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-20_9_5",
-      "date": "2026-10-20",
-      "startTime": "2026-10-20T13:47:00",
-      "status": "results",
-      "trackId": 9,
-      "trackName": "Bergsåker"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-20_8_3",
-      "date": "2026-10-20",
-      "startTime": "2026-10-20T18:32:33",
-      "status": "results",
-      "trackId": 8,
-      "trackName": "Axevalla"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-10-20_14_4",
-      "date": "2026-10-20",
-      "startTime": "2026-10-20T19:30:50",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-21_5_2",
