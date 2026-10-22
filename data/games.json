@@ -1,33 +1,6 @@
 {
-  "updated": "2026-10-21T20:56:52Z",
+  "updated": "2026-10-22T02:03:39Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-21_5_2",
-      "date": "2026-10-21",
-      "startTime": "2026-10-21T18:42:00",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-21_6_2",
-      "date": "2026-10-21",
-      "startTime": "2026-10-21T18:51:06",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-10-21_40_1",
-      "date": "2026-10-21",
-      "startTime": "2026-10-21T20:30:05",
-      "status": "results",
-      "trackId": 40,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-22_16_4",
