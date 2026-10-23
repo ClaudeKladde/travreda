@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-23T02:08:08Z",
+  "updated": "2026-10-23T10:35:15Z",
   "games": [
     {
       "type": "V5",
@@ -66,6 +66,15 @@
     },
     {
       "type": "V5",
+      "id": "V5_2026-10-25_91_6",
+      "date": "2026-10-25",
+      "startTime": "2026-10-25T02:36:00",
+      "status": "bettable",
+      "trackId": 91,
+      "trackName": "Scioto Downs"
+    },
+    {
+      "type": "V5",
       "id": "V5_2026-10-25_54_3",
       "date": "2026-10-25",
       "startTime": "2026-10-25T14:45:00",
@@ -90,15 +99,6 @@
       "status": "bettable",
       "trackId": 83,
       "trackName": "Orkla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-25_91_6",
-      "date": "2026-10-25",
-      "startTime": "2026-10-26T02:36:00",
-      "status": "upcoming",
-      "trackId": 91,
-      "trackName": "Scioto Downs"
     },
     {
       "type": "V5",
@@ -159,7 +159,7 @@
       "id": "V5_2026-10-28_5_2",
       "date": "2026-10-28",
       "startTime": "2026-10-28T18:39:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -168,7 +168,7 @@
       "id": "V5_2026-10-28_9_2",
       "date": "2026-10-28",
       "startTime": "2026-10-28T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -177,7 +177,7 @@
       "id": "V86_2026-10-28_40_1",
       "date": "2026-10-28",
       "startTime": "2026-10-28T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
     }
