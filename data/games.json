@@ -1,33 +1,6 @@
 {
-  "updated": "2026-10-23T20:41:59Z",
+  "updated": "2026-10-24T02:07:12Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-10-23_54_2",
-      "date": "2026-10-23",
-      "startTime": "2026-10-23T16:09:37",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Odense"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-23_19_2",
-      "date": "2026-10-23",
-      "startTime": "2026-10-23T19:07:17",
-      "status": "results",
-      "trackId": 19,
-      "trackName": "Kalmar"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-10-23_12_4",
-      "date": "2026-10-23",
-      "startTime": "2026-10-23T19:35:52",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
     {
       "type": "V5",
       "id": "V5_2026-10-24_84_2",
