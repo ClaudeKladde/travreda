@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-24T09:53:08Z",
+  "updated": "2026-10-24T14:56:51Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-24_84_2",
       "date": "2026-10-24",
       "startTime": "2026-10-24T11:30:44",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 84,
       "trackName": "Harstad"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-10-24_23_4",
       "date": "2026-10-24",
-      "startTime": "2026-10-24T12:16:00",
-      "status": "bettable",
+      "startTime": "2026-10-24T12:16:51",
+      "status": "results",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -23,8 +23,8 @@
       "type": "V85",
       "id": "V85_2026-10-24_7_5",
       "date": "2026-10-24",
-      "startTime": "2026-10-24T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-10-24T15:00:50",
+      "status": "ongoing",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-10-24_7_8",
       "date": "2026-10-24",
-      "startTime": "2026-10-24T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-10-24T16:13:14",
+      "status": "ongoing",
       "trackId": 7,
       "trackName": "Jägersro"
     },
