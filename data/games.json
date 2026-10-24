@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-24T02:07:12Z",
+  "updated": "2026-10-24T09:53:08Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-24_84_2",
       "date": "2026-10-24",
-      "startTime": "2026-10-24T11:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-24T11:30:44",
+      "status": "ongoing",
       "trackId": 84,
       "trackName": "Harstad"
     },
@@ -159,7 +159,7 @@
       "id": "V5_2026-10-29_12_4",
       "date": "2026-10-29",
       "startTime": "2026-10-29T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 12,
       "trackName": "Bollnäs"
     },
@@ -168,7 +168,7 @@
       "id": "V5_2026-10-29_32_2",
       "date": "2026-10-29",
       "startTime": "2026-10-29T18:53:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -177,7 +177,7 @@
       "id": "V64_2026-10-29_6_4",
       "date": "2026-10-29",
       "startTime": "2026-10-29T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     }
