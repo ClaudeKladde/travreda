@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-25T15:06:35Z",
+  "updated": "2026-10-25T20:02:47Z",
   "games": [
     {
       "type": "V5",
@@ -15,7 +15,7 @@
       "id": "V5_2026-10-25_54_3",
       "date": "2026-10-25",
       "startTime": "2026-10-25T14:49:04",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 54,
       "trackName": "Nyköbing"
     },
@@ -24,7 +24,7 @@
       "id": "GS75_2026-10-25_27_4",
       "date": "2026-10-25",
       "startTime": "2026-10-25T15:01:05",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 27,
       "trackName": "Umåker"
     },
@@ -32,8 +32,8 @@
       "type": "V5",
       "id": "V5_2026-10-25_83_5",
       "date": "2026-10-25",
-      "startTime": "2026-10-25T19:20:00",
-      "status": "bettable",
+      "startTime": "2026-10-25T19:23:20",
+      "status": "results",
       "trackId": 83,
       "trackName": "Orkla"
     },
@@ -144,6 +144,24 @@
       "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
+    },
+    {
+      "type": "V85",
+      "id": "V85_2026-10-31_78_5",
+      "date": "2026-10-31",
+      "startTime": "2026-10-31T15:00:00",
+      "status": "upcoming",
+      "trackId": 78,
+      "trackName": "Bjerke"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-10-31_78_8",
+      "date": "2026-10-31",
+      "startTime": "2026-10-31T16:06:00",
+      "status": "upcoming",
+      "trackId": 78,
+      "trackName": "Bjerke"
     }
   ]
 }
