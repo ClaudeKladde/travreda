@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-26T17:42:50Z",
+  "updated": "2026-10-26T21:57:43Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V64",
       "id": "V64_2026-10-26_15_4",
       "date": "2026-10-26",
-      "startTime": "2026-10-26T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-26T19:30:29",
+      "status": "results",
       "trackId": 15,
       "trackName": "Färjestad"
     },
@@ -23,8 +23,8 @@
       "type": "V5",
       "id": "V5_2026-10-26_81_5",
       "date": "2026-10-26",
-      "startTime": "2026-10-26T20:05:00",
-      "status": "bettable",
+      "startTime": "2026-10-26T20:05:40",
+      "status": "results",
       "trackId": 81,
       "trackName": "Forus"
     },
