@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-29T17:39:13Z",
+  "updated": "2026-10-29T22:04:06Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-10-29_32_2",
       "date": "2026-10-29",
-      "startTime": "2026-10-29T18:53:00",
-      "status": "bettable",
+      "startTime": "2026-10-29T18:53:54",
+      "status": "results",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -23,8 +23,8 @@
       "type": "V64",
       "id": "V64_2026-10-29_6_4",
       "date": "2026-10-29",
-      "startTime": "2026-10-29T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-29T19:31:06",
+      "status": "results",
       "trackId": 6,
       "trackName": "Åby"
     },
