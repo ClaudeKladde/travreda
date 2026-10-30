@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-30T17:17:28Z",
+  "updated": "2026-10-30T21:43:20Z",
   "games": [
     {
       "type": "V5",
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-10-30_19_2",
       "date": "2026-10-30",
-      "startTime": "2026-10-30T18:53:00",
-      "status": "bettable",
+      "startTime": "2026-10-30T18:57:25",
+      "status": "results",
       "trackId": 19,
       "trackName": "Kalmar"
     },
@@ -23,8 +23,8 @@
       "type": "GS75",
       "id": "GS75_2026-10-30_23_4",
       "date": "2026-10-30",
-      "startTime": "2026-10-30T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-10-30T19:31:03",
+      "status": "results",
       "trackId": 23,
       "trackName": "Romme"
     },
