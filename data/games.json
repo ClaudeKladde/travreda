@@ -1,12 +1,12 @@
 {
-  "updated": "2026-10-30T11:43:55Z",
+  "updated": "2026-10-30T17:17:28Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-10-30_54_2",
       "date": "2026-10-30",
-      "startTime": "2026-10-30T16:07:00",
-      "status": "bettable",
+      "startTime": "2026-10-30T16:07:43",
+      "status": "results",
       "trackId": 54,
       "trackName": "Skive"
     },
@@ -162,6 +162,33 @@
       "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-05_12_6",
+      "date": "2026-11-05",
+      "startTime": "2026-11-05T14:07:00",
+      "status": "upcoming",
+      "trackId": 12,
+      "trackName": "Bollnäs"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-05_6_3",
+      "date": "2026-11-05",
+      "startTime": "2026-11-05T18:30:00",
+      "status": "upcoming",
+      "trackId": 6,
+      "trackName": "Åby"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-11-05_11_4",
+      "date": "2026-11-05",
+      "startTime": "2026-11-05T19:30:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
     }
   ]
 }
