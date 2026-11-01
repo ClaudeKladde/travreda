@@ -1,24 +1,6 @@
 {
-  "updated": "2026-10-31T20:42:54Z",
+  "updated": "2026-11-01T02:45:30Z",
   "games": [
-    {
-      "type": "V85",
-      "id": "V85_2026-10-31_78_5",
-      "date": "2026-10-31",
-      "startTime": "2026-10-31T15:02:07",
-      "status": "results",
-      "trackId": 78,
-      "trackName": "Bjerke"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-10-31_78_8",
-      "date": "2026-10-31",
-      "startTime": "2026-10-31T16:07:08",
-      "status": "results",
-      "trackId": 78,
-      "trackName": "Bjerke"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-01_55_2",
