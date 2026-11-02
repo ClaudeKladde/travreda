@@ -1,42 +1,6 @@
 {
-  "updated": "2026-11-01T21:24:23Z",
+  "updated": "2026-11-02T02:53:40Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-01_55_2",
-      "date": "2026-11-01",
-      "startTime": "2026-11-01T14:06:23",
-      "status": "results",
-      "trackId": 55,
-      "trackName": "Charlottenlund"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-11-01_5_5",
-      "date": "2026-11-01",
-      "startTime": "2026-11-01T15:00:19",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-01_5_8",
-      "date": "2026-11-01",
-      "startTime": "2026-11-01T16:06:32",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-01_80_4",
-      "date": "2026-11-01",
-      "startTime": "2026-11-01T20:01:05",
-      "status": "results",
-      "trackId": 80,
-      "trackName": "Momarken"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-02_31_4",
