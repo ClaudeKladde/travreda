@@ -1,42 +1,6 @@
 {
-  "updated": "2026-11-02T13:56:09Z",
+  "updated": "2026-11-03T00:05:16Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-02_31_4",
-      "date": "2026-11-02",
-      "startTime": "2026-11-02T13:29:32",
-      "status": "ongoing",
-      "trackId": 31,
-      "trackName": "Årjäng"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-02_54_3",
-      "date": "2026-11-02",
-      "startTime": "2026-11-02T17:36:00",
-      "status": "bettable",
-      "trackId": 54,
-      "trackName": "Ålborg"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-02_22_3",
-      "date": "2026-11-02",
-      "startTime": "2026-11-02T18:30:00",
-      "status": "bettable",
-      "trackId": 22,
-      "trackName": "Mantorp"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-02_18_4",
-      "date": "2026-11-02",
-      "startTime": "2026-11-02T19:30:00",
-      "status": "bettable",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-03_14_4",
@@ -110,6 +74,15 @@
       "trackName": "Boden"
     },
     {
+      "type": "V64",
+      "id": "V64_2026-11-06_15_4",
+      "date": "2026-11-06",
+      "startTime": "2026-11-06T19:30:00",
+      "status": "upcoming",
+      "trackId": 15,
+      "trackName": "Färjestad"
+    },
+    {
       "type": "V5",
       "id": "V5_2026-11-06_96_6",
       "date": "2026-11-06",
@@ -135,6 +108,15 @@
       "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
+    },
+    {
+      "type": "GS75",
+      "id": "GS75_2026-11-08_55_4",
+      "date": "2026-11-08",
+      "startTime": "2026-11-08T15:00:00",
+      "status": "upcoming",
+      "trackId": 55,
+      "trackName": "Charlottenlund"
     }
   ]
 }
