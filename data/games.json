@@ -1,24 +1,6 @@
 {
-  "updated": "2026-11-03T22:37:10Z",
+  "updated": "2026-11-04T03:29:36Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-03_14_4",
-      "date": "2026-11-03",
-      "startTime": "2026-11-03T13:27:58",
-      "status": "results",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-03_8_4",
-      "date": "2026-11-03",
-      "startTime": "2026-11-03T19:30:27",
-      "status": "results",
-      "trackId": 8,
-      "trackName": "Axevalla"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-04_5_2",
