@@ -1,33 +1,6 @@
 {
-  "updated": "2026-11-04T22:56:08Z",
+  "updated": "2026-11-05T03:51:31Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-04_5_2",
-      "date": "2026-11-04",
-      "startTime": "2026-11-04T18:39:36",
-      "status": "results",
-      "trackId": 5,
-      "trackName": "Solvalla"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-04_7_1",
-      "date": "2026-11-04",
-      "startTime": "2026-11-04T18:51:09",
-      "status": "results",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
-    {
-      "type": "V86",
-      "id": "V86_2026-11-04_40_1",
-      "date": "2026-11-04",
-      "startTime": "2026-11-04T20:30:17",
-      "status": "results",
-      "trackId": 40,
-      "trackName": "Flera banor"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-05_12_6",
