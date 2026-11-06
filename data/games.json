@@ -1,33 +1,6 @@
 {
-  "updated": "2026-11-05T22:57:09Z",
+  "updated": "2026-11-06T03:49:22Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-05_12_6",
-      "date": "2026-11-05",
-      "startTime": "2026-11-05T14:11:02",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-05_6_3",
-      "date": "2026-11-05",
-      "startTime": "2026-11-05T18:30:34",
-      "status": "results",
-      "trackId": 6,
-      "trackName": "Åby"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-05_11_4",
-      "date": "2026-11-05",
-      "startTime": "2026-11-05T19:30:38",
-      "status": "results",
-      "trackId": 11,
-      "trackName": "Boden"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-06_54_2",
