@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-07T17:18:51Z",
+  "updated": "2026-11-07T21:07:41Z",
   "games": [
     {
       "type": "V5",
@@ -42,7 +42,7 @@
       "id": "V5_2026-11-07_54_2",
       "date": "2026-11-07",
       "startTime": "2026-11-07T17:23:11",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 54,
       "trackName": "Århus"
     },
