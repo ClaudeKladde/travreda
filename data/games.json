@@ -1,51 +1,6 @@
 {
-  "updated": "2026-11-07T21:07:41Z",
+  "updated": "2026-11-08T02:51:32Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-07_84_2",
-      "date": "2026-11-07",
-      "startTime": "2026-11-07T11:44:15",
-      "status": "results",
-      "trackId": 84,
-      "trackName": "Harstad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-07_18_6",
-      "date": "2026-11-07",
-      "startTime": "2026-11-07T13:03:16",
-      "status": "results",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V85",
-      "id": "V85_2026-11-07_9_5",
-      "date": "2026-11-07",
-      "startTime": "2026-11-07T15:01:20",
-      "status": "results",
-      "trackId": 9,
-      "trackName": "Bergsåker"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-07_9_8",
-      "date": "2026-11-07",
-      "startTime": "2026-11-07T16:06:05",
-      "status": "results",
-      "trackId": 9,
-      "trackName": "Bergsåker"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-07_54_2",
-      "date": "2026-11-07",
-      "startTime": "2026-11-07T17:23:11",
-      "status": "results",
-      "trackId": 54,
-      "trackName": "Århus"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-08_27_4",
