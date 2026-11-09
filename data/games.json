@@ -1,33 +1,6 @@
 {
-  "updated": "2026-11-08T21:24:04Z",
+  "updated": "2026-11-09T03:10:25Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-08_27_4",
-      "date": "2026-11-08",
-      "startTime": "2026-11-08T13:41:59",
-      "status": "results",
-      "trackId": 27,
-      "trackName": "Umåker"
-    },
-    {
-      "type": "GS75",
-      "id": "GS75_2026-11-08_55_4",
-      "date": "2026-11-08",
-      "startTime": "2026-11-08T15:01:10",
-      "status": "results",
-      "trackId": 55,
-      "trackName": "Charlottenlund"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-08_77_4",
-      "date": "2026-11-08",
-      "startTime": "2026-11-08T19:25:46",
-      "status": "results",
-      "trackId": 77,
-      "trackName": "Bergen"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-09_8_4",
