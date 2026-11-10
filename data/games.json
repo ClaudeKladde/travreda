@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-10T13:50:27Z",
+  "updated": "2026-11-10T22:35:46Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-11-10_24_4",
       "date": "2026-11-10",
       "startTime": "2026-11-10T13:26:25",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 24,
       "trackName": "Rättvik"
     },
@@ -14,8 +14,8 @@
       "type": "V64",
       "id": "V64_2026-11-10_7_4",
       "date": "2026-11-10",
-      "startTime": "2026-11-10T19:30:00",
-      "status": "bettable",
+      "startTime": "2026-11-10T19:30:19",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -126,6 +126,51 @@
       "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
+    },
+    {
+      "type": "GS75",
+      "id": "GS75_2026-11-15_9_4",
+      "date": "2026-11-15",
+      "startTime": "2026-11-15T15:00:00",
+      "status": "upcoming",
+      "trackId": 9,
+      "trackName": "Bergsåker"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-15_83_4",
+      "date": "2026-11-15",
+      "startTime": "2026-11-15T19:25:00",
+      "status": "upcoming",
+      "trackId": 83,
+      "trackName": "Orkla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-16_18_4",
+      "date": "2026-11-16",
+      "startTime": "2026-11-16T13:26:00",
+      "status": "upcoming",
+      "trackId": 18,
+      "trackName": "Halmstad"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-16_15_3",
+      "date": "2026-11-16",
+      "startTime": "2026-11-16T18:30:00",
+      "status": "upcoming",
+      "trackId": 15,
+      "trackName": "Färjestad"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-11-16_23_4",
+      "date": "2026-11-16",
+      "startTime": "2026-11-16T19:30:00",
+      "status": "upcoming",
+      "trackId": 23,
+      "trackName": "Romme"
     }
   ]
 }
