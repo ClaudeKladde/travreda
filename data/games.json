@@ -1,24 +1,6 @@
 {
-  "updated": "2026-11-10T22:35:46Z",
+  "updated": "2026-11-11T03:18:28Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-10_24_4",
-      "date": "2026-11-10",
-      "startTime": "2026-11-10T13:26:25",
-      "status": "results",
-      "trackId": 24,
-      "trackName": "Rättvik"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-10_7_4",
-      "date": "2026-11-10",
-      "startTime": "2026-11-10T19:30:19",
-      "status": "results",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-11_80_4",
