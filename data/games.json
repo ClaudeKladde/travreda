@@ -1,33 +1,6 @@
 {
-  "updated": "2026-11-12T22:54:47Z",
+  "updated": "2026-11-13T03:44:02Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-12_32_6",
-      "date": "2026-11-12",
-      "startTime": "2026-11-12T14:32:02",
-      "status": "results",
-      "trackId": 32,
-      "trackName": "Örebro"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-12_12_4",
-      "date": "2026-11-12",
-      "startTime": "2026-11-12T19:32:33",
-      "status": "results",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-12_99_6",
-      "date": "2026-11-12",
-      "startTime": "2026-11-12T20:05:02",
-      "status": "results",
-      "trackId": 99,
-      "trackName": "Sörlandet"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-13_54_2",
