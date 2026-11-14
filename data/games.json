@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-14T03:42:34Z",
+  "updated": "2026-11-14T12:34:49Z",
   "games": [
     {
       "type": "V85",
@@ -132,7 +132,7 @@
       "id": "V5_2026-11-19_12_4",
       "date": "2026-11-19",
       "startTime": "2026-11-19T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 12,
       "trackName": "Bollnäs"
     },
@@ -141,7 +141,7 @@
       "id": "V5_2026-11-19_32_2",
       "date": "2026-11-19",
       "startTime": "2026-11-19T18:53:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 32,
       "trackName": "Örebro"
     },
@@ -150,7 +150,7 @@
       "id": "V64_2026-11-19_6_4",
       "date": "2026-11-19",
       "startTime": "2026-11-19T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     }
