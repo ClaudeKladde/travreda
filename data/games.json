@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-14T12:34:49Z",
+  "updated": "2026-11-14T21:43:07Z",
   "games": [
     {
       "type": "V85",
       "id": "V85_2026-11-14_14_5",
       "date": "2026-11-14",
-      "startTime": "2026-11-14T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-11-14T15:03:52",
+      "status": "results",
       "trackId": 14,
       "trackName": "Eskilstuna"
     },
@@ -14,8 +14,8 @@
       "type": "V5",
       "id": "V5_2026-11-14_14_8",
       "date": "2026-11-14",
-      "startTime": "2026-11-14T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-11-14T16:12:59",
+      "status": "results",
       "trackId": 14,
       "trackName": "Eskilstuna"
     },
