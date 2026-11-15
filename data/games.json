@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-15T03:19:47Z",
+  "updated": "2026-11-15T13:00:21Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-11-15_54_3",
       "date": "2026-11-15",
-      "startTime": "2026-11-15T13:10:00",
-      "status": "bettable",
+      "startTime": "2026-11-15T13:10:40",
+      "status": "ongoing",
       "trackId": 54,
       "trackName": "Nyköbing"
     },
