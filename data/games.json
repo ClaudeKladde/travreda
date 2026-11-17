@@ -1,33 +1,6 @@
 {
-  "updated": "2026-11-16T14:04:41Z",
+  "updated": "2026-11-17T01:09:33Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-16_18_4",
-      "date": "2026-11-16",
-      "startTime": "2026-11-16T13:26:11",
-      "status": "results",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-16_15_3",
-      "date": "2026-11-16",
-      "startTime": "2026-11-16T18:30:00",
-      "status": "bettable",
-      "trackId": 15,
-      "trackName": "Färjestad"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-16_23_4",
-      "date": "2026-11-16",
-      "startTime": "2026-11-16T19:30:00",
-      "status": "bettable",
-      "trackId": 23,
-      "trackName": "Romme"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-17_16_4",
@@ -110,6 +83,15 @@
       "trackName": "Åby"
     },
     {
+      "type": "V64",
+      "id": "V64_2026-11-20_11_4",
+      "date": "2026-11-20",
+      "startTime": "2026-11-20T19:30:00",
+      "status": "upcoming",
+      "trackId": 11,
+      "trackName": "Boden"
+    },
+    {
       "type": "V5",
       "id": "V5_2026-11-20_96_4",
       "date": "2026-11-20",
@@ -117,6 +99,15 @@
       "status": "upcoming",
       "trackId": 96,
       "trackName": "Biri"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-21_8_4",
+      "date": "2026-11-21",
+      "startTime": "2026-11-21T12:16:00",
+      "status": "upcoming",
+      "trackId": 8,
+      "trackName": "Axevalla"
     },
     {
       "type": "V85",
