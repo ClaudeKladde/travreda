@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-17T01:09:33Z",
+  "updated": "2026-11-17T14:58:20Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-11-17_16_4",
       "date": "2026-11-17",
-      "startTime": "2026-11-17T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-11-17T13:26:31",
+      "status": "results",
       "trackId": 16,
       "trackName": "Gävle"
     },
@@ -83,11 +83,20 @@
       "trackName": "Åby"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-11-20_54_2",
+      "date": "2026-11-20",
+      "startTime": "2026-11-20T16:07:00",
+      "status": "upcoming",
+      "trackId": 54,
+      "trackName": "Odense"
+    },
+    {
       "type": "V64",
       "id": "V64_2026-11-20_11_4",
       "date": "2026-11-20",
       "startTime": "2026-11-20T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 11,
       "trackName": "Boden"
     },
@@ -96,16 +105,25 @@
       "id": "V5_2026-11-20_96_4",
       "date": "2026-11-20",
       "startTime": "2026-11-20T20:05:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 96,
       "trackName": "Biri"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-21_84_2",
+      "date": "2026-11-21",
+      "startTime": "2026-11-21T11:30:00",
+      "status": "upcoming",
+      "trackId": 84,
+      "trackName": "Harstad"
     },
     {
       "type": "V5",
       "id": "V5_2026-11-21_8_4",
       "date": "2026-11-21",
       "startTime": "2026-11-21T12:16:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 8,
       "trackName": "Axevalla"
     },
@@ -126,6 +144,51 @@
       "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-22_27_4",
+      "date": "2026-11-22",
+      "startTime": "2026-11-22T13:29:00",
+      "status": "upcoming",
+      "trackId": 27,
+      "trackName": "Umåker"
+    },
+    {
+      "type": "GS75",
+      "id": "GS75_2026-11-22_22_4",
+      "date": "2026-11-22",
+      "startTime": "2026-11-22T15:00:00",
+      "status": "upcoming",
+      "trackId": 22,
+      "trackName": "Mantorp"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-22_80_4",
+      "date": "2026-11-22",
+      "startTime": "2026-11-22T19:25:00",
+      "status": "upcoming",
+      "trackId": 80,
+      "trackName": "Momarken"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-23_23_4",
+      "date": "2026-11-23",
+      "startTime": "2026-11-23T13:26:00",
+      "status": "upcoming",
+      "trackId": 23,
+      "trackName": "Romme"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-11-23_15_4",
+      "date": "2026-11-23",
+      "startTime": "2026-11-23T19:30:00",
+      "status": "upcoming",
+      "trackId": 15,
+      "trackName": "Färjestad"
     }
   ]
 }
