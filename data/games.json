@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-20T04:51:53Z",
+  "updated": "2026-11-20T14:26:54Z",
   "games": [
     {
       "type": "V5",
@@ -168,7 +168,7 @@
       "id": "V5_2026-11-25_9_4",
       "date": "2026-11-25",
       "startTime": "2026-11-25T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 9,
       "trackName": "Bergsåker"
     },
@@ -177,7 +177,7 @@
       "id": "V5_2026-11-25_5_2",
       "date": "2026-11-25",
       "startTime": "2026-11-25T18:39:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -186,7 +186,7 @@
       "id": "V5_2026-11-25_6_2",
       "date": "2026-11-25",
       "startTime": "2026-11-25T18:51:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 6,
       "trackName": "Åby"
     },
@@ -195,9 +195,27 @@
       "id": "V86_2026-11-25_40_1",
       "date": "2026-11-25",
       "startTime": "2026-11-25T20:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-26_12_4",
+      "date": "2026-11-26",
+      "startTime": "2026-11-26T13:26:00",
+      "status": "upcoming",
+      "trackId": 12,
+      "trackName": "Bollnäs"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-11-26_18_4",
+      "date": "2026-11-26",
+      "startTime": "2026-11-26T19:30:00",
+      "status": "upcoming",
+      "trackId": 18,
+      "trackName": "Halmstad"
     }
   ]
 }
