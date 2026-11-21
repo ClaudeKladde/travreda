@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-21T13:46:00Z",
+  "updated": "2026-11-21T22:29:19Z",
   "games": [
     {
       "type": "V5",
@@ -24,7 +24,7 @@
       "id": "V5_2026-11-21_54_1",
       "date": "2026-11-21",
       "startTime": "2026-11-21T14:06:13",
-      "status": "ongoing",
+      "status": "results",
       "trackId": 54,
       "trackName": "Århus"
     },
@@ -32,8 +32,8 @@
       "type": "V85",
       "id": "V85_2026-11-21_7_5",
       "date": "2026-11-21",
-      "startTime": "2026-11-21T15:00:00",
-      "status": "bettable",
+      "startTime": "2026-11-21T15:00:22",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -41,8 +41,8 @@
       "type": "V5",
       "id": "V5_2026-11-21_7_8",
       "date": "2026-11-21",
-      "startTime": "2026-11-21T16:06:00",
-      "status": "bettable",
+      "startTime": "2026-11-21T16:08:10",
+      "status": "results",
       "trackId": 7,
       "trackName": "Jägersro"
     },
