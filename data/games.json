@@ -1,42 +1,6 @@
 {
-  "updated": "2026-11-22T22:52:38Z",
+  "updated": "2026-11-23T04:13:57Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-22_27_4",
-      "date": "2026-11-22",
-      "startTime": "2026-11-22T13:33:44",
-      "status": "results",
-      "trackId": 27,
-      "trackName": "Umåker"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-22_55_3",
-      "date": "2026-11-22",
-      "startTime": "2026-11-22T14:45:43",
-      "status": "results",
-      "trackId": 55,
-      "trackName": "Charlottenlund"
-    },
-    {
-      "type": "GS75",
-      "id": "GS75_2026-11-22_22_4",
-      "date": "2026-11-22",
-      "startTime": "2026-11-22T15:10:30",
-      "status": "results",
-      "trackId": 22,
-      "trackName": "Mantorp"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-22_80_4",
-      "date": "2026-11-22",
-      "startTime": "2026-11-22T19:27:51",
-      "status": "results",
-      "trackId": 80,
-      "trackName": "Momarken"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-23_23_4",
