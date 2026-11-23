@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-23T04:13:57Z",
+  "updated": "2026-11-23T16:36:19Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-11-23_23_4",
       "date": "2026-11-23",
-      "startTime": "2026-11-23T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-11-23T13:29:08",
+      "status": "results",
       "trackId": 23,
       "trackName": "Romme"
     },
@@ -110,11 +110,38 @@
       "trackName": "Halmstad"
     },
     {
+      "type": "V5",
+      "id": "V5_2026-11-26_81_4",
+      "date": "2026-11-26",
+      "startTime": "2026-11-26T20:05:00",
+      "status": "upcoming",
+      "trackId": 81,
+      "trackName": "Forus"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-27_19_2",
+      "date": "2026-11-27",
+      "startTime": "2026-11-27T18:53:00",
+      "status": "upcoming",
+      "trackId": 19,
+      "trackName": "Kalmar"
+    },
+    {
+      "type": "V64",
+      "id": "V64_2026-11-27_16_4",
+      "date": "2026-11-27",
+      "startTime": "2026-11-27T19:30:00",
+      "status": "upcoming",
+      "trackId": 16,
+      "trackName": "Gävle"
+    },
+    {
       "type": "V75",
       "id": "V75_2026-11-28_5_5",
       "date": "2026-11-28",
       "startTime": "2026-11-28T15:00:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
     },
@@ -123,9 +150,18 @@
       "id": "V5_2026-11-28_5_7",
       "date": "2026-11-28",
       "startTime": "2026-11-28T15:46:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 5,
       "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-11-28_8_2",
+      "date": "2026-11-28",
+      "startTime": "2026-11-28T18:45:00",
+      "status": "upcoming",
+      "trackId": 8,
+      "trackName": "Axevalla"
     }
   ]
 }
