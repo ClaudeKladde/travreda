@@ -1,24 +1,6 @@
 {
-  "updated": "2026-11-24T16:33:14Z",
+  "updated": "2026-11-25T01:40:03Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-24_7_4",
-      "date": "2026-11-24",
-      "startTime": "2026-11-24T13:26:08",
-      "status": "results",
-      "trackId": 7,
-      "trackName": "Jägersro"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-24_14_4",
-      "date": "2026-11-24",
-      "startTime": "2026-11-24T19:30:00",
-      "status": "bettable",
-      "trackId": 14,
-      "trackName": "Eskilstuna"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-25_9_4",
@@ -54,33 +36,6 @@
       "status": "bettable",
       "trackId": 40,
       "trackName": "Flera banor"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-26_12_4",
-      "date": "2026-11-26",
-      "startTime": "2026-11-26T13:26:00",
-      "status": "bettable",
-      "trackId": 12,
-      "trackName": "Bollnäs"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-26_18_4",
-      "date": "2026-11-26",
-      "startTime": "2026-11-26T19:30:00",
-      "status": "bettable",
-      "trackId": 18,
-      "trackName": "Halmstad"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-26_81_4",
-      "date": "2026-11-26",
-      "startTime": "2026-11-26T20:05:00",
-      "status": "bettable",
-      "trackId": 81,
-      "trackName": "Forus"
     },
     {
       "type": "V5",
