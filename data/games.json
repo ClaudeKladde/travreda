@@ -1,12 +1,12 @@
 {
-  "updated": "2026-11-26T01:13:09Z",
+  "updated": "2026-11-26T15:52:58Z",
   "games": [
     {
       "type": "V5",
       "id": "V5_2026-11-26_12_4",
       "date": "2026-11-26",
-      "startTime": "2026-11-26T13:26:00",
-      "status": "bettable",
+      "startTime": "2026-11-26T13:26:56",
+      "status": "results",
       "trackId": 12,
       "trackName": "Bollnäs"
     },
@@ -60,7 +60,7 @@
       "id": "V5_2026-11-28_54_2",
       "date": "2026-11-28",
       "startTime": "2026-11-28T13:20:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Ålborg"
     },
@@ -123,7 +123,7 @@
       "id": "V5_2026-11-30_54_2",
       "date": "2026-11-30",
       "startTime": "2026-11-30T18:20:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 54,
       "trackName": "Skive"
     },
@@ -150,7 +150,7 @@
       "id": "V5_2026-12-01_7_4",
       "date": "2026-12-01",
       "startTime": "2026-12-01T13:26:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 7,
       "trackName": "Jägersro"
     },
@@ -159,9 +159,45 @@
       "id": "V64_2026-12-01_14_4",
       "date": "2026-12-01",
       "startTime": "2026-12-01T19:30:00",
-      "status": "upcoming",
+      "status": "bettable",
       "trackId": 14,
       "trackName": "Eskilstuna"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-12-02_8_4",
+      "date": "2026-12-02",
+      "startTime": "2026-12-02T13:26:00",
+      "status": "upcoming",
+      "trackId": 8,
+      "trackName": "Axevalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-12-02_5_2",
+      "date": "2026-12-02",
+      "startTime": "2026-12-02T18:39:00",
+      "status": "upcoming",
+      "trackId": 5,
+      "trackName": "Solvalla"
+    },
+    {
+      "type": "V5",
+      "id": "V5_2026-12-02_9_2",
+      "date": "2026-12-02",
+      "startTime": "2026-12-02T18:51:00",
+      "status": "upcoming",
+      "trackId": 9,
+      "trackName": "Bergsåker"
+    },
+    {
+      "type": "V86",
+      "id": "V86_2026-12-02_40_1",
+      "date": "2026-12-02",
+      "startTime": "2026-12-02T20:30:00",
+      "status": "upcoming",
+      "trackId": 40,
+      "trackName": "Flera banor"
     }
   ]
 }
