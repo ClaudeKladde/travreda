@@ -843,6 +843,39 @@ göra det tydligt när samma bana har flera omgångar av olika speltyper
 samma dag — bara rubriken räcker inte om man svepit förbi den och tappat
 sammanhanget.
 
+### V75 tillbaka 28 november 2026 + "Endast V7"
+
+ATG återinförde V75 (premiär 2026-11-28, Solvalla) och pausade V85.
+Verifierat mot ATG:s pressmeddelande/nyhetskällor och live-API:
+`/calendar/day/2026-11-28` listar `V75` (även ett nytt `top7`, inte byggt),
+och `/games/V75_2026-11-28_5_5` har samma struktur som tidigare V75 —
+7 avdelningar, `pools.V75.payouts` för 5/6/7 rätt, `jackpotAmount` på
+jackpotomgångar.
+
+- **Startsidan:** `GAME_TYPE_ORDER` har V75 först.
+- **Radpris:** `ROW_PRICE.V75` 0,50 → **0,60 kr** (ATG:s första höjning
+  sedan 1993, flera oberoende källor).
+- **"Endast V7"** (på uttrycklig begäran): kryssruta `#v7-only` i
+  Villkor-vyn direkt före "Ladda ner ATG-fil", bara synlig för V75.
+  V7 = bara 7-rätt-potten, 2,5 × V75-utdelningen enligt ATG, ingen
+  utdelning på 5/6 rätt, **erbjuds inte i jackpotomgångar** — appen
+  tolkar `pools.V75.jackpotAmount > 0` som jackpotomgång och inaktiverar
+  då kryssrutan med en förklaring (`renderV7Option()`). Tolkningen är
+  **inte verifierad** mot en vanlig (icke-jackpot) omgång än — premiären
+  är en jackpotomgång. `v7Only` sparas per omgång i `saveState()`.
+- **Filformat:** `<v75Coupon ... v7="true">` när V7 är valt (`v7Active()`).
+  Attributet finns i schemat (`v75CouponType`, "Restricts the bet to
+  participation in the seven-right pool only") och används så av
+  HPTClient (`ATGCouponHelper.cs`: `v7 = hc.V6`). **OBS:** i schema 1.8.6
+  är det markerat som föråldrat (`fixed="false"`, sedan 1.8.1) — ATG har
+  rimligen öppnat det igen nu när V7 återinförts, men det är **inte
+  bekräftat** (nyare schema gick inte att hämta, atg.se svarar 403/404).
+  Första riktiga inlämningen med V7 avgör.
+- Sammanfattningen säger ", endast V7" (synligt ", V7") när det är valt.
+- **Inte anpassat:** "Rätta system" läser inte `v7`-attributet — en
+  V7-fil rättas som vanlig V75 (visar 5/6 rätt och vanlig 7-rätts-
+  utdelning).
+
 ### Spelformer — V85, V75, V86, GS75, V64, V5
 
 Utökat från de ursprungliga V85/V75/V86 efter uttrycklig begäran. Verifierat

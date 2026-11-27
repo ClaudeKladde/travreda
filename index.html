@@ -504,7 +504,7 @@
   </div>
   <p id="manual-status" class="status-msg" role="status"></p>
 
-  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-10-03 13:36</span>
+  <span class="update-line">Vibe kodad med Claude av Travkladde, senast uppdaterad 2026-11-27 18:34</span>
 
 </div>
 
@@ -578,9 +578,14 @@
   <h3>Exportera till ATG</h3>
   <p>Skapar en XML-fil som du laddar upp under
   <a href="https://www.atg.se/spel/reducerat" target="_blank" rel="noopener">Filinlämning på atg.se</a>.
-  Radpriset varierar per spelform (t.ex. 50 öre för V85/V75, 25 öre för V86,
-  1 krona för GS75/V64/V5) — dubbelkolla alltid det faktiska priset på
-  atg.se innan du lämnar in.</p>
+  Radpriset varierar per spelform (t.ex. 60 öre för V75, 50 öre för V85,
+  25 öre för V86, 1 krona för GS75/V64/V5) — dubbelkolla alltid det
+  faktiska priset på atg.se innan du lämnar in.</p>
+  <div id="v7-option" hidden>
+    <input type="checkbox" id="v7-only">
+    <label for="v7-only">Spela endast V7</label>
+    <p class="avd-progress" id="v7-note"></p>
+  </div>
   <button type="button" id="btn-export" class="btn-primary" disabled>Ladda ner ATG-fil</button>
   <button type="button" id="btn-open-atg">Öppna ATG:s filinlämning</button>
 
@@ -701,10 +706,11 @@
   // ("Vilka spelformer finns och hur högt är radpriset?"), inte längre ett
   // enda antaget värde för alla spelformer. V85 och V75 delar samma pris
   // (V85 efterträdde V75 som ATG:s flaggskeppsspel).
-  var ROW_PRICE = { V85: 0.5, V75: 0.5, V86: 0.25, GS75: 1, V64: 1, V5: 1 };
+  // V75 höjdes till 60 öre/rad när spelet återkom 28 november 2026 (ATG).
+  var ROW_PRICE = { V85: 0.5, V75: 0.6, V86: 0.25, GS75: 1, V64: 1, V5: 1 };
   // Kedjan bokstavsvals-steppern (knappläget) rör sig igenom, "" = Ej vald.
   var LETTER_SEQUENCE = ["", "A", "B", "C", "D"];
-  var GAME_TYPE_ORDER = ["V85", "V86", "V75", "GS75", "V64", "V5"];
+  var GAME_TYPE_ORDER = ["V75", "V85", "V86", "GS75", "V64", "V5"];
   var MAX_UNREDUCED_WARN = 3000000;
 
   var currentGame = null;
@@ -714,6 +720,8 @@
   var lastCalculatedRows = null;
   var lastCoupons = null;
   var systemMode = "abc";
+  // "Endast V7" (bara 7-rätt-potten) — bara V75, inte i jackpotomgångar.
+  var v7Only = false;
   var liveStats = null;
   var currentRowUpdaters = [];
   var currentPctEls = {};
@@ -1409,6 +1417,7 @@
       villkor: villkor,
       currentAvd: currentAvd,
       systemMode: systemMode,
+      v7Only: v7Only,
       savedAt: new Date().toISOString()
     };
     try {
@@ -1495,10 +1504,12 @@
         villkor = restoreData.villkor || [];
         currentAvd = restoreData.currentAvd || 0;
         systemMode = restoreData.systemMode === "plain" ? "plain" : "abc";
+        v7Only = restoreData.v7Only === true;
         if(currentAvd < 0 || currentAvd >= currentGame.races.length){ currentAvd = 0; }
       } else {
         letters = {};
         systemMode = "abc";
+        v7Only = false;
         var defaultPreset = VILLKOR_PRESETS.filter(function(p){ return p.id === DEFAULT_PRESET_ID; })[0];
         villkor = presetToVillkor(defaultPreset, currentGame.races.length);
         currentAvd = 0;
@@ -2252,6 +2263,7 @@
     if(systemMode === "plain"){ presetEl.value = "plain"; }
     renderLetterTally();
     renderSystemOverview();
+    renderV7Option();
     renderLiveSummary();
   }
 
@@ -2596,10 +2608,11 @@
     var levelText = compressionLevel === "none" ? " (okomprimerad)" :
       compressionLevel === "light" ? " (lättare komprimering)" : " (hårdare komprimering)";
     var couponText = compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger") + levelText;
-    var coreText = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr" + couponText + ".";
+    var coreText = liveStats.unreduced + " rader, reducerat " + reducedPct + " %, " + liveStats.rows + " rader, pris " + price + " kr" + couponText + (v7Active() ? ", endast V7" : "") + ".";
     setStickyText(btn,
       liveStats.rows + " rader, " + price + " kr" +
-        (compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger")),
+        (compressionLevel === "none" ? "" : ", " + pl(liveStats.coupons, "kupong", "kuponger")) +
+        (v7Active() ? ", V7" : ""),
       coreText);
 
     if(summaryText){
@@ -2710,6 +2723,40 @@
     return hex2(high) + hex2(low);
   }
 
+  // V7 = V75-spel som bara deltar i 7-rätt-potten (2,5 gånger V75-utdelningen
+  // enligt ATG, ingen utdelning på 5 eller 6 rätt). Erbjuds inte i
+  // jackpotomgångar — tolkat som att pools.V75.jackpotAmount är satt (> 0).
+  function isJackpotRound(){
+    var pool = currentGame && currentGame.pools && currentGame.pools[currentGame.type];
+    return !!(pool && pool.jackpotAmount > 0);
+  }
+  function v7Allowed(){
+    return !!currentGame && currentGame.type === "V75" && !isJackpotRound();
+  }
+  function v7Active(){ return v7Only && v7Allowed(); }
+
+  function renderV7Option(){
+    var wrap = document.getElementById("v7-option");
+    var box = document.getElementById("v7-only");
+    var note = document.getElementById("v7-note");
+    if(!currentGame || currentGame.type !== "V75"){ wrap.hidden = true; return; }
+    wrap.hidden = false;
+    if(isJackpotRound()){
+      box.checked = false;
+      box.disabled = true;
+      note.textContent = "Inte tillgängligt: V7 erbjuds inte i jackpotomgångar.";
+    } else {
+      box.disabled = false;
+      box.checked = v7Only;
+      note.textContent = "Bara 7 rätt ger utdelning, 2,5 gånger V75-utdelningen. Ingen utdelning på 5 eller 6 rätt.";
+    }
+  }
+  document.getElementById("v7-only").addEventListener("change", function(e){
+    v7Only = e.target.checked;
+    saveState();
+    renderLiveSummary();
+  });
+
   function generateXml(coupons, game){
     var couponTag = COUPON_TAG[game.type];
     var hasTrackcode = COUPON_HAS_TRACKCODE[game.type];
@@ -2727,7 +2774,8 @@
 
     coupons.forEach(function(coupon, i){
       xml += '    <' + couponTag + ' couponid="' + (i + 1) + '" date="' + game.date + '"' +
-        (hasTrackcode ? ' trackcode="' + game.trackId + '"' : '') + ' betmultiplier="1">\n';
+        (hasTrackcode ? ' trackcode="' + game.trackId + '"' : '') + ' betmultiplier="1"' +
+        (game.type === "V75" && v7Active() ? ' v7="true"' : '') + '>\n';
       coupon.forEach(function(nrs, legIdx){
         xml += '      <leg legno="' + (legIdx + 1) + '" marks="' + buildMarks(nrs) + '" />\n';
       });
