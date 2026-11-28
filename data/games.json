@@ -1,33 +1,6 @@
 {
-  "updated": "2026-11-27T15:41:27Z",
+  "updated": "2026-11-28T00:44:28Z",
   "games": [
-    {
-      "type": "V5",
-      "id": "V5_2026-11-27_54_2",
-      "date": "2026-11-27",
-      "startTime": "2026-11-27T16:07:33",
-      "status": "ongoing",
-      "trackId": 54,
-      "trackName": "Århus"
-    },
-    {
-      "type": "V5",
-      "id": "V5_2026-11-27_19_2",
-      "date": "2026-11-27",
-      "startTime": "2026-11-27T18:53:00",
-      "status": "bettable",
-      "trackId": 19,
-      "trackName": "Kalmar"
-    },
-    {
-      "type": "V64",
-      "id": "V64_2026-11-27_16_4",
-      "date": "2026-11-27",
-      "startTime": "2026-11-27T19:30:00",
-      "status": "bettable",
-      "trackId": 16,
-      "trackName": "Gävle"
-    },
     {
       "type": "V5",
       "id": "V5_2026-11-28_54_2",
